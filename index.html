@@ -563,15 +563,15 @@
     };
 
     // Globális fordítás – minden komponens eléri
-    let _lang = (() => { try { return localStorage.getItem('fm_lang')||'hu'; } catch { return 'hu'; } })();
+    let _lang = (() => { try { return localStorage.getItem('fm_lang')||'hu'; } catch(e) { return 'hu'; } })();
     const t = (key) => TRANSLATIONS[_lang]?.[key] ?? TRANSLATIONS.hu[key] ?? key;
 
     const BUCKET = "Gallery";
     // Storage fallback ha a CDN blokkolva van
     const _storage = {
-      getItem: k => { try { return localStorage.getItem(k); } catch { try { return sessionStorage.getItem(k); } catch { return null; } } },
-      setItem: (k,v) => { try { localStorage.setItem(k,v); } catch { try { sessionStorage.setItem(k,v); } catch {} } },
-      removeItem: k => { try { localStorage.removeItem(k); } catch { try { sessionStorage.removeItem(k); } catch {} } }
+      getItem: function(k) { try { return localStorage.getItem(k); } catch(e) { return null; } },
+      setItem: function(k,v) { try { localStorage.setItem(k,v); } catch(e) {} },
+      removeItem: function(k) { try { localStorage.removeItem(k); } catch(e) {} }
     };
     const sb = createClient(
       "https://gntamytbticicqnksgan.supabase.co",
@@ -1031,9 +1031,9 @@
       const [activeEvent, setActiveEvent] = useState(null);
       const [editEv,    setEditEv]    = useState(null);
       const [loadTimeout, setLoadTimeout] = useState(false);
-      const [lang, setLang] = useState(() => { try { return localStorage.getItem('fm_lang')||'hu'; } catch { return 'hu'; } });
+      const [lang, setLang] = useState(() => { try { return localStorage.getItem('fm_lang')||'hu'; } catch(e) { return 'hu'; } });
       const [showLangMenu, setShowLangMenu] = useState(false);
-      const switchLang = (l) => { setLang(l); _lang = l; setShowLangMenu(false); try { localStorage.setItem('fm_lang',l); } catch {} };
+      const switchLang = (l) => { setLang(l); _lang = l; setShowLangMenu(false); try { localStorage.setItem('fm_lang',l); } catch(e) {} };
       const [showResetPw, setShowResetPw] = useState(false);
       const [posts, setPosts] = useState([]);
       const [newPost, setNewPost] = useState("");
