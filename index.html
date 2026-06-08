@@ -332,6 +332,7 @@
     .run-feed-km{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;color:var(--blue)}
     .run-feed-km span{font-size:.65rem;font-family:'Rubik',sans-serif;color:var(--mu)}
     .run-feed-meta{font-size:.75rem;color:var(--mu);margin-top:.35rem}
+    .run-feed-card:hover{border-left-color:var(--blue);background:rgba(14,64,160,.03)}
     .pin-checkbox{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--mu);margin-top:.5rem;cursor:pointer}
 
     /* ── RESPONSIVE ── */
@@ -667,7 +668,7 @@
           redirectTo: window.location.origin + window.location.pathname
         });
         if (error) setErr(error.message);
-        else setOk("Jelszó-visszaállító linket küldtünk az email-címedre!");
+        else setOk(lang==="en" ? "Password reset link sent!" : "Jelszó-visszaállító linket küldtünk az email-címedre!");
         setLoading(false);
       };
 
@@ -681,7 +682,7 @@
         else if (data?.user?.identities && data.user.identities.length === 0) {
           setErr("Ezzel az email-cím már regisztrálva van. Kérjük, jelentkezz be!");
         }
-        else setOk("Regisztráció sikeres! Most már bejelentkezhetsz.");
+        else setOk(lang==="en" ? "Registration successful! You can now log in." : "Regisztráció sikeres! Most már bejelentkezhetsz.");
         setLoading(false);
       };
 
@@ -705,7 +706,7 @@
                 )}
                 <div className="fg"><label className="inp-lbl">Email</label>
                   <input className="inp" type="email" placeholder={t("auth.email_ph")} value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => mode==="login" && e.key==="Enter" && login()} /></div>
-                <div className="fg"><label className="inp-lbl">Jelszó</label>
+                <div className="fg"><label className="inp-lbl">{t("auth.password")}</label>
                   <input className={"inp" + (mode==="register" && pw2 && pw!==pw2?" err":"")} type="password" placeholder="••••••••" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => mode==="login" && e.key==="Enter" && login()} /></div>
                 {mode === "register" && (
                   <div className="fg" style={{marginBottom:"1rem"}}>
@@ -817,7 +818,7 @@
           {isAdmin && (
             <div className="ec-admin-btns" onClick={e => e.stopPropagation()}>
               <button className="ec-edit" onClick={() => onEdit && onEdit(ev)} title="Szerkesztés">✎</button>
-              <button className="ec-del" onClick={() => onDelete(ev.id)} title="Törlés">✕</button>
+              <button className="ec-del" onClick={() => onDelete(ev.id)} title={lang==="en"?"Delete":"Törlés"}>✕</button>
             </div>
           )}
         </div>
@@ -942,7 +943,7 @@
             <button className="modal-close" onClick={onClose}>✕</button>
             <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.7rem",letterSpacing:".03em",color:"var(--navy)",marginBottom:"1.2rem"}}>Esemény szerkesztése</div>
             <div className="fg"><label className="inp-lbl">Esemény neve *</label><input className="inp" type="text" value={form.title} onChange={e => setForm({...form,title:e.target.value})} /></div>
-            <div className="fg"><label className="inp-lbl">Dátum *</label><input className="inp" type="date" value={form.date} onChange={e => setForm({...form,date:e.target.value})} /></div>
+            <div className="fg"><label className="inp-lbl">{t("admin.ev_date")}</label><input className="inp" type="date" value={form.date} onChange={e => setForm({...form,date:e.target.value})} /></div>
             <div className="fg"><label className="inp-lbl">Időpont</label><input className="inp" type="time" value={form.time} onChange={e => setForm({...form,time:e.target.value})} /></div>
             <div className="fg"><label className="inp-lbl">Helyszín</label><input className="inp" type="text" placeholder="Pl. Kaposmérő, Fodor András utca" value={form.location} onChange={e => setForm({...form,location:e.target.value})} /></div>
             <div className="fg"><label className="inp-lbl">Leírás</label><textarea className="textarea" rows="5" placeholder="Esemény részletei..." value={form.description} onChange={e => setForm({...form,description:e.target.value})} /></div>
@@ -989,7 +990,7 @@
         const { error } = await sb.auth.updateUser({ password: pw });
         if (error) setErr(error.message);
         else {
-          setOk("Jelszó sikeresen megváltoztatva!");
+          setOk(lang==="en" ? "Password changed successfully!" : "Jelszó sikeresen megváltoztatva!");
           setTimeout(() => { window.location.hash = ""; onClose(); }, 2000);
         }
         setSaving(false);
@@ -1012,7 +1013,7 @@
                   {pw2 && pw===pw2 && pw.length>=6 && <div style={{fontSize:".72rem",color:"#16a34a",marginTop:"2px"}}>✓ A jelszavak egyeznek</div>}
                 </div>
                 <button className="btn-p" style={{width:"100%"}} disabled={saving||pw!==pw2||pw.length<6} onClick={save}>
-                  {saving && <span className="spin" />}Jelszó mentése
+                  {saving && <span className="spin" />}{t("auth.save_pw")}
                 </button>
               </>
             )}
@@ -1323,7 +1324,7 @@
         const evId    = selEv ? selEv.id : null;
         let done = 0, failed = 0;
         for (let i = 0; i < arr.length; i++) {
-          setUpMsg("Feltöltés: " + (i+1) + " / " + arr.length);
+          setUpMsg((lang==="en"?"Uploading: ":"Feltöltés: ") + (i+1) + " / " + arr.length);
           try {
             const b64 = await compressImage(arr[i]), blob = b64ToBlob(b64);
             const fname = Date.now() + "_" + Math.random().toString(36).slice(2,7) + ".jpg";
@@ -1457,7 +1458,7 @@
                 <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={doLogout}>{t("nav.logout")}</button>
               ) : (
                 <>
-                  <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={() => { setAuthMode("login"); setShowAuth(true); setMobileMenu(false); }}>Bejelentkezés</button>
+                  <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={() => { setAuthMode("login"); setShowAuth(true); setMobileMenu(false); }}>{t("nav.login")}</button>
                   <button className="nav-btn" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={() => { setAuthMode("register"); setShowAuth(true); setMobileMenu(false); }}>{t("nav.register")}</button>
                 </>
               )}
@@ -1534,7 +1535,7 @@
                   {upcoming.slice(0,3).map(ev => (
                     <EventCard key={ev.id} ev={ev} user={user} profile={profile} regs={regs[ev.id]||[]} onRegister={register} onUnregister={unregister} isAdmin={isAdmin} onDelete={deleteEvent} onAdminDelReg={adminDelReg} gallery={gallery} onEdit={ev => setEditEv(ev)} onOpenDetail={(ev, hp) => setActiveEvent({...ev, _hasPhotos: hp})} />
                   ))}
-                  {upcoming.length > 3 && <button className="btn-sm" style={{marginTop:"1rem"}} onClick={() => setTab("events")}>Összes esemény →</button>}
+                  {upcoming.length > 3 && <button className="btn-sm" style={{marginTop:"1rem"}} onClick={() => setTab("events")}>{t("events.all")}</button>}
                 </div>
               )}
 
@@ -1654,7 +1655,13 @@
                     });
                     if (allItems.length === 0) return <div className="empty">{t("feed.empty")}</div>;
                     return allItems.map(item => item._type === 'run' ? (
-                      <div key={"run-"+item.id} className="run-feed-card">
+                      <div key={"run-"+item.id} className="run-feed-card" style={{cursor:"pointer"}} onClick={() => {
+                        setBlogSubTab("runs");
+                        setTimeout(() => {
+                          const el = document.getElementById("run-"+item.id);
+                          if (el) { el.scrollIntoView({behavior:"smooth",block:"center"}); el.style.outline="2px solid var(--red)"; setTimeout(()=>{el.style.outline="";},1500); }
+                        }, 150);
+                      }}>
                         <div className="run-feed-hd">
                           <div className="user-ava" style={{width:30,height:30,fontSize:".68rem",flexShrink:0}}>{initials(item.user_name)}</div>
                           <div>
@@ -1742,7 +1749,7 @@
                   )}
                   {runs.length === 0 ? <div className="empty">{t("runs.empty")}</div> : (
                     [...runs].map(run => (
-                      <div key={run.id} className="run-card">
+                      <div key={run.id} id={"run-"+run.id} className="run-card">
                         {run.image_url && <img className="run-card-img" src={run.image_url} alt="" loading="lazy" />}
                         <div className="run-card-body">
                           <div className="run-card-hd">
@@ -1788,17 +1795,17 @@
                       <div className="stat-card"><div className="stat-card-num">{runs.length}</div><div className="stat-card-lbl">{t("stats.total_runs")}</div></div>
                       <div className="stat-card" style={{borderTopColor:"var(--blue)"}}>
                         <div className="stat-card-num" style={{color:"var(--blue)"}}>{lb[0]?.week.toFixed(1)||"0"}</div>
-                        <div className="stat-card-lbl">Heti legtöbb km<br/><span style={{color:"var(--navy)",fontWeight:600}}>{lb.sort((a,b)=>b.week-a.week)[0]?.name||"—"}</span></div>
+                        <div className="stat-card-lbl">{t("stats.week")}<br/><span style={{color:"var(--navy)",fontWeight:600}}>{lb.sort((a,b)=>b.week-a.week)[0]?.name||"—"}</span></div>
                       </div>
                       <div className="stat-card" style={{borderTopColor:"var(--blue)"}}>
                         <div className="stat-card-num" style={{color:"var(--blue)"}}>{[...lbRaw].sort((a,b)=>b.month-a.month)[0]?.month.toFixed(1)||"0"}</div>
-                        <div className="stat-card-lbl">Havi legtöbb km<br/><span style={{color:"var(--navy)",fontWeight:600}}>{[...lbRaw].sort((a,b)=>b.month-a.month)[0]?.name||"—"}</span></div>
+                        <div className="stat-card-lbl">{t("stats.month")}<br/><span style={{color:"var(--navy)",fontWeight:600}}>{[...lbRaw].sort((a,b)=>b.month-a.month)[0]?.name||"—"}</span></div>
                       </div>
                     </div>
                     <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>
                       {now.getFullYear()}. {t("stats.year_rank")}
                     </div>
-                    {lb.length === 0 ? <div className="empty">Még nincs adat.</div> : (
+                    {lb.length === 0 ? <div className="empty">{t("stats.empty")}</div> : (
                       <div style={{background:"var(--bg2)",border:"1px solid var(--br)",boxShadow:"var(--shadow)",overflowX:"auto"}}>
                         <table className="lb-table">
                           <thead><tr>
