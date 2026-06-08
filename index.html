@@ -21,7 +21,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -567,9 +567,16 @@
     const t = (key) => TRANSLATIONS[_lang]?.[key] ?? TRANSLATIONS.hu[key] ?? key;
 
     const BUCKET = "Gallery";
+    // Storage fallback ha a CDN blokkolva van
+    const _storage = {
+      getItem: k => { try { return localStorage.getItem(k); } catch { try { return sessionStorage.getItem(k); } catch { return null; } } },
+      setItem: (k,v) => { try { localStorage.setItem(k,v); } catch { try { sessionStorage.setItem(k,v); } catch {} } },
+      removeItem: k => { try { localStorage.removeItem(k); } catch { try { sessionStorage.removeItem(k); } catch {} } }
+    };
     const sb = createClient(
       "https://gntamytbticicqnksgan.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdudGFteXRidGljaWNxbmtzZ2FuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NDEwMDcsImV4cCI6MjA5NjIxNzAwN30.PK2HFiONnQXkHNw_E7hqYXzgnl4Ths-1LQbur7NIJ2g"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdudGFteXRidGljaWNxbmtzZ2FuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NDEwMDcsImV4cCI6MjA5NjIxNzAwN30.PK2HFiONnQXkHNw_E7hqYXzgnl4Ths-1LQbur7NIJ2g",
+      { auth: { storage: _storage, persistSession: true, autoRefreshToken: true } }
     );
 
     /* ── LOGÓ ── */
