@@ -73,7 +73,7 @@
     .h-tagline{font-size:.85rem;color:rgba(255,255,255,.5);letter-spacing:.15em;text-transform:uppercase;font-weight:400}
     .h-desc{font-size:.95rem;color:rgba(255,255,255,.6);max-width:400px;text-align:center;line-height:1.7}
     .h-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
-    .hero-divider{position:absolute;bottom:0;left:0;right:0;height:80px;background:var(--bg);clip-path:ellipse(60% 100% at 50% 100%);z-index:0}
+    .hero-divider{display:none}
 
     /* BUTTONS */
     .btn-p{background:var(--red);color:#fff;border:none;padding:.78rem 1.85rem;font-family:'Rubik',sans-serif;font-size:.83rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .15s;box-shadow:0 4px 12px rgba(201,16,21,.3)}
@@ -95,7 +95,7 @@
     .sec-divider{height:4px;width:50px;background:var(--red);margin-top:.6rem}
 
     /* ABOUT */
-    .about-wrap{background:var(--navy);padding:5rem 5%;clip-path:polygon(0 4%,100% 0,100% 96%,0 100%);margin:-30px 0}
+    .about-wrap{background:var(--navy);padding:5rem 5%}
     .about-inner{max-width:980px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
     @media(max-width:680px){.about-inner{grid-template-columns:1fr;gap:2rem}}
     .about-text{color:rgba(255,255,255,.7);font-size:.93rem;line-height:1.75;font-weight:300}
@@ -446,7 +446,7 @@
         "blog.placeholder":"Írj hírt, ötletet, kérdést... (max 2000 karakter)",
         "blog.post_btn":"Közzétesz","blog.empty":"Még nincsenek bejegyzések. Legyél az első!",
         "blog.login":"Jelentkezz be","blog.login_to":"a hozzászóláshoz",
-        "runs.title":"Futás rögzítése","runs.km":"Távolság (km) *","runs.date":"Dátum *",
+        "runs.title":"Futás rögzítése","runs.km":"Távolság (km) *","runs.date":"Dátum *","runs.time":"Időpont (opcionális)",
         "runs.desc":"Megjegyzés (opcionális)","runs.photo":"Fotó (opcionális)",
         "runs.btn":"Futás rögzítése","runs.empty":"Még nincs rögzített futás.",
         "runs.login_to":"a futásaid rögzítéséhez","runs.delete":"✕ Törlés",
@@ -519,7 +519,7 @@
         "blog.placeholder":"Share news, ideas, questions... (max 2000 chars)",
         "blog.post_btn":"Post","blog.empty":"No posts yet. Be the first!",
         "blog.login":"Log in","blog.login_to":"to comment",
-        "runs.title":"Log a run","runs.km":"Distance (km) *","runs.date":"Date *",
+        "runs.title":"Log a run","runs.km":"Distance (km) *","runs.date":"Date *","runs.time":"Time (optional)",
         "runs.desc":"Note (optional)","runs.photo":"Photo (optional)",
         "runs.btn":"Log run","runs.empty":"No runs logged yet.",
         "runs.login_to":"to log your runs","runs.delete":"✕ Delete",
@@ -764,7 +764,7 @@
             {ev.description && <p className="ec-desc">{ev.description.length>120 ? ev.description.slice(0,120)+"…" : ev.description}</p>}
             {isPast && hasPhotos && (
               <button className="btn-sm" style={{marginTop:".6rem",fontSize:".72rem"}} onClick={e => { e.stopPropagation(); document.dispatchEvent(new CustomEvent("goToGallery", { detail: evLabel })); }}>
-                📸 Fotók megtekintése
+                {t("events.photos")}
               </button>
             )}
             {!isPast && (
@@ -897,7 +897,7 @@
             )}
             {isPast && hasPhotos && (
               <button className="btn-p" style={{marginTop:"1.2rem"}} onClick={() => { document.dispatchEvent(new CustomEvent("goToGallery", { detail: ev.title + " (" + ev.date + ")" })); onClose(); }}>
-                📸 Fotók megtekintése
+                {t("events.photos")}
               </button>
             )}
             {isAdmin && (
@@ -1034,7 +1034,7 @@
       const [targetGalLabel, setTargetGalLabel] = useState(null);
       const [runs, setRuns] = useState([]);
       const [reactions, setReactions] = useState({});
-      const [newRun, setNewRun] = useState({ km:'', date:new Date().toISOString().slice(0,10), desc:'' });
+      const [newRun, setNewRun] = useState({ km:'', date:new Date().toISOString().slice(0,10), time:'', desc:'' });
       const [runUploading, setRunUploading] = useState(false);
       const [blogSubTab, setBlogSubTab] = useState('posts');
       const runFileRef = useRef(null);
@@ -1140,11 +1140,11 @@
         }
         const { data, error } = await sb.from("runs").insert([{
           user_id:user.id, user_name:profile?.full_name||user.email?.split("@")[0]||"Ismeretlen",
-          distance_km:parseFloat(newRun.km), run_date:newRun.date,
+          distance_km:parseFloat(newRun.km), run_date:newRun.date, run_time:newRun.time,
           description:newRun.desc, image_url:imageUrl, image_filename:imageFilename
         }]).select().single();
         if (!error && data) setRuns(prev => [data, ...prev]);
-        setNewRun({ km:'', date:new Date().toISOString().slice(0,10), desc:'' });
+        setNewRun({ km:'', date:new Date().toISOString().slice(0,10), time:'', desc:'' });
         if (runFileRef.current) runFileRef.current.value='';
         setRunUploading(false);
       };
@@ -1362,7 +1362,7 @@
               ) : (
                 <>
                   <button className="nav-btn out" onClick={() => { setAuthMode("login"); setShowAuth(true); }}>{t("nav.login")}</button>
-                  <button className="nav-btn" onClick={() => { setAuthMode("register"); setShowAuth(true); }}>Regisztráció</button>
+                  <button className="nav-btn" onClick={() => { setAuthMode("register"); setShowAuth(true); }}>{t("nav.register")}</button>
                 </>
               )}
             </div>
@@ -1411,7 +1411,7 @@
               ) : (
                 <>
                   <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={() => { setAuthMode("login"); setShowAuth(true); setMobileMenu(false); }}>Bejelentkezés</button>
-                  <button className="nav-btn" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={() => { setAuthMode("register"); setShowAuth(true); setMobileMenu(false); }}>Regisztráció</button>
+                  <button className="nav-btn" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={() => { setAuthMode("register"); setShowAuth(true); setMobileMenu(false); }}>{t("nav.register")}</button>
                 </>
               )}
             </div>
@@ -1456,7 +1456,7 @@
                   <div className="h-btns">
                     <button className="btn-p" onClick={() => setTab("events")}>{t("hero.btn_events")}</button>
                     <button className="btn-o" onClick={() => setTab("gallery")}>Galéria</button>
-                    {!user && <button className="btn-o" onClick={() => { setAuthMode("register"); setShowAuth(true); }}>Csatlakozz!</button>}
+                    {!user && <button className="btn-o" onClick={() => { setAuthMode("register"); setShowAuth(true); }}>{t("hero.btn_join")}</button>}
                   </div>
                 </div>
                 <div className="hero-divider" />
@@ -1508,7 +1508,7 @@
                       )}
                       {!user && (
                         <button className="btn-p" onClick={() => { setAuthMode("register"); setShowAuth(true); }}>
-                          Csatlakozz hozzánk!
+                          {t("hero.btn_join")}
                         </button>
                       )}
                     </div>
@@ -1589,7 +1589,7 @@
                         value={newPost} maxLength={2000} onChange={e=>setNewPost(e.target.value)} />
                       <div className="char-count">{newPost.length}/2000</div>
                       <button className="btn-p" style={{marginTop:".65rem"}} disabled={posting||!newPost.trim()} onClick={submitPost}>
-                        {posting && <span className="spin"/>}Közzétesz
+                        {posting && <span className="spin"/>}{t("blog.post_btn")}
                       </button>
                     </div>
                   ) : (
@@ -1640,6 +1640,10 @@
                         </div>
                       </div>
                       <div className="fg">
+                        <label className="inp-lbl">{t("runs.time")}</label>
+                        <input className="inp" type="time" value={newRun.time} onChange={e=>setNewRun({...newRun,time:e.target.value})} />
+                      </div>
+                      <div className="fg">
                         <label className="inp-lbl">{t("runs.desc")}</label>
                         <textarea className="textarea" rows="2" placeholder="Pl. Reggeli edzés a Mecseken..."
                           value={newRun.desc} onChange={e=>setNewRun({...newRun,desc:e.target.value})} />
@@ -1649,7 +1653,7 @@
                         <input className="inp" type="file" accept="image/*" ref={runFileRef} style={{padding:".5rem"}} />
                       </div>
                       <button className="btn-p" disabled={runUploading||!newRun.km||!newRun.date} onClick={submitRun}>
-                        {runUploading && <span className="spin"/>}Futás rögzítése
+                        {runUploading && <span className="spin"/>}{t("runs.btn")}
                       </button>
                     </div>
                   ) : (
@@ -1663,7 +1667,7 @@
                           <div className="run-card-hd">
                             <div className="user-ava" style={{width:32,height:32,fontSize:".72rem",flexShrink:0}}>{initials(run.user_name)}</div>
                             <div><div className="blog-author">{run.user_name}</div>
-                              <div className="run-date-badge">{new Date(run.run_date+"T00:00:00").toLocaleDateString("hu-HU",{year:"numeric",month:"long",day:"numeric"})}</div>
+                              <div className="run-date-badge">{new Date(run.run_date+"T00:00:00").toLocaleDateString("hu-HU",{year:"numeric",month:"long",day:"numeric"})}{run.run_time && <span style={{marginLeft:".4rem",color:"var(--red)"}}>🕐 {run.run_time}</span>}</div>
                             </div>
                             <div className="run-km">{parseFloat(run.distance_km).toFixed(2)}<span>km</span></div>
                           </div>
