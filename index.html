@@ -584,6 +584,31 @@
     let _lang = (() => { try { return localStorage.getItem('fm_lang')||'hu'; } catch(e) { return 'hu'; } })();
     const t = (key) => TRANSLATIONS[_lang]?.[key] ?? TRANSLATIONS.hu[key] ?? key;
 
+
+    class ErrorBoundary extends React.Component {
+      constructor(props) { super(props); this.state = { hasError: false, error: null }; }
+      static getDerivedStateFromError(error) { return { hasError: true, error }; }
+      componentDidCatch(error, info) { console.error('React hiba:', error, info); }
+      render() {
+        if (this.state.hasError) {
+          return React.createElement('div', {
+            style: { display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',
+                     background:'#0b1f3a',color:'#fff',fontFamily:'sans-serif',textAlign:'center',padding:'2rem' }
+          }, React.createElement('div', null,
+            React.createElement('div', { style:{fontSize:'2rem',marginBottom:'1rem'} }, '⚠️'),
+            React.createElement('div', { style:{fontSize:'1.1rem',marginBottom:'.5rem'} }, 'Hiba történt'),
+            React.createElement('div', { style:{fontSize:'.85rem',color:'#6b80a0',marginBottom:'1.5rem'} },
+              this.state.error?.message || 'Ismeretlen hiba'),
+            React.createElement('button', {
+              onClick: () => window.location.reload(),
+              style: { background:'#c91015',color:'#fff',border:'none',padding:'.7rem 1.5rem',cursor:'pointer',fontFamily:'sans-serif',fontSize:'.9rem' }
+            }, 'Újratöltés')
+          ));
+        }
+        return this.props.children;
+      }
+    }
+
     const BUCKET = "Gallery";
     const sb = createClient(
       "https://gntamytbticicqnksgan.supabase.co",
@@ -1647,8 +1672,8 @@
                   )}
                   {(() => {
                     // Kombinált feed: posts + runs, pinned felül, aztán legrégebbi felül
-                    const feedPosts = posts.map(p => ({...p, _type:'post'}));
-                    const feedRuns = runs.map(r => ({...r, _type:'run', created_at: r.created_at || r.run_date+'T00:00:00'}));
+                    const feedPosts = (posts||[]).map(p => ({...p, _type:'post'}));
+                    const feedRuns = (runs||[]).map(r => ({...r, _type:'run', created_at: r.created_at || r.run_date+'T00:00:00'}));
                     const allItems = [...feedPosts, ...feedRuns].sort((a,b) => {
                       if (a.is_pinned && !b.is_pinned) return -1;
                       if (!a.is_pinned && b.is_pinned) return 1;
@@ -1777,7 +1802,7 @@
                 const wStart = new Date(now); wStart.setDate(now.getDate()-((now.getDay()+6)%7)); wStart.setHours(0,0,0,0);
                 const mStart = new Date(now.getFullYear(),now.getMonth(),1);
                 const yStart = new Date(now.getFullYear(),0,1);
-                const totalKm = runs.reduce((s,r)=>s+parseFloat(r.distance_km||0),0);
+                const totalKm = runs.reduce((s,r)=>{ const v=parseFloat(r.distance_km); return s+(isNaN(v)?0:v); },0);
                 const userMap = {};
                 runs.forEach(r => {
                   if(!userMap[r.user_name]) userMap[r.user_name]={week:0,month:0,year:0,total:0,count:0};
@@ -1820,9 +1845,9 @@
                                   {i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}
                                 </span></td>
                                 <td><span className="lb-name">{u.name}</span></td>
-                                <td><span className="lb-km">{u.week.toFixed(2)}</span></td>
-                                <td><span className="lb-km">{u.month.toFixed(2)}</span></td>
-                                <td><span className="lb-km" style={{color:"var(--red)"}}>{u.year.toFixed(2)}</span></td>
+                                <td><span className="lb-km">{(u.week||0).toFixed(2)}</span></td>
+                                <td><span className="lb-km">{(u.month||0).toFixed(2)}</span></td>
+                                <td><span className="lb-km" style={{color:"var(--red)"}}>{(u.year||0).toFixed(2)}</span></td>
                                 <td style={{color:"var(--mu)"}}>{u.count}</td>
                               </tr>
                             ))}
@@ -1839,7 +1864,7 @@
                         <div className="empty">{t("stats.no_runs")}</div>
                       </div>
                     );
-                    const myTotal = myRuns.reduce((s,r)=>s+parseFloat(r.distance_km||0),0);
+                    const myTotal = myRuns.reduce((s,r)=>{ const v=parseFloat(r.distance_km); return s+(isNaN(v)?0:v); },0);
                     const myWeeks={}, myMonths={};
                     myRuns.forEach(r=>{
                       const d=new Date(r.created_at||r.run_date+"T00:00:00");
@@ -1960,7 +1985,7 @@
       );
     }
 
-    ReactDOM.createRoot(document.getElementById("root")).render(<FutameroSite />);
+    ReactDOM.createRoot(document.getElementById("root")).render(<ErrorBoundary><FutameroSite /></ErrorBoundary>);
     } // window.supabase check vége
   </script>
 </body>
