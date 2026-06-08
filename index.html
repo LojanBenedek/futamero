@@ -320,6 +320,20 @@
     .lang-opt.active{color:#fff;font-weight:600;background:rgba(201,16,21,.2)}
     .lang-opt-flag{font-size:1.15rem}
 
+
+    /* ── KIEMELT BEJEGYZÉS + RUN IN FEED ── */
+    .pinned-badge{display:inline-flex;align-items:center;gap:.3rem;background:rgba(201,16,21,.1);color:var(--red);font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .55rem;border-radius:2px;margin-bottom:.5rem}
+    .blog-post.pinned{border-top:3px solid var(--red);background:rgba(201,16,21,.03)}
+    .blog-pin-btn{background:none;border:none;cursor:pointer;font-size:.85rem;padding:.15rem .35rem;color:var(--mu);transition:color .2s;border-radius:2px}
+    .blog-pin-btn:hover{color:var(--red)}
+    .blog-pin-btn.pinned{color:var(--red)}
+    .run-feed-card{background:var(--bg2);border:1px solid var(--br);border-left:3px solid var(--red);padding:.9rem 1rem;margin-bottom:.7rem}
+    .run-feed-hd{display:flex;align-items:center;gap:.6rem}
+    .run-feed-km{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;color:var(--blue)}
+    .run-feed-km span{font-size:.65rem;font-family:'Rubik',sans-serif;color:var(--mu)}
+    .run-feed-meta{font-size:.75rem;color:var(--mu);margin-top:.35rem}
+    .pin-checkbox{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--mu);margin-top:.5rem;cursor:pointer}
+
     /* ── RESPONSIVE ── */
 
     /* Hamburger gomb */
@@ -419,7 +433,7 @@
     const TRANSLATIONS = {
       hu: {
         "nav.home":"Kezdőlap","nav.events":"Események","nav.gallery":"Galéria","nav.blog":"Blog",
-        "nav.login":"Belépés","nav.register":"Regisztráció","nav.logout":"Ki","nav.admin":"Admin",
+        "nav.login":"Belépés","nav.register":"Regisztráció","nav.logout":"Kijelentkezés","nav.admin":"Admin",
         "nav.sub":"Kaposmérő · 2015",
         "hero.eyebrow":"Kaposmérő · Somogy · 2015 óta",
         "hero.tagline":"Sport és Kulturális Egyesület",
@@ -449,7 +463,7 @@
         "blog.placeholder":"Írj hírt, ötletet, kérdést... (max 2000 karakter)",
         "blog.post_btn":"Közzétesz","blog.empty":"Még nincsenek bejegyzések. Legyél az első!",
         "blog.login":"Jelentkezz be","blog.login_to":"a hozzászóláshoz",
-        "runs.title":"Futás rögzítése","runs.km":"Távolság (km) *","runs.date":"Dátum *","runs.time":"Időpont (opcionális)",
+        "runs.title":"Futás rögzítése","posts.pinned":"📌 Kiemelt","posts.pin":"📌 Kiemel","posts.unpin":"📌 Kiemelés eltávolítása","posts.run_entry":"🏃 Futás","feed.empty":"Még nincs bejegyzés.","runs.km":"Távolság (km) *","runs.duration":"Időtartam (kötelező, pl. 28:45 vagy 1:10:00)","runs.duration_ph":"pl. 28:45 vagy 1:10:00",
         "runs.desc":"Megjegyzés (opcionális)","runs.photo":"Fotó (opcionális)",
         "runs.btn":"Futás rögzítése","runs.empty":"Még nincs rögzített futás.",
         "runs.login_to":"a futásaid rögzítéséhez","runs.delete":"✕ Törlés",
@@ -457,7 +471,7 @@
         "stats.week":"Heti legtöbb km","stats.month":"Havi legtöbb km",
         "stats.year_rank":"évi rangsor","stats.runner":"Futó",
         "stats.wkm":"Heti km","stats.mkm":"Havi km","stats.ykm":"Éves km",
-        "stats.count":"Futások","stats.empty":"Még nincs adat.",
+        "stats.count":"Futások","stats.empty":"Még nincs adat.","stats.my":"Saját statisztika","stats.my_total":"Összes km (én)","stats.my_runs":"Futásaim száma","stats.my_best_week":"Legjobb hetem","stats.my_best_month":"Legjobb hónapom","stats.no_runs":"Még nem rögzítettél futást.",
         "auth.login":"Bejelentkezés","auth.register":"Regisztráció",
         "auth.name":"Teljes név","auth.email":"Email","auth.password":"Jelszó",
         "auth.pw2":"Jelszó megerősítése","auth.forgot":"Elfelejtett jelszó?",
@@ -492,7 +506,7 @@
       },
       en: {
         "nav.home":"Home","nav.events":"Events","nav.gallery":"Gallery","nav.blog":"Blog",
-        "nav.login":"Login","nav.register":"Sign Up","nav.logout":"Out","nav.admin":"Admin",
+        "nav.login":"Login","nav.register":"Sign Up","nav.logout":"Logout","nav.admin":"Admin",
         "nav.sub":"Kaposmérő · Est. 2015",
         "hero.eyebrow":"Kaposmérő · Somogy · Since 2015",
         "hero.tagline":"Sports and Cultural Association",
@@ -522,7 +536,7 @@
         "blog.placeholder":"Share news, ideas, questions... (max 2000 chars)",
         "blog.post_btn":"Post","blog.empty":"No posts yet. Be the first!",
         "blog.login":"Log in","blog.login_to":"to comment",
-        "runs.title":"Log a run","runs.km":"Distance (km) *","runs.date":"Date *","runs.time":"Time (optional)",
+        "runs.title":"Log a run","posts.pinned":"📌 Pinned","posts.pin":"📌 Pin","posts.unpin":"📌 Unpin","posts.run_entry":"🏃 Run","feed.empty":"No posts yet.","runs.km":"Distance (km) *","runs.duration":"Duration (required, e.g. 28:45 or 1:10:00)","runs.duration_ph":"e.g. 28:45 or 1:10:00",
         "runs.desc":"Note (optional)","runs.photo":"Photo (optional)",
         "runs.btn":"Log run","runs.empty":"No runs logged yet.",
         "runs.login_to":"to log your runs","runs.delete":"✕ Delete",
@@ -530,7 +544,7 @@
         "stats.week":"Most km this week","stats.month":"Most km this month",
         "stats.year_rank":"annual ranking","stats.runner":"Runner",
         "stats.wkm":"Weekly km","stats.mkm":"Monthly km","stats.ykm":"Annual km",
-        "stats.count":"Runs","stats.empty":"No data yet.",
+        "stats.count":"Runs","stats.empty":"No data yet.","stats.my":"My statistics","stats.my_total":"Total km (me)","stats.my_runs":"My runs","stats.my_best_week":"Best week","stats.my_best_month":"Best month","stats.no_runs":"You have not logged any runs yet.",
         "auth.login":"Login","auth.register":"Sign Up",
         "auth.name":"Full name","auth.email":"Email","auth.password":"Password",
         "auth.pw2":"Confirm password","auth.forgot":"Forgot password?",
@@ -1032,6 +1046,7 @@
       const switchLang = (l) => { _lang = l; setLang(l); setShowLangMenu(false); try { localStorage.setItem('fm_lang',l); } catch(e) {} };
 
       const doLogout = async () => {
+        if (!window.confirm(t("confirm.logout"))) return;
         try {
           await Promise.race([
             sb.auth.signOut(),
@@ -1049,7 +1064,7 @@
       const [targetGalLabel, setTargetGalLabel] = useState(null);
       const [runs, setRuns] = useState([]);
       const [reactions, setReactions] = useState({});
-      const [newRun, setNewRun] = useState({ km:'', date:new Date().toISOString().slice(0,10), time:'', desc:'' });
+      const [newRun, setNewRun] = useState({ km:'', duration:'', desc:'' });
       const [runUploading, setRunUploading] = useState(false);
       const [blogSubTab, setBlogSubTab] = useState('posts');
       const runFileRef = useRef(null);
@@ -1132,7 +1147,7 @@
       };
 
       const loadRuns = async () => {
-        const { data } = await sb.from("runs").select("*").order("run_date", {ascending:false}).order("created_at",{ascending:false});
+        const { data } = await sb.from("runs").select("*").order("created_at",{ascending:true});
         setRuns(data || []);
       };
       const loadReactions = async () => {
@@ -1142,7 +1157,7 @@
         setReactions(map);
       };
       const submitRun = async () => {
-        if (!newRun.km || !newRun.date || !user) return;
+        if (!newRun.km || !newRun.duration || !user) return;
         setRunUploading(true);
         let imageUrl='', imageFilename='';
         if (runFileRef.current?.files?.[0]) {
@@ -1156,11 +1171,11 @@
         }
         const { data, error } = await sb.from("runs").insert([{
           user_id:user.id, user_name:profile?.full_name||user.email?.split("@")[0]||"Ismeretlen",
-          distance_km:parseFloat(newRun.km), run_date:newRun.date, run_time:newRun.time,
+          distance_km:parseFloat(newRun.km), run_date:new Date().toISOString().slice(0,10), duration:newRun.duration,
           description:newRun.desc, image_url:imageUrl, image_filename:imageFilename
         }]).select().single();
         if (!error && data) setRuns(prev => [data, ...prev]);
-        setNewRun({ km:'', date:new Date().toISOString().slice(0,10), time:'', desc:'' });
+        setNewRun({ km:'', duration:'', desc:'' });
         if (runFileRef.current) runFileRef.current.value='';
         setRunUploading(false);
       };
@@ -1172,11 +1187,21 @@
       };
       const toggleReaction = async (postId, emoji) => {
         if (!user) { document.dispatchEvent(new CustomEvent("openAuth")); return; }
-        const hasReacted = (reactions[postId]?.[emoji]||[]).includes(user.id);
-        if (hasReacted) {
+        const postRxns = reactions[postId] || {};
+        const hasThis = (postRxns[emoji]||[]).includes(user.id);
+        if (hasThis) {
+          // Eltávolítjuk
           await sb.from("reactions").delete().eq("post_id",postId).eq("user_id",user.id).eq("emoji",emoji);
           setReactions(prev => ({ ...prev, [postId]:{ ...(prev[postId]||{}), [emoji]:(prev[postId]?.[emoji]||[]).filter(u=>u!==user.id) } }));
         } else {
+          // Eltávolítjuk az összes meglévő reakciót ettől a felhasználótól
+          for (const other of ["👍","❤️","🏃"].filter(e=>e!==emoji)) {
+            if ((postRxns[other]||[]).includes(user.id)) {
+              await sb.from("reactions").delete().eq("post_id",postId).eq("user_id",user.id).eq("emoji",other);
+              setReactions(prev => ({ ...prev, [postId]:{ ...(prev[postId]||{}), [other]:(prev[postId]?.[other]||[]).filter(u=>u!==user.id) } }));
+            }
+          }
+          // Hozzáadjuk az újat
           const { error } = await sb.from("reactions").insert({ post_id:postId, user_id:user.id, emoji });
           if (!error) setReactions(prev => ({ ...prev, [postId]:{ ...(prev[postId]||{}), [emoji]:[...(prev[postId]?.[emoji]||[]),user.id] } }));
         }
@@ -1197,6 +1222,12 @@
         if (!error && data) setPosts(prev => [data, ...prev]);
         setNewPost(""); setPosting(false);
       };
+      const togglePin = async (post) => {
+        const nowPinned = !post.is_pinned;
+        await sb.from("posts").update({ is_pinned: nowPinned, pinned_at: nowPinned ? new Date().toISOString() : null }).eq("id", post.id);
+        setPosts(prev => prev.map(p => p.id === post.id ? {...p, is_pinned: nowPinned, pinned_at: nowPinned ? new Date().toISOString() : null} : p));
+      };
+
       const deletePost = async (id) => {
         if (!window.confirm(lang==="en" ? "Delete this post?" : "Törlöd ezt a bejegyzést?")) return;
         await sb.from("posts").delete().eq("id", id);
@@ -1259,7 +1290,7 @@
         const { data, error } = await sb.from("events").insert([{ title:newEv.title, date:newEv.date, time:newEv.time, location:newEv.location, description:newEv.description }]).select();
         if (!error && data) { setEvents(prev => [...prev, data[0]].sort((a,b)=>a.date.localeCompare(b.date))); setNewEv({ title:"",date:"",time:"",location:"",description:"" }); }
       };
-      const deleteEvent = async id => { if (!window.confirm(lang==="en" ? "Are you sure you want to delete this event?" : "Biztosan törlöd ezt az eseményt?")) return; await sb.from("event_registrations").delete().eq("event_id", id); await sb.from("events").delete().eq("id", id); setEvents(e => e.filter(ev => ev.id !== id)); setRegs(prev => { const r = {...prev}; delete r[id]; return r; }); };
+      const deleteEvent = async id => { if (!window.confirm(lang==="en" ? "Delete this event?" : "Biztosan törlöd ezt az eseményt?")) return; await sb.from("event_registrations").delete().eq("event_id", id); await sb.from("events").delete().eq("id", id); setEvents(e => e.filter(ev => ev.id !== id)); setRegs(prev => { const r = {...prev}; delete r[id]; return r; }); };
       const updateEvent = async (updated) => {
         // Gallery event_label frissítése ha az esemény neve/dátuma változott
         const newLabel = updated.title + " (" + updated.date + ")";
@@ -1311,7 +1342,7 @@
       };
 
       const deleteImage = async (id, filename) => {
-        if (!window.confirm(lang==="en" ? "Are you sure?" : "Biztosan törlöd?")) return;
+        if (!window.confirm(lang==="en" ? "Delete this photo?" : "Biztosan törlöd?")) return;
         await sb.storage.from(BUCKET).remove([filename]);
         await sb.from("gallery").delete().eq("id", id);
         setGallery(g => g.filter(x => x.id !== id));
@@ -1604,6 +1635,7 @@
                       <textarea className="textarea" rows="4" placeholder={t("blog.placeholder")}
                         value={newPost} maxLength={2000} onChange={e=>setNewPost(e.target.value)} />
                       <div className="char-count">{newPost.length}/2000</div>
+                      {isAdmin && <label className="pin-checkbox"><input type="checkbox" checked={pinNewPost} onChange={e=>setPinNewPost(e.target.checked)} />{t("posts.pin")}</label>}
                       <button className="btn-p" style={{marginTop:".65rem"}} disabled={posting||!newPost.trim()} onClick={submitPost}>
                         {posting && <span className="spin"/>}{t("blog.post_btn")}
                       </button>
@@ -1611,27 +1643,62 @@
                   ) : (
                     <div className="blog-login"><span className="reg-hint" onClick={()=>document.dispatchEvent(new CustomEvent("openAuth"))}>{t("blog.login")}</span> {t("blog.login_to")}</div>
                   )}
-                  {posts.length === 0 ? <div className="empty">{t("blog.empty")}</div> : (
-                    posts.map(post => (
-                      <div key={post.id} className="blog-post">
-                        <div className="blog-post-hd">
-                          <div className="user-ava" style={{width:32,height:32,fontSize:".72rem",flexShrink:0}}>{initials(post.user_name)}</div>
-                          <div><div className="blog-author">{post.user_name}</div>
-                            <div className="blog-date">{new Date(post.created_at).toLocaleDateString("hu-HU",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"})}</div>
+                  {(() => {
+                    // Kombinált feed: posts + runs, pinned felül, aztán legrégebbi felül
+                    const feedPosts = posts.map(p => ({...p, _type:'post'}));
+                    const feedRuns = runs.map(r => ({...r, _type:'run', created_at: r.created_at || r.run_date+'T00:00:00'}));
+                    const allItems = [...feedPosts, ...feedRuns].sort((a,b) => {
+                      if (a.is_pinned && !b.is_pinned) return -1;
+                      if (!a.is_pinned && b.is_pinned) return 1;
+                      return new Date(a.created_at) - new Date(b.created_at);
+                    });
+                    if (allItems.length === 0) return <div className="empty">{t("feed.empty")}</div>;
+                    return allItems.map(item => item._type === 'run' ? (
+                      <div key={"run-"+item.id} className="run-feed-card">
+                        <div className="run-feed-hd">
+                          <div className="user-ava" style={{width:30,height:30,fontSize:".68rem",flexShrink:0}}>{initials(item.user_name)}</div>
+                          <div>
+                            <div className="blog-author">{item.user_name}</div>
+                            <div className="run-feed-meta">🏃 {t("posts.run_entry")} · {new Date(item.created_at).toLocaleDateString(lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric"})}</div>
                           </div>
-                          {(isAdmin||(user&&post.user_id===user.id)) && <button className="blog-del" onClick={()=>deletePost(post.id)}>✕</button>}
+                          <div className="run-feed-km">{parseFloat(item.distance_km).toFixed(2)}<span>km</span></div>
                         </div>
-                        <div className="blog-content">{post.content}</div>
+                        {(item.duration||item.description) && (
+                          <div className="run-feed-meta" style={{marginTop:".5rem"}}>
+                            {item.duration && <span>⏱ {item.duration}</span>}
+                            {item.duration && item.description && <span style={{margin:"0 .4rem"}}>·</span>}
+                            {item.description && <span>{item.description}</span>}
+                          </div>
+                        )}
+                        {(isAdmin||(user&&item.user_id===user.id)) && (
+                          <button className="blog-del" style={{marginTop:".4rem",display:"inline-block",fontSize:".75rem"}} onClick={()=>deleteRun(item.id,item.image_filename)}>{t("runs.delete")}</button>
+                        )}
+                      </div>
+                    ) : (
+                      <div key={item.id} className={"blog-post"+(item.is_pinned?" pinned":"")}>
+                        {item.is_pinned && <div className="pinned-badge">📌 {t("posts.pinned")}</div>}
+                        <div className="blog-post-hd">
+                          <div className="user-ava" style={{width:32,height:32,fontSize:".72rem",flexShrink:0}}>{initials(item.user_name)}</div>
+                          <div>
+                            <div className="blog-author">{item.user_name}</div>
+                            <div className="blog-date">{new Date(item.created_at).toLocaleDateString(lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"})}</div>
+                          </div>
+                          <div style={{marginLeft:"auto",display:"flex",gap:".3rem",alignItems:"center"}}>
+                            {isAdmin && <button className={"blog-pin-btn"+(item.is_pinned?" pinned":"")} onClick={()=>togglePin(item)} title={item.is_pinned?t("posts.unpin"):t("posts.pin")}>📌</button>}
+                            {(user&&(isAdmin||item.user_id===user.id)) && <button className="blog-del" onClick={()=>deletePost(item.id)}>✕</button>}
+                          </div>
+                        </div>
+                        <div className="blog-content">{item.content}</div>
                         <div className="reactions">
                           {["👍","❤️","🏃"].map(emoji => {
-                            const cnt=(reactions[post.id]?.[emoji]||[]).length;
-                            const active=user&&(reactions[post.id]?.[emoji]||[]).includes(user.id);
-                            return <button key={emoji} className={"rxn-btn"+(active?" active":"")} onClick={()=>toggleReaction(post.id,emoji)}>{emoji}{cnt>0&&<span>{cnt}</span>}</button>;
+                            const cnt=(reactions[item.id]?.[emoji]||[]).length;
+                            const active=user&&(reactions[item.id]?.[emoji]||[]).includes(user.id);
+                            return <button key={emoji} className={"rxn-btn"+(active?" active":"")} onClick={()=>toggleReaction(item.id,emoji)}>{emoji}{cnt>0&&<span>{cnt}</span>}</button>;
                           })}
                         </div>
                       </div>
-                    ))
-                  )}
+                    ));
+                  })()}
                 </>
               )}
 
@@ -1646,29 +1713,27 @@
                       </div>
                       <div className="run-row">
                         <div className="fg">
-                          <label className="inp-lbl">{t("runs.km")}</label>
+                          <label className="inp-lbl">{t("runs.km")} *</label>
                           <input className="inp" type="number" step="0.01" min="0.1" max="300"
-                            placeholder="Pl. 5.42" value={newRun.km} onChange={e=>setNewRun({...newRun,km:e.target.value})} />
+                            placeholder={lang==="en"?"e.g. 5.42":"Pl. 5.42"} value={newRun.km} onChange={e=>setNewRun({...newRun,km:e.target.value})} />
                         </div>
                         <div className="fg">
-                          <label className="inp-lbl">{t("runs.date")}</label>
-                          <input className="inp" type="date" value={newRun.date} onChange={e=>setNewRun({...newRun,date:e.target.value})} />
+                          <label className="inp-lbl">{t("runs.duration")} *</label>
+                          <input className="inp" type="text" placeholder={t("runs.duration_ph")}
+                            value={newRun.duration} onChange={e=>setNewRun({...newRun,duration:e.target.value})} />
                         </div>
                       </div>
-                      <div className="fg">
-                        <label className="inp-lbl">{t("runs.time")}</label>
-                        <input className="inp" type="time" value={newRun.time} onChange={e=>setNewRun({...newRun,time:e.target.value})} />
-                      </div>
+
                       <div className="fg">
                         <label className="inp-lbl">{t("runs.desc")}</label>
-                        <textarea className="textarea" rows="2" placeholder="Pl. Reggeli edzés a Mecseken..."
+                        <textarea className="textarea" rows="2" placeholder={lang==="en"?"e.g. Morning run...":"Pl. Reggeli edzés..."}
                           value={newRun.desc} onChange={e=>setNewRun({...newRun,desc:e.target.value})} />
                       </div>
                       <div className="fg">
                         <label className="inp-lbl">{t("runs.photo")}</label>
                         <input className="inp" type="file" accept="image/*" ref={runFileRef} style={{padding:".5rem"}} />
                       </div>
-                      <button className="btn-p" disabled={runUploading||!newRun.km||!newRun.date} onClick={submitRun}>
+                      <button className="btn-p" disabled={runUploading||!newRun.km||!newRun.duration} onClick={submitRun}>
                         {runUploading && <span className="spin"/>}{t("runs.btn")}
                       </button>
                     </div>
@@ -1676,14 +1741,14 @@
                     <div className="blog-login"><span className="reg-hint" onClick={()=>document.dispatchEvent(new CustomEvent("openAuth"))}>Jelentkezz be</span> a futásaid rögzítéséhez</div>
                   )}
                   {runs.length === 0 ? <div className="empty">{t("runs.empty")}</div> : (
-                    runs.map(run => (
+                    [...runs].map(run => (
                       <div key={run.id} className="run-card">
                         {run.image_url && <img className="run-card-img" src={run.image_url} alt="" loading="lazy" />}
                         <div className="run-card-body">
                           <div className="run-card-hd">
                             <div className="user-ava" style={{width:32,height:32,fontSize:".72rem",flexShrink:0}}>{initials(run.user_name)}</div>
                             <div><div className="blog-author">{run.user_name}</div>
-                              <div className="run-date-badge">{new Date(run.run_date+"T00:00:00").toLocaleDateString("hu-HU",{year:"numeric",month:"long",day:"numeric"})}{run.run_time && <span style={{marginLeft:".4rem",color:"var(--red)"}}>🕐 {run.run_time}</span>}</div>
+                              <div className="run-date-badge">{new Date(run.created_at||run.run_date+"T00:00:00").toLocaleDateString(lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric"})}{run.duration && <span style={{marginLeft:".4rem",color:"var(--red)"}}>⏱ {run.duration}</span>}</div>
                             </div>
                             <div className="run-km">{parseFloat(run.distance_km).toFixed(2)}<span>km</span></div>
                           </div>
@@ -1782,7 +1847,7 @@
                 <>
                   <div style={{background:"var(--bg2)",border:"1px solid var(--br)",borderTop:"3px solid var(--red)",padding:"1.4rem",marginBottom:"2rem",boxShadow:"var(--shadow)"}}>
                     <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.2rem",marginBottom:"1rem",letterSpacing:".05em",color:"var(--navy)"}}>{t("admin.new_ev")}</div>
-                    <div className="fg"><label className="fl">{t("admin.ev_name")}</label><input className="inp" type="text" placeholder="Pl. Őszi futóverseny" value={newEv.title} onChange={e => setNewEv({...newEv,title:e.target.value})} /></div>
+                    <div className="fg"><label className="fl">{t("admin.ev_name")}</label><input className="inp" type="text" placeholder={lang==="en"?"e.g. Autumn race":"Pl. Őszi futóverseny"} value={newEv.title} onChange={e => setNewEv({...newEv,title:e.target.value})} /></div>
                     <div className="fg"><label className="fl">{t("admin.ev_date")}</label><input className="inp" type="date" value={newEv.date} onChange={e => setNewEv({...newEv,date:e.target.value})} /></div>
                     <div className="fg"><label className="fl">{t("admin.ev_time")}</label><input className="inp" type="time" value={newEv.time} onChange={e => setNewEv({...newEv,time:e.target.value})} /></div>
                     <div className="fg"><label className="fl">{t("admin.ev_loc")}</label><input className="inp" type="text" placeholder="Pl. Kaposmérő, Fodor András utca" value={newEv.location} onChange={e => setNewEv({...newEv,location:e.target.value})} /></div>
