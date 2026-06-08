@@ -1029,7 +1029,18 @@
       const [loadTimeout, setLoadTimeout] = useState(false);
       const [lang, setLang] = useState(() => { try { return localStorage.getItem('fm_lang')||'hu'; } catch(e) { return 'hu'; } });
       const [showLangMenu, setShowLangMenu] = useState(false);
-      const switchLang = (l) => { setLang(l); _lang = l; setShowLangMenu(false); try { localStorage.setItem('fm_lang',l); } catch(e) {} };
+      const switchLang = (l) => { _lang = l; setLang(l); setShowLangMenu(false); try { localStorage.setItem('fm_lang',l); } catch(e) {} };
+
+      const doLogout = async () => {
+        try { await sb.auth.signOut(); } catch(e) { console.error('signOut:', e); }
+        try {
+          Object.keys(localStorage)
+            .filter(k => k.includes('supabase') || k.includes('sb-'))
+            .forEach(k => localStorage.removeItem(k));
+        } catch(e) {}
+        try { sessionStorage.clear(); } catch(e) {}
+        window.location.reload();
+      };
       const [showResetPw, setShowResetPw] = useState(false);
       const [posts, setPosts] = useState([]);
       const [newPost, setNewPost] = useState("");
@@ -1153,7 +1164,7 @@
         setRunUploading(false);
       };
       const deleteRun = async (id, imageFilename) => {
-        if (!window.confirm(t("confirm.delete_run"))) return;
+        if (!window.confirm(lang==="en" ? "Delete this run?" : "Törlöd ezt a futást?")) return;
         if (imageFilename) await sb.storage.from(BUCKET).remove([imageFilename]);
         await sb.from("runs").delete().eq("id", id);
         setRuns(prev => prev.filter(r => r.id !== id));
@@ -1186,7 +1197,7 @@
         setNewPost(""); setPosting(false);
       };
       const deletePost = async (id) => {
-        if (!window.confirm(t("confirm.delete_post"))) return;
+        if (!window.confirm(lang==="en" ? "Delete this post?" : "Törlöd ezt a bejegyzést?")) return;
         await sb.from("posts").delete().eq("id", id);
         setPosts(prev => prev.filter(p => p.id !== id));
       };
@@ -1247,7 +1258,7 @@
         const { data, error } = await sb.from("events").insert([{ title:newEv.title, date:newEv.date, time:newEv.time, location:newEv.location, description:newEv.description }]).select();
         if (!error && data) { setEvents(prev => [...prev, data[0]].sort((a,b)=>a.date.localeCompare(b.date))); setNewEv({ title:"",date:"",time:"",location:"",description:"" }); }
       };
-      const deleteEvent = async id => { if (!window.confirm(t("confirm.delete_event"))) return; await sb.from("event_registrations").delete().eq("event_id", id); await sb.from("events").delete().eq("id", id); setEvents(e => e.filter(ev => ev.id !== id)); setRegs(prev => { const r = {...prev}; delete r[id]; return r; }); };
+      const deleteEvent = async id => { if (!window.confirm(lang==="en" ? "Are you sure you want to delete this event?" : "Biztosan törlöd ezt az eseményt?")) return; await sb.from("event_registrations").delete().eq("event_id", id); await sb.from("events").delete().eq("id", id); setEvents(e => e.filter(ev => ev.id !== id)); setRegs(prev => { const r = {...prev}; delete r[id]; return r; }); };
       const updateEvent = async (updated) => {
         // Gallery event_label frissítése ha az esemény neve/dátuma változott
         const newLabel = updated.title + " (" + updated.date + ")";
@@ -1299,7 +1310,7 @@
       };
 
       const deleteImage = async (id, filename) => {
-        if (!window.confirm(t("confirm.delete_image"))) return;
+        if (!window.confirm(lang==="en" ? "Are you sure?" : "Biztosan törlöd?")) return;
         await sb.storage.from(BUCKET).remove([filename]);
         await sb.from("gallery").delete().eq("id", id);
         setGallery(g => g.filter(x => x.id !== id));
@@ -1361,7 +1372,7 @@
                 <div className="nav-user">
                   <div className="user-ava">{initials(displayName)}</div>
                   <span className="user-name">{displayName}</span>
-                  <button className="nav-btn out" onClick={async () => { if(window.confirm(t("confirm.logout"))) { await sb.auth.signOut(); window.location.reload(); } }}>{t("nav.logout")}</button>
+                  <button className="nav-btn out" onClick={doLogout}>{t("nav.logout")}</button>
                 </div>
               ) : (
                 <>
@@ -1411,7 +1422,7 @@
             {isAdmin && <button className={"nl" + (tab==="admin"?" a":"")} onClick={() => { setTab("admin"); setMobileMenu(false); }}>⚙️ Admin</button>}
             <div className="nav-drawer-btns">
               {user ? (
-                <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={async () => { if(window.confirm(t("confirm.logout"))) { await sb.auth.signOut(); window.location.reload(); } }}>{t("nav.logout")}</button>
+                <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={doLogout}>{t("nav.logout")}</button>
               ) : (
                 <>
                   <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={() => { setAuthMode("login"); setShowAuth(true); setMobileMenu(false); }}>Bejelentkezés</button>
@@ -1760,7 +1771,7 @@
                 <div className="badge">{t("admin.badge")}</div>
                 <div className="adm-title">{t("admin.title")}</div>
                 <div style={{fontSize:".78rem",color:"var(--mu)",marginBottom:"2rem"}}>{t("admin.logged")}: <span style={{color:"var(--navy)"}}>{displayName}</span></div>
-              <button style={{background:"none",border:"1px solid var(--br2)",color:"var(--red)",cursor:"pointer",fontSize:".82rem",marginBottom:"2rem",fontFamily:"Rubik,sans-serif",padding:".4rem .9rem"}} onClick={async () => { if(window.confirm(t("confirm.logout"))) { await sb.auth.signOut(); window.location.reload(); } }}>{t("admin.logout")}</button>
+              <button style={{background:"none",border:"1px solid var(--br2)",color:"var(--red)",cursor:"pointer",fontSize:".82rem",marginBottom:"2rem",fontFamily:"Rubik,sans-serif",padding:".4rem .9rem"}} onClick={doLogout}>{t("admin.logout")}</button>
               </div>
               <div className="atabs">
                 <button className={"atab" + (aTab==="ev"?" a":"")} onClick={() => setATab("ev")}>{t("admin.tab_ev")}</button>
