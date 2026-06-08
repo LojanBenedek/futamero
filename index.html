@@ -848,7 +848,7 @@
               <div style={{marginTop:"1rem"}}>
                 <div className="ft-head">{t("footer.tax_title")}</div>
                 <div style={{fontSize:".76rem",color:"rgba(255,255,255,.55)",lineHeight:1.55}}>
-                  Támogassa egyesületünket!<br/>
+                  {t("footer.tax_text")}<br/>
                   <span style={{color:"var(--red)",fontWeight:600,fontSize:".82rem"}}>19212474-1-14</span>
                 </div>
               </div>
@@ -1050,9 +1050,9 @@
       const loadProfile = async (uid) => {
         try {
           const { data, error } = await sb.from("profiles").select("*").eq("id", uid).single();
-          if (!error && data) setProfile(data);
-          else setProfile(null);
-        } catch(e) { setProfile(null); }
+          if (!error && data) { setProfile(data); }
+          else { setProfile({ id: uid, full_name: "", is_admin: false }); }
+        } catch(e) { setProfile({ id: uid, full_name: "", is_admin: false }); }
         setAuthReady(true);
       };
 
@@ -1408,7 +1408,7 @@
             {isAdmin && <button className={"nl" + (tab==="admin"?" a":"")} onClick={() => { setTab("admin"); setMobileMenu(false); }}>⚙️ Admin</button>}
             <div className="nav-drawer-btns">
               {user ? (
-                <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={async () => { if(window.confirm(t("confirm.logout"))) { await sb.auth.signOut(); window.location.reload(); } }}>Kijelentkezés</button>
+                <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={async () => { if(window.confirm(t("confirm.logout"))) { await sb.auth.signOut(); window.location.reload(); } }}>{t("nav.logout")}</button>
               ) : (
                 <>
                   <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={() => { setAuthMode("login"); setShowAuth(true); setMobileMenu(false); }}>Bejelentkezés</button>
@@ -1456,7 +1456,7 @@
                   <p className="h-desc">{t("hero.desc")}</p>
                   <div className="h-btns">
                     <button className="btn-p" onClick={() => setTab("events")}>{t("hero.btn_events")}</button>
-                    <button className="btn-o" onClick={() => setTab("gallery")}>Galéria</button>
+                    <button className="btn-o" onClick={() => setTab("gallery")}>{t("gallery.title")}</button>
                     {!user && <button className="btn-o" onClick={() => { setAuthMode("register"); setShowAuth(true); }}>{t("hero.btn_join")}</button>}
                   </div>
                 </div>
@@ -1716,7 +1716,7 @@
                       </div>
                     </div>
                     <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>
-                      {now.getFullYear()}. évi rangsor
+                      {now.getFullYear()}. {t("stats.year_rank")}
                     </div>
                     {lb.length === 0 ? <div className="empty">Még nincs adat.</div> : (
                       <div style={{background:"var(--bg2)",border:"1px solid var(--br)",boxShadow:"var(--shadow)",overflowX:"auto"}}>
@@ -1756,7 +1756,8 @@
               <div style={{paddingTop:"2rem"}}>
                 <div className="badge">{t("admin.badge")}</div>
                 <div className="adm-title">{t("admin.title")}</div>
-                <div style={{fontSize:".78rem",color:"var(--mu)",marginBottom:"2rem"}}>Bejelentkezve: <span style={{color:"var(--navy)"}}>{displayName}</span></div>
+                <div style={{fontSize:".78rem",color:"var(--mu)",marginBottom:"2rem"}}>{t("admin.logged")}: <span style={{color:"var(--navy)"}}>{displayName}</span></div>
+              <button style={{background:"none",border:"1px solid var(--br2)",color:"var(--red)",cursor:"pointer",fontSize:".82rem",marginBottom:"2rem",fontFamily:"Rubik,sans-serif",padding:".4rem .9rem"}} onClick={async () => { if(window.confirm(t("confirm.logout"))) { await sb.auth.signOut(); window.location.reload(); } }}>{t("admin.logout")}</button>
               </div>
               <div className="atabs">
                 <button className={"atab" + (aTab==="ev"?" a":"")} onClick={() => setATab("ev")}>{t("admin.tab_ev")}</button>
