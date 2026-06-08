@@ -1032,15 +1032,14 @@
       const switchLang = (l) => { _lang = l; setLang(l); setShowLangMenu(false); try { localStorage.setItem('fm_lang',l); } catch(e) {} };
 
       const doLogout = async () => {
-        console.log('[logout] gomb megnyomva');
         try {
-          console.log('[logout] signOut hívás...');
-          await sb.auth.signOut();
-          console.log('[logout] signOut OK');
-        } catch(e) { console.error('[logout] signOut hiba:', e); }
-        try { localStorage.clear(); console.log('[logout] localStorage törölve'); } catch(e) { console.error('[logout] localStorage hiba:', e); }
+          await Promise.race([
+            sb.auth.signOut(),
+            new Promise(resolve => setTimeout(resolve, 2000))
+          ]);
+        } catch(e) {}
+        try { localStorage.clear(); } catch(e) {}
         try { sessionStorage.clear(); } catch(e) {}
-        console.log('[logout] reload...');
         window.location.reload();
       };
       const [showResetPw, setShowResetPw] = useState(false);
