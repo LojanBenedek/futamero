@@ -335,6 +335,27 @@
     .run-feed-card:hover{border-left-color:var(--blue);background:rgba(14,64,160,.03)}
     .pin-checkbox{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--mu);margin-top:.5rem;cursor:pointer}
 
+
+    /* ── HOZZÁSZÓLÁSOK + RANGSOR SORT ── */
+    .comments-wrap{border-top:1px solid var(--br);margin-top:.8rem;padding-top:.8rem}
+    .comment-toggle{background:none;border:none;color:var(--mu);font-size:.78rem;cursor:pointer;padding:0;font-family:'Rubik',sans-serif;display:flex;align-items:center;gap:.3rem}
+    .comment-toggle:hover{color:var(--blue)}
+    .comment-item{display:flex;gap:.6rem;margin-top:.65rem;font-size:.84rem}
+    .comment-body{flex:1;background:var(--bg3);padding:.5rem .7rem;border-radius:2px}
+    .comment-author{font-weight:600;color:var(--navy);font-size:.78rem}
+    .comment-text{color:var(--tx2);margin-top:.15rem;line-height:1.5}
+    .comment-del{background:none;border:none;color:var(--mu);font-size:.7rem;cursor:pointer;padding:0 .3rem;float:right}
+    .comment-del:hover{color:var(--red)}
+    .comment-input{display:flex;gap:.5rem;margin-top:.7rem}
+    .comment-input input{flex:1;padding:.4rem .65rem;border:1px solid var(--br);background:var(--bg);color:var(--tx);font-family:'Rubik',sans-serif;font-size:.82rem}
+    .comment-input input:focus{outline:none;border-color:var(--blue)}
+    .comment-send{background:var(--blue);color:#fff;border:none;padding:.4rem .8rem;cursor:pointer;font-size:.8rem;font-family:'Rubik',sans-serif}
+    .comment-send:hover{background:var(--navy)}
+    .lb-sort-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.2rem}
+    .lb-sort-btn{background:var(--bg2);border:1px solid var(--br);color:var(--tx2);padding:.35rem .75rem;font-size:.78rem;cursor:pointer;font-family:'Rubik',sans-serif;transition:all .18s}
+    .lb-sort-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .lb-sort-btn:hover:not(.active){border-color:var(--blue);color:var(--blue)}
+
     /* ── RESPONSIVE ── */
 
     /* Hamburger gomb */
@@ -467,7 +488,7 @@
         "runs.title":"Futás rögzítése","posts.pinned":"📌 Kiemelt","posts.pin":"📌 Kiemel","posts.unpin":"📌 Kiemelés eltávolítása","posts.run_entry":"🏃 Futás","feed.empty":"Még nincs bejegyzés.","runs.km":"Távolság (km) *","runs.duration":"Időtartam (kötelező, pl. 28:45 vagy 1:10:00)","runs.duration_ph":"pl. 28:45 vagy 1:10:00",
         "runs.desc":"Megjegyzés (opcionális)","runs.photo":"Fotó (opcionális)",
         "runs.btn":"Futás rögzítése","runs.empty":"Még nincs rögzített futás.",
-        "runs.login_to":"a futásaid rögzítéséhez","runs.delete":"✕ Törlés",
+        "runs.login_to":"a futásaid rögzítéséhez","lbsort.km":"Km szerint","lbsort.runs":"Futások száma","lbsort.pace":"Tempó szerint","lbsort.duration":"Idő szerint","runs.pace":"Tempó","runs.hours":"ó","runs.minutes":"p","runs.seconds":"mp","comments.title":"Hozzászólások","comments.placeholder":"Írj hozzászólást...","comments.send":"Küldés","comments.empty":"Még nincs hozzászólás.","comments.delete":"Törlés","runs.login_to_react":"a reakciókhoz","runs.delete":"✕ Törlés",
         "stats.total_km":"Összes km","stats.total_runs":"Futások száma",
         "stats.week":"Heti legtöbb km","stats.month":"Havi legtöbb km",
         "stats.year_rank":"évi rangsor","stats.runner":"Futó",
@@ -540,7 +561,7 @@
         "runs.title":"Log a run","posts.pinned":"📌 Pinned","posts.pin":"📌 Pin","posts.unpin":"📌 Unpin","posts.run_entry":"🏃 Run","feed.empty":"No posts yet.","runs.km":"Distance (km) *","runs.duration":"Duration (required, e.g. 28:45 or 1:10:00)","runs.duration_ph":"e.g. 28:45 or 1:10:00",
         "runs.desc":"Note (optional)","runs.photo":"Photo (optional)",
         "runs.btn":"Log run","runs.empty":"No runs logged yet.",
-        "runs.login_to":"to log your runs","runs.delete":"✕ Delete",
+        "runs.login_to":"to log your runs","lbsort.km":"By km","lbsort.runs":"By runs","lbsort.pace":"By pace","lbsort.duration":"By time","runs.pace":"Pace","runs.hours":"h","runs.minutes":"m","runs.seconds":"s","comments.title":"Comments","comments.placeholder":"Write a comment...","comments.send":"Send","comments.empty":"No comments yet.","comments.delete":"Delete","runs.login_to_react":"to react","runs.delete":"✕ Delete",
         "stats.total_km":"Total km","stats.total_runs":"Number of runs",
         "stats.week":"Most km this week","stats.month":"Most km this month",
         "stats.year_rank":"annual ranking","stats.runner":"Runner",
@@ -585,6 +606,50 @@
     const t = (key) => TRANSLATIONS[_lang]?.[key] ?? TRANSLATIONS.hu[key] ?? key;
 
 
+
+    function CommentSection({ parentId, parentType, comments, newComment, setNewComment, submitComment, deleteComment, user, profile, isAdmin }) {
+      const [open, setOpen] = React.useState(false);
+      const coms = comments[parentId] || [];
+      const displayName = profile?.full_name || user?.email?.split("@")[0] || "";
+      return (
+        <div className="comments-wrap">
+          <button className="comment-toggle" onClick={() => setOpen(o=>!o)}>
+            💬 {coms.length > 0 ? coms.length+" "+t("comments.title") : t("comments.title")}
+            <span>{open?"▲":"▼"}</span>
+          </button>
+          {open && (
+            <>
+              {coms.length === 0 && <div style={{fontSize:".8rem",color:"var(--mu)",marginTop:".5rem"}}>{t("comments.empty")}</div>}
+              {coms.map(c => (
+                <div key={c.id} className="comment-item">
+                  <div className="user-ava" style={{width:26,height:26,fontSize:".62rem",flexShrink:0}}>{initials(c.user_name)}</div>
+                  <div className="comment-body">
+                    {(user && (isAdmin || c.user_id===user.id)) && <button className="comment-del" onClick={()=>deleteComment(c.id,parentId)}>✕</button>}
+                    <div className="comment-author">{c.user_name}</div>
+                    <div className="comment-text">{c.content}</div>
+                  </div>
+                </div>
+              ))}
+              {user ? (
+                <div className="comment-input">
+                  <input placeholder={t("comments.placeholder")}
+                    value={newComment[parentId]||''}
+                    onChange={e=>setNewComment(prev=>({...prev,[parentId]:e.target.value}))}
+                    onKeyDown={e=>e.key==="Enter"&&submitComment(parentId,parentType)} />
+                  <button className="comment-send" onClick={()=>submitComment(parentId,parentType)}>{t("comments.send")}</button>
+                </div>
+              ) : (
+                <div style={{fontSize:".78rem",color:"var(--mu)",marginTop:".5rem"}}>
+                  <span style={{color:"var(--blue)",cursor:"pointer",textDecoration:"underline"}}
+                    onClick={()=>document.dispatchEvent(new CustomEvent("openAuth"))}>{t("blog.login")}</span> {t("blog.login_to")}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      );
+    }
+
     class ErrorBoundary extends React.Component {
       constructor(props) { super(props); this.state = { hasError: false, error: null }; }
       static getDerivedStateFromError(error) { return { hasError: true, error }; }
@@ -608,6 +673,28 @@
         return this.props.children;
       }
     }
+
+
+    // Időtartam másodpercbe
+    const parseDurSecs = (dur) => {
+      if (!dur) return 0;
+      const p = dur.split(':').map(Number);
+      if (p.length === 3) return (p[0]||0)*3600+(p[1]||0)*60+(p[2]||0);
+      if (p.length === 2) return (p[0]||0)*60+(p[1]||0);
+      return 0;
+    };
+    // Tempó számítás
+    const calcPace = (km, dur) => {
+      const s = parseDurSecs(dur); if (!s || !km) return null;
+      const pps = s / parseFloat(km);
+      return Math.floor(pps/60)+':'+String(Math.round(pps%60)).padStart(2,'0')+' /km';
+    };
+    // Időtartam formázás h:mm:ss
+    const fmtDur = (h,m,s) => {
+      const ph=parseInt(h)||0,pm=parseInt(m)||0,ps=parseInt(s)||0;
+      if (ph>0) return ph+':'+String(pm).padStart(2,'0')+':'+String(ps).padStart(2,'0');
+      return pm+':'+String(ps).padStart(2,'0');
+    };
 
     const BUCKET = "Gallery";
     const sb = createClient(
@@ -1090,10 +1177,15 @@
       const [targetGalLabel, setTargetGalLabel] = useState(null);
       const [runs, setRuns] = useState([]);
       const [reactions, setReactions] = useState({});
-      const [newRun, setNewRun] = useState({ km:'', duration:'', desc:'' });
+      const [newRun, setNewRun] = useState({ km:'', hours:'', minutes:'', seconds:'', desc:'' });
       const [runUploading, setRunUploading] = useState(false);
       const [blogSubTab, setBlogSubTab] = useState('posts');
       const [pinNewPost, setPinNewPost] = useState(false);
+      const [comments, setComments] = useState({});
+      const [runReactions, setRunReactions] = useState({});
+      const [newComment, setNewComment] = useState({});
+      const [lbSort, setLbSort] = useState('km');
+      const [openComments, setOpenComments] = useState({});
       const runFileRef = useRef(null);
       const [aTab,       setATab]       = useState("ev");
       const [newEv,      setNewEv]      = useState({ title:"",date:"",time:"",location:"",description:"" });
@@ -1173,6 +1265,50 @@
         setRegs(map);
       };
 
+      const loadComments = async () => {
+        const { data } = await sb.from("comments").select("*").order("created_at",{ascending:true});
+        const map = {};
+        (data||[]).forEach(c => { if(!map[c.parent_id]) map[c.parent_id]=[]; map[c.parent_id].push(c); });
+        setComments(map);
+      };
+      const loadRunReactions = async () => {
+        const { data } = await sb.from("run_reactions").select("run_id, user_id, emoji");
+        const map = {};
+        (data||[]).forEach(r => { if(!map[r.run_id]) map[r.run_id]={}; if(!map[r.run_id][r.emoji]) map[r.run_id][r.emoji]=[]; map[r.run_id][r.emoji].push(r.user_id); });
+        setRunReactions(map);
+      };
+      const submitComment = async (parentId, parentType) => {
+        const txt = (newComment[parentId]||'').trim();
+        if (!txt || !user) return;
+        const { data, error } = await sb.from("comments").insert([{
+          parent_id:parentId, parent_type:parentType,
+          user_id:user.id, user_name:profile?.full_name||displayName, content:txt
+        }]).select().single();
+        if (!error && data) setComments(prev => ({ ...prev, [parentId]:[...(prev[parentId]||[]),data] }));
+        setNewComment(prev => ({...prev, [parentId]:''}));
+      };
+      const deleteComment = async (id, parentId) => {
+        await sb.from("comments").delete().eq("id",id);
+        setComments(prev => ({ ...prev, [parentId]:(prev[parentId]||[]).filter(c=>c.id!==id) }));
+      };
+      const toggleRunReaction = async (runId, emoji) => {
+        if (!user) { document.dispatchEvent(new CustomEvent("openAuth")); return; }
+        const rr = runReactions[runId] || {};
+        const hasThis = (rr[emoji]||[]).includes(user.id);
+        if (hasThis) {
+          await sb.from("run_reactions").delete().eq("run_id",runId).eq("user_id",user.id).eq("emoji",emoji);
+          setRunReactions(prev => ({ ...prev, [runId]:{ ...(prev[runId]||{}), [emoji]:(prev[runId]?.[emoji]||[]).filter(u=>u!==user.id) } }));
+        } else {
+          for (const other of ["👍","❤️","🏃"].filter(e=>e!==emoji)) {
+            if ((rr[other]||[]).includes(user.id)) {
+              await sb.from("run_reactions").delete().eq("run_id",runId).eq("user_id",user.id).eq("emoji",other);
+              setRunReactions(prev => ({ ...prev, [runId]:{ ...(prev[runId]||{}), [other]:(prev[runId]?.[other]||[]).filter(u=>u!==user.id) } }));
+            }
+          }
+          const { error } = await sb.from("run_reactions").insert({ run_id:runId, user_id:user.id, emoji });
+          if (!error) setRunReactions(prev => ({ ...prev, [runId]:{ ...(prev[runId]||{}), [emoji]:[...(prev[runId]?.[emoji]||[]),user.id] } }));
+        }
+      };
       const loadRuns = async () => {
         const { data } = await sb.from("runs").select("*").order("created_at",{ascending:true});
         setRuns(data || []);
@@ -1184,7 +1320,7 @@
         setReactions(map);
       };
       const submitRun = async () => {
-        if (!newRun.km || !newRun.duration || !user) return;
+        if (!newRun.km || (!newRun.minutes && !newRun.hours) || !user) return;
         setRunUploading(true);
         let imageUrl='', imageFilename='';
         if (runFileRef.current?.files?.[0]) {
@@ -1198,11 +1334,11 @@
         }
         const { data, error } = await sb.from("runs").insert([{
           user_id:user.id, user_name:profile?.full_name||user.email?.split("@")[0]||"Ismeretlen",
-          distance_km:parseFloat(newRun.km), run_date:new Date().toISOString().slice(0,10), duration:newRun.duration,
+          distance_km:parseFloat(newRun.km), run_date:new Date().toISOString().slice(0,10), duration:fmtDur(newRun.hours,newRun.minutes,newRun.seconds),
           description:newRun.desc, image_url:imageUrl, image_filename:imageFilename
         }]).select().single();
         if (!error && data) setRuns(prev => [data, ...prev]);
-        setNewRun({ km:'', duration:'', desc:'' });
+        setNewRun({ km:'', hours:'', minutes:'', seconds:'', desc:'' });
         if (runFileRef.current) runFileRef.current.value='';
         setRunUploading(false);
       };
@@ -1277,6 +1413,8 @@
           await loadPosts();
           await loadRuns();
           await loadReactions();
+          await loadComments();
+          await loadRunReactions();
           if (evErr || galErr) { setDbErr(true); }
           else {
             setEvents(evData || []);
@@ -1681,30 +1819,32 @@
                     });
                     if (allItems.length === 0) return <div className="empty">{t("feed.empty")}</div>;
                     return allItems.map(item => item._type === 'run' ? (
-                      <div key={"run-"+item.id} className="run-feed-card" style={{cursor:"pointer"}} onClick={() => {
-                        setBlogSubTab("runs");
-                        setTimeout(() => {
-                          const el = document.getElementById("run-"+item.id);
-                          if (el) { el.scrollIntoView({behavior:"smooth",block:"center"}); el.style.outline="2px solid var(--red)"; setTimeout(()=>{el.style.outline="";},1500); }
-                        }, 150);
-                      }}>
+                      <div key={"run-"+item.id} className="run-feed-card" style={{cursor:"pointer"}} onClick={e=>{if(e.target.closest('.reactions,.comment-toggle,.comment-input,.comment-send,.comment-del,.rxn-btn,.blog-del')) return; setBlogSubTab("runs"); setTimeout(()=>{const el=document.getElementById("run-"+item.id);if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.style.outline="2px solid var(--red)";setTimeout(()=>{el.style.outline=""},1500);}},150);}}>
                         <div className="run-feed-hd">
                           <div className="user-ava" style={{width:30,height:30,fontSize:".68rem",flexShrink:0}}>{initials(item.user_name)}</div>
                           <div>
                             <div className="blog-author">{item.user_name}</div>
-                            <div className="run-feed-meta">🏃 {t("posts.run_entry")} · {new Date(item.created_at).toLocaleDateString(lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric"})}</div>
+                            <div className="run-feed-meta">🏃 {t("posts.run_entry")} · {new Date(item.created_at).toLocaleDateString(_lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric"})}</div>
                           </div>
-                          <div className="run-feed-km">{parseFloat(item.distance_km).toFixed(2)}<span>km</span></div>
+                          <div className="run-feed-km">{parseFloat(item.distance_km||0).toFixed(2)}<span>km</span></div>
                         </div>
                         {(item.duration||item.description) && (
                           <div className="run-feed-meta" style={{marginTop:".5rem"}}>
                             {item.duration && <span>⏱ {item.duration}</span>}
-                            {item.duration && item.description && <span style={{margin:"0 .4rem"}}>·</span>}
-                            {item.description && <span>{item.description}</span>}
+                            {item.duration && calcPace(item.distance_km,item.duration) && <span style={{marginLeft:".5rem",color:"var(--red)"}}>· {calcPace(item.distance_km,item.duration)}</span>}
+                            {item.description && <span style={{marginLeft:".5rem"}}>· {item.description}</span>}
                           </div>
                         )}
+                        <div className="reactions" style={{marginTop:".6rem"}}>
+                          {["👍","❤️","🏃"].map(emoji=>{
+                            const cnt=(runReactions[item.id]?.[emoji]||[]).length;
+                            const active=user&&(runReactions[item.id]?.[emoji]||[]).includes(user.id);
+                            return <button key={emoji} className={"rxn-btn"+(active?" active":"")} onClick={e=>{e.stopPropagation();toggleRunReaction(item.id,emoji);}}>{emoji}{cnt>0&&<span>{cnt}</span>}</button>;
+                          })}
+                        </div>
+                        <CommentSection parentId={item.id} parentType="run" comments={comments} newComment={newComment} setNewComment={setNewComment} submitComment={submitComment} deleteComment={deleteComment} user={user} profile={profile} isAdmin={isAdmin} />
                         {(isAdmin||(user&&item.user_id===user.id)) && (
-                          <button className="blog-del" style={{marginTop:".4rem",display:"inline-block",fontSize:".75rem"}} onClick={()=>deleteRun(item.id,item.image_filename)}>{t("runs.delete")}</button>
+                          <button className="blog-del" style={{marginTop:".4rem",display:"inline-block",fontSize:".75rem"}} onClick={e=>{e.stopPropagation();deleteRun(item.id,item.image_filename);}}>{t("runs.delete")}</button>
                         )}
                       </div>
                     ) : (
@@ -1714,7 +1854,7 @@
                           <div className="user-ava" style={{width:32,height:32,fontSize:".72rem",flexShrink:0}}>{initials(item.user_name)}</div>
                           <div>
                             <div className="blog-author">{item.user_name}</div>
-                            <div className="blog-date">{new Date(item.created_at).toLocaleDateString(lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"})}</div>
+                            <div className="blog-date">{new Date(item.created_at).toLocaleDateString(_lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"})}</div>
                           </div>
                           <div style={{marginLeft:"auto",display:"flex",gap:".3rem",alignItems:"center"}}>
                             {isAdmin && <button className={"blog-pin-btn"+(item.is_pinned?" pinned":"")} onClick={()=>togglePin(item)} title={item.is_pinned?t("posts.unpin"):t("posts.pin")}>📌</button>}
@@ -1723,12 +1863,13 @@
                         </div>
                         <div className="blog-content">{item.content}</div>
                         <div className="reactions">
-                          {["👍","❤️","🏃"].map(emoji => {
+                          {["👍","❤️","🏃"].map(emoji=>{
                             const cnt=(reactions[item.id]?.[emoji]||[]).length;
                             const active=user&&(reactions[item.id]?.[emoji]||[]).includes(user.id);
                             return <button key={emoji} className={"rxn-btn"+(active?" active":"")} onClick={()=>toggleReaction(item.id,emoji)}>{emoji}{cnt>0&&<span>{cnt}</span>}</button>;
                           })}
                         </div>
+                        <CommentSection parentId={item.id} parentType="post" comments={comments} newComment={newComment} setNewComment={setNewComment} submitComment={submitComment} deleteComment={deleteComment} user={user} profile={profile} isAdmin={isAdmin} />
                       </div>
                     ));
                   })()}
@@ -1752,8 +1893,20 @@
                         </div>
                         <div className="fg">
                           <label className="inp-lbl">{t("runs.duration")} *</label>
-                          <input className="inp" type="text" placeholder={t("runs.duration_ph")}
-                            value={newRun.duration} onChange={e=>setNewRun({...newRun,duration:e.target.value})} />
+                          <div style={{display:"flex",gap:".4rem",alignItems:"center",flexWrap:"wrap"}}>
+                            <input className="inp" type="number" min="0" max="99" placeholder="0"
+                              style={{width:54,textAlign:"center"}} value={newRun.hours}
+                              onChange={e=>setNewRun({...newRun,hours:e.target.value})} />
+                            <span style={{fontSize:".8rem",color:"var(--mu)"}}>{t("runs.hours")}</span>
+                            <input className="inp" type="number" min="0" max="59" placeholder="0"
+                              style={{width:54,textAlign:"center"}} value={newRun.minutes}
+                              onChange={e=>setNewRun({...newRun,minutes:e.target.value})} />
+                            <span style={{fontSize:".8rem",color:"var(--mu)"}}>{t("runs.minutes")}</span>
+                            <input className="inp" type="number" min="0" max="59" placeholder="0"
+                              style={{width:54,textAlign:"center"}} value={newRun.seconds}
+                              onChange={e=>setNewRun({...newRun,seconds:e.target.value})} />
+                            <span style={{fontSize:".8rem",color:"var(--mu)"}}>{t("runs.seconds")}</span>
+                          </div>
                         </div>
                       </div>
 
@@ -1766,7 +1919,7 @@
                         <label className="inp-lbl">{t("runs.photo")}</label>
                         <input className="inp" type="file" accept="image/*" ref={runFileRef} style={{padding:".5rem"}} />
                       </div>
-                      <button className="btn-p" disabled={runUploading||!newRun.km||!newRun.duration} onClick={submitRun}>
+                      <button className="btn-p" disabled={runUploading||!newRun.km||(!newRun.minutes&&!newRun.hours)} onClick={submitRun}>
                         {runUploading && <span className="spin"/>}{t("runs.btn")}
                       </button>
                     </div>
@@ -1805,9 +1958,9 @@
                 const totalKm = runs.reduce((s,r)=>{ const v=parseFloat(r.distance_km); return s+(isNaN(v)?0:v); },0);
                 const userMap = {};
                 runs.forEach(r => {
-                  if(!userMap[r.user_name]) userMap[r.user_name]={week:0,month:0,year:0,total:0,count:0};
+                  if(!userMap[r.user_name]) userMap[r.user_name]={week:0,month:0,year:0,total:0,count:0,totalSecs:0,totalKm:0};
                   const d=new Date(r.run_date+"T00:00:00"), km=parseFloat(r.distance_km||0);
-                  userMap[r.user_name].total+=km; userMap[r.user_name].count++;
+                  userMap[r.user_name].total+=km; userMap[r.user_name].count++; userMap[r.user_name].totalSecs+=parseDurSecs(r.duration); userMap[r.user_name].totalKm+=km;
                   if(d>=yStart) userMap[r.user_name].year+=km;
                   if(d>=mStart) userMap[r.user_name].month+=km;
                   if(d>=wStart) userMap[r.user_name].week+=km;
@@ -1831,6 +1984,11 @@
                     <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>
                       {now.getFullYear()}. {t("stats.year_rank")}
                     </div>
+                    <div className="lb-sort-row">
+                      {[["km",t("lbsort.km")],["runs",t("lbsort.runs")],["pace",t("lbsort.pace")],["dur",t("lbsort.duration")]].map(([k,lbl])=>(
+                        <button key={k} className={"lb-sort-btn"+(lbSort===k?" active":"")} onClick={()=>setLbSort(k)}>{lbl}</button>
+                      ))}
+                    </div>
                     {lb.length === 0 ? <div className="empty">{t("stats.empty")}</div> : (
                       <div style={{background:"var(--bg2)",border:"1px solid var(--br)",boxShadow:"var(--shadow)",overflowX:"auto"}}>
                         <table className="lb-table">
@@ -1839,7 +1997,16 @@
                             <th>{t("stats.wkm")}</th><th>{t("stats.mkm")}</th><th>{t("stats.ykm")}</th><th>{t("stats.count")}</th>
                           </tr></thead>
                           <tbody>
-                            {[...lb].sort((a,b)=>b.year-a.year).map((u,i)=>(
+                            {[...lb].sort((a,b)=>{
+                              if(lbSort==="runs") return b.count-a.count;
+                              if(lbSort==="pace") {
+                                const pa=b.totalSecs&&b.totalKm?b.totalSecs/b.totalKm:Infinity;
+                                const pb=a.totalSecs&&a.totalKm?a.totalSecs/a.totalKm:Infinity;
+                                return pa-pb;
+                              }
+                              if(lbSort==="dur") return b.totalSecs-a.totalSecs;
+                              return b.year-a.year;
+                            }).map((u,i)=>(
                               <tr key={u.name}>
                                 <td><span className={"lb-rank"+(i===0?" gold":i===1?" silver":i===2?" bronze":"")}>
                                   {i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}
