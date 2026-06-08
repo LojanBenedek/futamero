@@ -693,7 +693,7 @@
           redirectTo: window.location.origin + window.location.pathname
         });
         if (error) setErr(error.message);
-        else setOk(lang==="en" ? "Password reset link sent!" : "Jelszó-visszaállító linket küldtünk az email-címedre!");
+        else setOk(_lang==="en" ? "Password reset link sent!" : "Jelszó-visszaállító linket küldtünk az email-címedre!");
         setLoading(false);
       };
 
@@ -707,7 +707,7 @@
         else if (data?.user?.identities && data.user.identities.length === 0) {
           setErr("Ezzel az email-cím már regisztrálva van. Kérjük, jelentkezz be!");
         }
-        else setOk(lang==="en" ? "Registration successful! You can now log in." : "Regisztráció sikeres! Most már bejelentkezhetsz.");
+        else setOk(_lang==="en" ? "Registration successful! You can now log in." : "Regisztráció sikeres! Most már bejelentkezhetsz.");
         setLoading(false);
       };
 
@@ -843,7 +843,7 @@
           {isAdmin && (
             <div className="ec-admin-btns" onClick={e => e.stopPropagation()}>
               <button className="ec-edit" onClick={() => onEdit && onEdit(ev)} title="Szerkesztés">✎</button>
-              <button className="ec-del" onClick={() => onDelete(ev.id)} title={lang==="en"?"Delete":"Törlés"}>✕</button>
+              <button className="ec-del" onClick={() => onDelete(ev.id)} title={_lang==="en"?"Delete":"Törlés"}>✕</button>
             </div>
           )}
         </div>
@@ -1015,7 +1015,7 @@
         const { error } = await sb.auth.updateUser({ password: pw });
         if (error) setErr(error.message);
         else {
-          setOk(lang==="en" ? "Password changed successfully!" : "Jelszó sikeresen megváltoztatva!");
+          setOk(_lang==="en" ? "Password changed successfully!" : "Jelszó sikeresen megváltoztatva!");
           setTimeout(() => { window.location.hash = ""; onClose(); }, 2000);
         }
         setSaving(false);
