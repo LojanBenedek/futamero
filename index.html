@@ -562,6 +562,10 @@
       }
     };
 
+    // Globális fordítás – minden komponens eléri
+    let _lang = (() => { try { return localStorage.getItem('fm_lang')||'hu'; } catch { return 'hu'; } })();
+    const t = (key) => TRANSLATIONS[_lang]?.[key] ?? TRANSLATIONS.hu[key] ?? key;
+
     const BUCKET = "Gallery";
     const sb = createClient(
       "https://gntamytbticicqnksgan.supabase.co",
@@ -732,7 +736,7 @@
     }
 
     /* ── EVENT CARD ── */
-    function EventCard({ ev, user, profile, regs, onRegister, onUnregister, isAdmin, onDelete, onAdminDelReg, onEdit, onOpenDetail, gallery, t }) {
+    function EventCard({ ev, user, profile, regs, onRegister, onUnregister, isAdmin, onDelete, onAdminDelReg, onEdit, onOpenDetail, gallery }) {
       const d = new Date(ev.date + "T00:00:00");
       const day = String(d.getDate()).padStart(2, "0");
       const mon = d.toLocaleDateString("hu-HU", { month: "short" }).replace(".", "").toUpperCase();
@@ -1022,8 +1026,7 @@
       const [loadTimeout, setLoadTimeout] = useState(false);
       const [lang, setLang] = useState(() => { try { return localStorage.getItem('fm_lang')||'hu'; } catch { return 'hu'; } });
       const [showLangMenu, setShowLangMenu] = useState(false);
-      const switchLang = (l) => { setLang(l); setShowLangMenu(false); try { localStorage.setItem('fm_lang',l); } catch {} };
-      const t = (key) => TRANSLATIONS[lang]?.[key] ?? TRANSLATIONS.hu[key] ?? key;
+      const switchLang = (l) => { setLang(l); _lang = l; setShowLangMenu(false); try { localStorage.setItem('fm_lang',l); } catch {} };
       const [showResetPw, setShowResetPw] = useState(false);
       const [posts, setPosts] = useState([]);
       const [newPost, setNewPost] = useState("");
@@ -1482,7 +1485,7 @@
                 <div className="sec">
                   <div className="sec-hd"><span className="sec-tag">{t("events.upcoming_tag")}</span><div className="sec-title">{t("events.upcoming_title")}</div><div className="sec-divider"/></div>
                   {upcoming.slice(0,3).map(ev => (
-                    <EventCard key={ev.id} ev={ev} user={user} profile={profile} regs={regs[ev.id]||[]} onRegister={register} onUnregister={unregister} isAdmin={isAdmin} onDelete={deleteEvent} onAdminDelReg={adminDelReg} gallery={gallery} onEdit={ev => setEditEv(ev)} onOpenDetail={(ev, hp) => setActiveEvent({...ev, _hasPhotos: hp})} t={t} />
+                    <EventCard key={ev.id} ev={ev} user={user} profile={profile} regs={regs[ev.id]||[]} onRegister={register} onUnregister={unregister} isAdmin={isAdmin} onDelete={deleteEvent} onAdminDelReg={adminDelReg} gallery={gallery} onEdit={ev => setEditEv(ev)} onOpenDetail={(ev, hp) => setActiveEvent({...ev, _hasPhotos: hp})} />
                   ))}
                   {upcoming.length > 3 && <button className="btn-sm" style={{marginTop:"1rem"}} onClick={() => setTab("events")}>Összes esemény →</button>}
                 </div>
@@ -1522,11 +1525,11 @@
             <div className="sec" style={{paddingTop:"7rem"}}>
               <div className="sec-hd"><span className="sec-tag">{t("events.tag")}</span><div className="sec-title">{t("events.title")}</div><div className="sec-divider"/></div>
               {events.length === 0 && <div className="empty">{t("events.empty")}</div>}
-              {upcoming.map(ev => <EventCard key={ev.id} ev={ev} user={user} profile={profile} regs={regs[ev.id]||[]} onRegister={register} onUnregister={unregister} isAdmin={isAdmin} onDelete={deleteEvent} onAdminDelReg={adminDelReg} gallery={gallery} onEdit={ev => setEditEv(ev)} onOpenDetail={(ev, hp) => setActiveEvent({...ev, _hasPhotos: hp})} t={t} />)}
+              {upcoming.map(ev => <EventCard key={ev.id} ev={ev} user={user} profile={profile} regs={regs[ev.id]||[]} onRegister={register} onUnregister={unregister} isAdmin={isAdmin} onDelete={deleteEvent} onAdminDelReg={adminDelReg} gallery={gallery} onEdit={ev => setEditEv(ev)} onOpenDetail={(ev, hp) => setActiveEvent({...ev, _hasPhotos: hp})} />)}
               {past.length > 0 && (
                 <>
                   <div className="past-lbl">{t("events.past")}</div>
-                  {past.map(ev => <div key={ev.id} className="past-item"><EventCard ev={ev} user={user} profile={profile} regs={regs[ev.id]||[]} onRegister={register} onUnregister={unregister} isAdmin={isAdmin} onDelete={deleteEvent} onAdminDelReg={adminDelReg} gallery={gallery} onEdit={ev => setEditEv(ev)} onOpenDetail={(ev, hp) => setActiveEvent({...ev, _hasPhotos: hp})} t={t} /></div>)}
+                  {past.map(ev => <div key={ev.id} className="past-item"><EventCard ev={ev} user={user} profile={profile} regs={regs[ev.id]||[]} onRegister={register} onUnregister={unregister} isAdmin={isAdmin} onDelete={deleteEvent} onAdminDelReg={adminDelReg} gallery={gallery} onEdit={ev => setEditEv(ev)} onOpenDetail={(ev, hp) => setActiveEvent({...ev, _hasPhotos: hp})} /></div>)}
                 </>
               )}
             </div>
@@ -1767,7 +1770,7 @@
                   </div>
                   <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.15rem",marginBottom:"1rem",letterSpacing:".05em",color:"var(--navy)"}}>{t("admin.all_ev")} ({events.length})</div>
                   {events.length === 0 ? <div className="empty">{t("admin.ev_empty")}</div>
-                    : [...events].sort((a,b)=>b.date.localeCompare(a.date)).map(ev => <EventCard key={ev.id} ev={ev} user={user} profile={profile} regs={regs[ev.id]||[]} onRegister={register} onUnregister={unregister} isAdmin={true} onDelete={deleteEvent} onAdminDelReg={adminDelReg} gallery={gallery} onEdit={ev => setEditEv(ev)} onOpenDetail={(ev, hp) => setActiveEvent({...ev, _hasPhotos: hp})} t={t} />)}
+                    : [...events].sort((a,b)=>b.date.localeCompare(a.date)).map(ev => <EventCard key={ev.id} ev={ev} user={user} profile={profile} regs={regs[ev.id]||[]} onRegister={register} onUnregister={unregister} isAdmin={true} onDelete={deleteEvent} onAdminDelReg={adminDelReg} gallery={gallery} onEdit={ev => setEditEv(ev)} onOpenDetail={(ev, hp) => setActiveEvent({...ev, _hasPhotos: hp})} />)}
                 </>
               )}
               {aTab === "gal" && (
