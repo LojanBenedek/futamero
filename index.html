@@ -1068,6 +1068,7 @@
       const [newRun, setNewRun] = useState({ km:'', duration:'', desc:'' });
       const [runUploading, setRunUploading] = useState(false);
       const [blogSubTab, setBlogSubTab] = useState('posts');
+      const [pinNewPost, setPinNewPost] = useState(false);
       const runFileRef = useRef(null);
       const [aTab,       setATab]       = useState("ev");
       const [newEv,      setNewEv]      = useState({ title:"",date:"",time:"",location:"",description:"" });
@@ -1829,7 +1830,60 @@
                         </table>
                       </div>
                     )}
-                  </>
+                  {/* Személyes statisztika */}
+                  {user && (function MyStats() {
+                    const myRuns = runs.filter(r => r.user_id === user.id);
+                    if (myRuns.length === 0) return (
+                      <div style={{marginTop:"2.5rem"}}>
+                        <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>{t("stats.my")}</div>
+                        <div className="empty">{t("stats.no_runs")}</div>
+                      </div>
+                    );
+                    const myTotal = myRuns.reduce((s,r)=>s+parseFloat(r.distance_km||0),0);
+                    const myWeeks={}, myMonths={};
+                    myRuns.forEach(r=>{
+                      const d=new Date(r.created_at||r.run_date+"T00:00:00");
+                      const wk=d.getFullYear()+"-W"+String(Math.ceil(((d-new Date(d.getFullYear(),0,1))/86400000+new Date(d.getFullYear(),0,1).getDay()+1)/7)).padStart(2,"0");
+                      const mo=d.getFullYear()+"-"+(d.getMonth()+1);
+                      const km=parseFloat(r.distance_km||0);
+                      myWeeks[wk]=(myWeeks[wk]||0)+km;
+                      myMonths[mo]=(myMonths[mo]||0)+km;
+                    });
+                    const bestWeek=Math.max(...Object.values(myWeeks),0);
+                    const bestMonth=Math.max(...Object.values(myMonths),0);
+                    return (
+                      <div style={{marginTop:"2.5rem"}}>
+                        <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>{t("stats.my")}</div>
+                        <div className="stats-grid" style={{marginBottom:"1rem"}}>
+                          <div className="stat-card"><div className="stat-card-num">{myTotal.toFixed(1)}</div><div className="stat-card-lbl">{t("stats.my_total")}</div></div>
+                          <div className="stat-card"><div className="stat-card-num">{myRuns.length}</div><div className="stat-card-lbl">{t("stats.my_runs")}</div></div>
+                          <div className="stat-card" style={{borderTopColor:"var(--blue)"}}><div className="stat-card-num" style={{color:"var(--blue)"}}>{bestWeek.toFixed(1)}</div><div className="stat-card-lbl">{t("stats.my_best_week")}</div></div>
+                          <div className="stat-card" style={{borderTopColor:"var(--blue)"}}><div className="stat-card-num" style={{color:"var(--blue)"}}>{bestMonth.toFixed(1)}</div><div className="stat-card-lbl">{t("stats.my_best_month")}</div></div>
+                        </div>
+                        <div style={{background:"var(--bg2)",border:"1px solid var(--br)",boxShadow:"var(--shadow)",overflowX:"auto"}}>
+                          <table className="lb-table">
+                            <thead><tr>
+                              <th>{lang==="en"?"Date":"Dátum"}</th>
+                              <th>km</th>
+                              <th>{lang==="en"?"Duration":"Időtartam"}</th>
+                              <th>{lang==="en"?"Note":"Megjegyzés"}</th>
+                            </tr></thead>
+                            <tbody>
+                              {[...myRuns].sort((a,b)=>new Date(b.created_at||b.run_date)-new Date(a.created_at||a.run_date)).map(r=>(
+                                <tr key={r.id}>
+                                  <td>{new Date(r.created_at||r.run_date+"T00:00:00").toLocaleDateString(lang==="en"?"en-GB":"hu-HU",{month:"short",day:"numeric"})}</td>
+                                  <td><span className="lb-km">{parseFloat(r.distance_km).toFixed(2)}</span></td>
+                                  <td style={{color:"var(--mu)"}}>{r.duration||"—"}</td>
+                                  <td style={{color:"var(--mu)",fontSize:".82rem"}}>{r.description||""}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </>
                 );
               })()} 
             </div>
