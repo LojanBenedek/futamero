@@ -1049,8 +1049,9 @@
 
       const loadProfile = async (uid) => {
         try {
-          const { data } = await sb.from("profiles").select("*").eq("id", uid).single();
-          setProfile(data || null);
+          const { data, error } = await sb.from("profiles").select("*").eq("id", uid).single();
+          if (!error && data) setProfile(data);
+          else setProfile(null);
         } catch(e) { setProfile(null); }
         setAuthReady(true);
       };
@@ -1214,7 +1215,7 @@
       }, []);
 
       useEffect(() => {
-        const t = setTimeout(() => setLoadTimeout(true), 5000);
+        const t = setTimeout(() => setLoadTimeout(true), 10000);
         return () => clearTimeout(t);
       }, []);
 
@@ -1352,7 +1353,7 @@
               {[["home",t("nav.home")],["events",t("nav.events")],["gallery",t("gallery.title")],["blog","Blog"]].map(([tid,lbl]) => (
                 <button key={tid} className={"nl" + (tab===tid?" a":"")} onClick={() => setTab(tid)}>{lbl}</button>
               ))}
-              {isAdmin && <button className={"nl" + (tab==="admin"?" a":"")} onClick={() => setTab("admin")}>Admin</button>}
+              {isAdmin && <button className={"nl" + (tab==="admin"?" a":"")} onClick={() => setTab("admin")}>{t("nav.admin")}</button>}
               {user ? (
                 <div className="nav-user">
                   <div className="user-ava">{initials(displayName)}</div>
@@ -1552,7 +1553,7 @@
                   ))}
                   {ungrouped.length > 0 && (
                     <div className="gal-event-sec">
-                      {groupKeys.length > 0 && <div className="gal-event-hd"><span className="sec-tag">Galéria</span><div className="sec-title" style={{fontSize:"clamp(1.5rem,4vw,2.2rem)"}}>{t("gallery.other")}</div></div>}
+                      {groupKeys.length > 0 && <div className="gal-event-hd"><span className="sec-tag">{t("gallery.tag")}</span><div className="sec-title" style={{fontSize:"clamp(1.5rem,4vw,2.2rem)"}}>{t("gallery.other")}</div></div>}
                       <GalGrid images={ungrouped} isAdmin={isAdmin} onOpen={img => openLb(img, ungrouped)} onDelete={deleteImage} />
                     </div>
                   )}
