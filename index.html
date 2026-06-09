@@ -1215,9 +1215,9 @@
 
       const loadProfile = async (uid) => {
         try {
-          const { data, error } = await sb.from("profiles").select("*").eq("id", uid).single();
-          if (!error && data) { setProfile(data); }
-          else { setProfile({ id: uid, full_name: "", is_admin: false }); }
+          const data = await pubFetch("profiles?id=eq." + uid + "&select=*");
+          const p = Array.isArray(data) && data[0] ? data[0] : null;
+          setProfile(p || { id: uid, full_name: "", is_admin: false });
         } catch(e) { setProfile({ id: uid, full_name: "", is_admin: false }); }
         setAuthReady(true);
       };
