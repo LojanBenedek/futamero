@@ -1266,6 +1266,8 @@
       const [aTab,       setATab]       = useState("ev");
       const [newEv,      setNewEv]      = useState({ title:"",date:"",time:"",location:"",description:"" });
       const [selEvId,    setSelEvId]    = useState("");
+      const [editLabelId,  setEditLabelId]  = useState(null);
+      const [editLabelVal, setEditLabelVal] = useState("");
       const [upProg,     setUpProg]     = useState(0);
       const [upMsg,      setUpMsg]      = useState("");
       const fileRef = useRef(null);
