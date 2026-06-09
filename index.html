@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin></script>
   <script src="./supabase.js"></script>
@@ -74,7 +74,7 @@
     .hero-logo-wrap{animation:pulse 3s ease-in-out infinite}
     .h-eyebrow{font-size:.68rem;letter-spacing:.05em;text-transform:none;color:rgba(255,255,255,.55);font-weight:500;display:flex;align-items:center;gap:.75rem}
     .h-eyebrow::before,.h-eyebrow::after{content:'';flex:1;max-width:50px;height:1px;background:rgba(255,255,255,.2)}
-    .h-title{font-family:'Outfit',sans-serif;font-size:clamp(2.4rem,10vw,9rem);line-height:.85;letter-spacing:.03em;color:#fff}
+    .h-title{font-family:'Outfit',sans-serif;font-size:clamp(3rem,11vw,10rem);font-weight:900;line-height:.82;letter-spacing:-.02em;color:#fff}
     .h-title .red{color:var(--red)}
     .h-tagline{font-size:.85rem;color:rgba(255,255,255,.5);letter-spacing:.15em;text-transform:none;font-weight:400}
     .h-desc{font-size:.95rem;color:rgba(255,255,255,.6);max-width:400px;text-align:center;line-height:1.7}
@@ -97,7 +97,7 @@
     .sec{max-width:980px;margin:0 auto;padding:5rem 5%}
     .sec-hd{margin-bottom:2.4rem}
     .sec-tag{font-size:.64rem;letter-spacing:.05em;text-transform:none;color:var(--red);font-weight:600;margin-bottom:.45rem;display:block}
-    .sec-title{font-family:'Outfit',sans-serif;font-size:clamp(2rem,5.5vw,3.2rem);line-height:1;color:var(--navy)}
+    .sec-title{font-family:'Outfit',sans-serif;font-size:clamp(2.2rem,5.5vw,3.5rem);font-weight:900;line-height:.9;color:var(--navy);letter-spacing:-.02em}
     .sec-divider{height:4px;width:50px;background:var(--red);margin-top:.6rem}
 
     /* ABOUT */
@@ -107,7 +107,7 @@
     .about-text{color:rgba(255,255,255,.7);font-size:.93rem;line-height:1.75;font-weight:300}
     .about-text p+p{margin-top:.9rem}
     .about-sec-tag{font-size:.64rem;letter-spacing:.05em;text-transform:none;color:var(--red);font-weight:600;margin-bottom:.45rem;display:block}
-    .about-title{font-family:'Outfit',sans-serif;font-size:clamp(2rem,5.5vw,3rem);line-height:1;color:#fff;margin-bottom:1.4rem}
+    .about-title{font-family:'Outfit',sans-serif;font-size:clamp(2.2rem,5.5vw,3.2rem);font-weight:900;line-height:.9;color:#fff;margin-bottom:1.2rem;letter-spacing:-.02em}
     .about-facts{display:flex;flex-direction:column;gap:.65rem}
     .fact{display:flex;align-items:center;gap:1rem;padding:.85rem 1.1rem;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);border-left:3px solid var(--red)}
     .fact-ico{font-size:1.2rem;flex-shrink:0}
@@ -260,7 +260,7 @@
     .blog-compose{background:var(--bg2);border:1px solid var(--br);border-top:3px solid var(--red);padding:1.3rem;margin-bottom:1.5rem;box-shadow:var(--shadow)}
     .blog-compose-hd{display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;font-size:.85rem;color:var(--tx2);font-weight:500}
     .blog-post{background:var(--bg2);border:1px solid var(--br);padding:1.3rem;margin-bottom:.7rem;box-shadow:var(--shadow);transition:border-color .2s}
-    .blog-post:hover{border-color:rgba(201,16,21,.2)}
+    .blog-post:hover{border-left-color:var(--blue)}
     .blog-post-hd{display:flex;align-items:center;gap:.65rem;margin-bottom:.8rem}
     .blog-author{font-size:.86rem;font-weight:600;color:var(--navy)}
     .blog-date{font-size:.7rem;color:var(--mu)}
@@ -285,7 +285,7 @@
     .run-date-badge{font-size:.7rem;color:var(--mu)}
 
     .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:2.5rem}
-    .stat-card{background:var(--bg2);border:1px solid var(--br);border-top:3px solid var(--red);padding:1.2rem;text-align:center;box-shadow:var(--shadow)}
+    .stat-card{background:var(--bg2);border:1px solid var(--br);border-top:3px solid var(--red);border-radius:0;padding:1.3rem 1rem;text-align:center}
     .stat-card-num{font-family:'Outfit',sans-serif;font-size:2.8rem;color:var(--navy);line-height:1}
     .stat-card-lbl{font-size:.7rem;color:var(--mu);letter-spacing:.04em;text-transform:none;margin-top:.3rem}
 
@@ -329,7 +329,7 @@
 
     /* ── KIEMELT BEJEGYZÉS + RUN IN FEED ── */
     .pinned-badge{display:inline-flex;align-items:center;gap:.3rem;background:rgba(201,16,21,.1);color:var(--red);font-size:.68rem;font-weight:700;letter-spacing:.03em;text-transform:none;padding:.2rem .55rem;border-radius:2px;margin-bottom:.5rem}
-    .blog-post.pinned{border-top:3px solid var(--red);background:rgba(201,16,21,.03)}
+    .blog-post.pinned{border-left:3px solid var(--red);background:rgba(201,16,21,.02)}
     .blog-pin-btn{background:none;border:none;cursor:pointer;font-size:.85rem;padding:.15rem .35rem;color:var(--mu);transition:color .2s;border-radius:2px}
     .blog-pin-btn:hover{color:var(--red)}
     .blog-pin-btn.pinned{color:var(--red)}
@@ -1811,12 +1811,12 @@
                 <div className="hero-stripes" />
                 <div className="hero-red-bar" /><div className="hero-blue-bar" />
                 <div className="hc">
-                  <div className="h-eyebrow">{t("hero.eyebrow")}</div>
+                  <div className="h-eyebrow" style={{textAlign:"left",width:"100%"}}>{t("hero.eyebrow")}</div>
                   <div className="hero-logo-wrap"><FutameroLogo size={160} /></div>
-                  <div className="h-title">FUTA<span className="red">MÉRŐ</span></div>
-                  <div className="h-tagline">{t("hero.tagline")}</div>
-                  <p className="h-desc">{t("hero.desc")}</p>
-                  <div className="h-btns">
+                  <div className="h-title" style={{textAlign:"left",width:"100%"}}>FUTA<span className="red">MÉRŐ</span></div>
+                  <div className="h-tagline" style={{textAlign:"left",width:"100%"}}>{t("hero.tagline")}</div>
+                  <p className="h-desc" style={{textAlign:"left",marginLeft:0,marginRight:"auto"}}>{t("hero.desc")}</p>
+                  <div className="h-btns" style={{justifyContent:"flex-start"}}>
                     <button className="btn-p" onClick={() => setTab("events")}>{t("hero.btn_events")}</button>
                     <button className="btn-o" onClick={() => setTab("gallery")}>{t("gallery.title")}</button>
                     {!user && <button className="btn-o" onClick={() => { setAuthMode("register"); setShowAuth(true); }}>{t("hero.btn_join")}</button>}
