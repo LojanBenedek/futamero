@@ -919,7 +919,7 @@
           <div className="ec-body" style={{paddingRight:isAdmin?"2.5rem":"0"}}>
             <h3 className="ec-title">{ev.title}</h3>
             {ev.time     && <p className="ec-time">🕐 {ev.time}</p>}
-            {ev.location && <p className="ec-loc">📍 {ev.location}</p>}
+            {ev.location && <p className="ec-loc">📍 {ev.location} <a href={"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(ev.location)} target="_blank" rel="noopener" style={{color:"var(--blue)",fontSize:".72rem",marginLeft:".2rem",textDecoration:"none"}} onClick={e=>e.stopPropagation()}>🗺</a></p>}
             {ev.description && <p className="ec-desc">{ev.description.length>120 ? ev.description.slice(0,120)+"…" : ev.description}</p>}
             {isPast && hasPhotos && (
               <button className="btn-sm" style={{marginTop:".6rem",fontSize:".72rem"}} onClick={e => { e.stopPropagation(); document.dispatchEvent(new CustomEvent("goToGallery", { detail: evLabel })); }}>
@@ -1036,7 +1036,7 @@
             <button className="modal-close" onClick={onClose}>✕</button>
             <div className="modal-date">{dateStr}{ev.time && <span style={{color:"var(--red)",marginLeft:".75rem"}}>🕐 {ev.time}</span>}</div>
             <div className="modal-title">{ev.title}</div>
-            {ev.location && <div className="modal-meta">📍 {ev.location}</div>}
+            {ev.location && <div className="modal-meta">📍 {ev.location} <a href={"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(ev.location)} target="_blank" rel="noopener" style={{color:"var(--blue)",fontSize:".82rem",marginLeft:".4rem"}}>🗺 {_lang==="en"?"Map":"Térkép"}</a></div>}
             {ev.description && <div className="modal-desc">{ev.description}</div>}
             {!ev.description && !ev.location && <div style={{color:"var(--mu)",fontSize:".88rem",margin:"1rem 0"}}>Nincs további részlet.</div>}
             {!isPast && (
@@ -2338,7 +2338,7 @@
                                 value={editLabelVal} onChange={e=>setEditLabelVal(e.target.value)}
                                 placeholder={t("admin.ev_label_ph")} />
                               <button style={{background:"var(--blue)",color:"#fff",border:"none",padding:".2rem .5rem",cursor:"pointer",fontSize:".75rem"}}
-                                onClick={()=>updateImageLabel(img.id, editLabelVal, events.find(e=>e.title===editLabelVal)?.id||null)}>✓</button>
+                                onClick={()=>updateImageLabel(img.id, editLabelVal)}>✓</button>
                               <button style={{background:"none",border:"none",color:"var(--mu)",cursor:"pointer",fontSize:".75rem"}}
                                 onClick={()=>setEditLabelId(null)}>✕</button>
                             </div>
