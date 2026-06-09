@@ -1164,7 +1164,6 @@
       const [loadTimeout, setLoadTimeout] = useState(false);
       const [lang, setLang] = useState(() => { try { return localStorage.getItem('fm_lang')||'hu'; } catch(e) { return 'hu'; } });
       const [showLangMenu, setShowLangMenu] = useState(false);
-      const authTimeoutRef = useRef(null);
       const switchLang = (l) => { _lang = l; setLang(l); setShowLangMenu(false); try { localStorage.setItem('fm_lang',l); } catch(e) {} };
 
       const doLogout = async () => {
@@ -1217,32 +1216,25 @@
       };
 
       useEffect(() => {
-        // 6 másodperces fallback - ha valami akad, ne ragadjon be a betöltésnél
+        // Csak onAuthStateChange — ez az INITIAL_SESSION eventtel azonnal tüzel
+        // a getSession() dupla-hívás eltávolítva (versenyhelyzet forrása volt)
+        const _authDone = { v: false };
         const fallback = setTimeout(() => {
-          setAuthReady(true);
-          setLoaded(true);
+          if (!_authDone.v) { setAuthReady(true); setLoaded(true); }
         }, 6000);
 
-        sb.auth.getSession().then(({ data: { session } }) => {
-          clearTimeout(fallback);
-          setUser(session?.user ?? null);
-          if (session?.user) loadProfile(session.user.id);
-          else setAuthReady(true);
-        }).catch(() => {
-          clearTimeout(fallback);
-          // Érvénytelen session törölése
-          try { localStorage.removeItem("sb-gntamytbticicqnksgan-auth-token"); } catch(e) {}
-          setAuthReady(true);
-        });
-
         const { data: { subscription } } = sb.auth.onAuthStateChange(async (event, session) => {
-          if (event === "PASSWORD_RECOVERY") {
-            setShowResetPw(true);
-            return;
+          if (event === "PASSWORD_RECOVERY") { setShowResetPw(true); return; }
+          clearTimeout(fallback);
+          if (session?.user) {
+            setUser(session.user);
+            await loadProfile(session.user.id);
+          } else {
+            setUser(null);
+            setProfile(null);
+            if (!_authDone.v) setAuthReady(true);
           }
-          setUser(session?.user ?? null);
-          if (session?.user) await loadProfile(session.user.id);
-          else { setProfile(null); setAuthReady(true); }
+          _authDone.v = true;
         });
         return () => { subscription.unsubscribe(); clearTimeout(fallback); };
       }, []);
