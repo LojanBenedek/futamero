@@ -1412,34 +1412,35 @@
 
       useEffect(() => {
         (async () => {
-          let evData=[], galData=[], evErr=null, galErr=null;
-          try {
-            const res = await Promise.all([
-              sb.from("events").select("*").order("date"),
-              sb.from("gallery").select("*").order("created_at", { ascending: false })
-            ]);
-            evData=res[0].data||[]; evErr=res[0].error;
-            galData=res[1].data||[]; galErr=res[1].error;
-          } catch(e) { console.warn('Events/Gallery hálózati hiba:', e.message); }
-          // Párhuzamos betöltés - gyorsabb
-          await Promise.all([
-            loadRegs().catch(e => console.warn('regs:', e.message)),
-            loadPosts().catch(e => console.warn('posts:', e.message)),
-            loadRuns().catch(e => console.warn('runs:', e.message)),
-            loadReactions().catch(e => console.warn('reactions:', e.message)),
-            loadComments().catch(e => console.warn('comments:', e.message)),
-            loadRunReactions().catch(e => console.warn('run_reactions:', e.message)),
-          ]);
-          if (evErr || galErr) { console.warn('DB hiba:', evErr || galErr); }
-          setEvents(evData || []);
-          const g = (galData || []).map(r => ({ id:r.id, src:r.url, filename:r.filename, event_label:r.event_label||"", event_id:r.event_id||null }));
+          let evData=[], galData=[];
+          // 8 másodperces hard timeout — ha bármi lefagy, az oldal mindenképp betölt
+          const loadTimeout8 = new Promise(resolve => setTimeout(resolve, 8000));
+          const doLoad = (async () => {
+            try {
+              const res = await Promise.all([
+                sb.from("events").select("*").order("date"),
+                sb.from("gallery").select("*").order("created_at",{ascending:false}),
+                loadRegs(),
+                loadPosts(),
+                loadRuns(),
+                loadReactions(),
+                loadComments().catch(()=>{}),
+                loadRunReactions().catch(()=>{}),
+              ]);
+              evData = res[0].data||[];
+              galData = res[1].data||[];
+            } catch(e) { console.warn('Betöltési hiba:', e.message); }
+          })();
+          await Promise.race([doLoad, loadTimeout8]);
+          setEvents(evData);
+          const g = (galData).map(r=>({id:r.id,src:r.url,filename:r.filename,event_label:r.event_label||"",event_id:r.event_id||null}));
           setGallery(g); galRef.current = g;
           setLoaded(true);
         })();
       }, []);
 
       useEffect(() => {
-        const tId2 = setTimeout(() => setLoadTimeout(true), 20000);
+        const tId2 = setTimeout(() => setLoadTimeout(true), 12000);
         return () => clearTimeout(tId2);
       }, []);
 
