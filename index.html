@@ -2332,26 +2332,31 @@
                   {gallery.length === 0 ? <div className="empty">{t("admin.gal_empty")}</div> : (
                     <div className="tg">
                       {gallery.map(img => (
-                        <div key={img.id} className="th">
-                          <img src={img.src} alt=""  loading="lazy"/>
-                          {editLabelId === img.id ? (
-                            <div style={{display:"flex",gap:".3rem",alignItems:"center",padding:".3rem",background:"var(--bg3)"}}>
-                              <input style={{flex:1,padding:".2rem .4rem",fontSize:".75rem",border:"1px solid var(--br)",background:"var(--bg)",color:"var(--tx)",fontFamily:"Rubik,sans-serif"}}
-                                value={editLabelVal} onChange={e=>setEditLabelVal(e.target.value)}
-                                placeholder={t("admin.ev_label_ph")} />
-                              <button style={{background:"var(--blue)",color:"#fff",border:"none",padding:".2rem .5rem",cursor:"pointer",fontSize:".75rem"}}
-                                onClick={()=>updateImageLabel(img.id, editLabelVal)}>✓</button>
-                              <button style={{background:"none",border:"none",color:"var(--mu)",cursor:"pointer",fontSize:".75rem"}}
-                                onClick={()=>setEditLabelId(null)}>✕</button>
-                            </div>
-                          ) : (
-                            <div style={{display:"flex",alignItems:"center",gap:".3rem"}}>
-                              {img.event_label && <div className="th-lbl">{img.event_label}</div>}
-                              <button style={{background:"none",border:"none",color:"var(--mu)",cursor:"pointer",fontSize:".75rem",marginLeft:"auto"}}
-                                onClick={()=>{setEditLabelId(img.id);setEditLabelVal(img.event_label||'');}}>✏️</button>
-                              <button className="th-del" onClick={() => deleteImage(img.id, img.filename)}>✕</button>
-                            </div>
-                          )}
+                        <div key={img.id} style={{border:"1px solid var(--br)",background:"var(--bg2)"}}>
+                          <div style={{position:"relative",aspectRatio:"4/3",overflow:"hidden"}}>
+                            <img src={img.src} alt="" loading="lazy" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+                          </div>
+                          <div style={{padding:".35rem .4rem"}}>
+                            {editLabelId === img.id ? (
+                              <div style={{display:"flex",gap:".3rem"}}>
+                                <input autoFocus style={{flex:1,padding:".25rem .4rem",fontSize:".75rem",border:"1px solid var(--br)",background:"var(--bg)",color:"var(--tx)",fontFamily:"Rubik,sans-serif",minWidth:0}}
+                                  value={editLabelVal} onChange={e=>setEditLabelVal(e.target.value)}
+                                  placeholder={_lang==="en"?"Event name...":"Esemény neve..."} />
+                                <button style={{background:"var(--blue)",color:"#fff",border:"none",padding:".25rem .45rem",cursor:"pointer",fontSize:".75rem",flexShrink:0}}
+                                  onClick={()=>updateImageLabel(img.id,editLabelVal)}>✓</button>
+                                <button style={{background:"none",border:"none",color:"var(--mu)",cursor:"pointer",fontSize:".75rem",flexShrink:0}}
+                                  onClick={()=>setEditLabelId(null)}>✕</button>
+                              </div>
+                            ) : (
+                              <div style={{display:"flex",alignItems:"center",gap:".3rem"}}>
+                                <span style={{flex:1,fontSize:".72rem",color:"var(--mu)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{img.event_label||"—"}</span>
+                                <button style={{background:"none",border:"none",cursor:"pointer",fontSize:".72rem",padding:0,flexShrink:0,color:"var(--mu)"}}
+                                  onClick={()=>{setEditLabelId(img.id);setEditLabelVal(img.event_label||'');}}>✏️</button>
+                                <button style={{background:"none",border:"none",cursor:"pointer",fontSize:".72rem",padding:0,flexShrink:0,color:"var(--red)"}}
+                                  onClick={()=>deleteImage(img.id,img.filename)}>✕</button>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       ))}
                     </div>
