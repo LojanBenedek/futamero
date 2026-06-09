@@ -2093,14 +2093,25 @@
                     });
                     const bestWeek=Math.max(...Object.values(myWeeks),0);
                     const bestMonth=Math.max(...Object.values(myMonths),0);
+                    const totalSecs=myRuns.reduce((s,r)=>s+parseDurSecs(r.duration),0);
+                    const avgPaceSecs=totalSecs&&myTotal?totalSecs/myTotal:0;
+                    const now3=new Date();
+                    const wStart2=new Date(now3-7*864e5);
+                    const mStart2=new Date(now3.getFullYear(),now3.getMonth(),1);
+                    const myWeekSecs=myRuns.filter(r=>new Date(r.created_at||r.run_date+'T00:00:00')>=wStart2).reduce((s,r)=>s+parseDurSecs(r.duration),0);
+                    const myMonthSecs=myRuns.filter(r=>new Date(r.created_at||r.run_date+'T00:00:00')>=mStart2).reduce((s,r)=>s+parseDurSecs(r.duration),0);
                     return (
                       <div style={{marginTop:"2.5rem"}}>
                         <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>{t("stats.my")}</div>
                         <div className="stats-grid" style={{marginBottom:"1rem"}}>
                           <div className="stat-card"><div className="stat-card-num">{myTotal.toFixed(1)}</div><div className="stat-card-lbl">{t("stats.my_total")}</div></div>
                           <div className="stat-card"><div className="stat-card-num">{myRuns.length}</div><div className="stat-card-lbl">{t("stats.my_runs")}</div></div>
+                          <div className="stat-card" style={{borderTopColor:"var(--red)"}}><div className="stat-card-num" style={{fontSize:"1.6rem",color:"var(--red)"}}>{fmtSecs(totalSecs)||"—"}</div><div className="stat-card-lbl">{t("stats.my_total_time")}</div></div>
+                          <div className="stat-card" style={{borderTopColor:"var(--red)"}}><div className="stat-card-num" style={{fontSize:"1.5rem",color:"var(--red)"}}>{avgPaceSecs?fmtSecs(avgPaceSecs)+" /km":"—"}</div><div className="stat-card-lbl">{t("stats.my_avg_pace")}</div></div>
                           <div className="stat-card" style={{borderTopColor:"var(--blue)"}}><div className="stat-card-num" style={{color:"var(--blue)"}}>{bestWeek.toFixed(1)}</div><div className="stat-card-lbl">{t("stats.my_best_week")}</div></div>
                           <div className="stat-card" style={{borderTopColor:"var(--blue)"}}><div className="stat-card-num" style={{color:"var(--blue)"}}>{bestMonth.toFixed(1)}</div><div className="stat-card-lbl">{t("stats.my_best_month")}</div></div>
+                          <div className="stat-card" style={{borderTopColor:"var(--navy)"}}><div className="stat-card-num" style={{fontSize:"1.6rem",color:"var(--navy)"}}>{fmtSecs(myWeekSecs)||"—"}</div><div className="stat-card-lbl">{t("stats.my_week_time")}</div></div>
+                          <div className="stat-card" style={{borderTopColor:"var(--navy)"}}><div className="stat-card-num" style={{fontSize:"1.6rem",color:"var(--navy)"}}>{fmtSecs(myMonthSecs)||"—"}</div><div className="stat-card-lbl">{t("stats.my_month_time")}</div></div>
                         </div>
                         <div style={{background:"var(--bg2)",border:"1px solid var(--br)",boxShadow:"var(--shadow)",overflowX:"auto"}}>
                           <table className="lb-table">
