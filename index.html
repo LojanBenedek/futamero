@@ -704,6 +704,13 @@
       return pm+':'+String(ps).padStart(2,'0');
     };
 
+
+    // Publikus REST lekérdezés — nem vár Supabase tokenfrissítésre
+    const PUB_HEADERS = { apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdudGFteXRidGljaWNxbmtzZ2FuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NDEwMDcsImV4cCI6MjA5NjIxNzAwN30.PK2HFiONnQXkHNw_E7hqYXzgnl4Ths-1LQbur7NIJ2g", Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdudGFteXRidGljaWNxbmtzZ2FuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NDEwMDcsImV4cCI6MjA5NjIxNzAwN30.PK2HFiONnQXkHNw_E7hqYXzgnl4Ths-1LQbur7NIJ2g", "Content-Type": "application/json" };
+    const pubFetch = (path, opts={}) =>
+      fetch("https://gntamytbticicqnksgan.supabase.co/rest/v1/" + path, { ...opts, headers: { ...PUB_HEADERS, ...(opts.headers||{}) } })
+      .then(r => r.json()).catch(() => []);
+
     const BUCKET = "Gallery";
     const sb = createClient(
       "https://gntamytbticicqnksgan.supabase.co",
@@ -1412,29 +1419,28 @@
 
       useEffect(() => {
         (async () => {
-          let evData=[], galData=[];
-          // 8 másodperces hard timeout — ha bármi lefagy, az oldal mindenképp betölt
-          const loadTimeout8 = new Promise(resolve => setTimeout(resolve, 8000));
-          const doLoad = (async () => {
-            try {
-              const res = await Promise.all([
-                sb.from("events").select("*").order("date"),
-                sb.from("gallery").select("*").order("created_at",{ascending:false}),
-                loadRegs(),
-                loadPosts(),
-                loadRuns(),
-                loadReactions(),
-                loadComments().catch(()=>{}),
-                loadRunReactions().catch(()=>{}),
-              ]);
-              evData = res[0].data||[];
-              galData = res[1].data||[];
-            } catch(e) { console.warn('Betöltési hiba:', e.message); }
-          })();
-          await Promise.race([doLoad, loadTimeout8]);
-          setEvents(evData);
-          const g = (galData).map(r=>({id:r.id,src:r.url,filename:r.filename,event_label:r.event_label||"",event_id:r.event_id||null}));
-          setGallery(g); galRef.current = g;
+          try {
+            // pubFetch: nem vár Supabase tokenfrissítésre, azonnal fut
+            const [evData, galData, regsData, postsData, runsData, reactData, commData, rrData] = await Promise.all([
+              pubFetch("events?select=*&order=date"),
+              pubFetch("gallery?select=*&order=created_at.desc"),
+              pubFetch("event_registrations?select=event_id,user_id,user_name"),
+              pubFetch("posts?select=*&order=is_pinned.desc,created_at.desc"),
+              pubFetch("runs?select=*&order=created_at.desc"),
+              pubFetch("reactions?select=post_id,user_id,emoji"),
+              pubFetch("comments?select=*&order=created_at.asc"),
+              pubFetch("run_reactions?select=run_id,user_id,emoji"),
+            ]);
+            setEvents(Array.isArray(evData)?evData:[]);
+            const g=(Array.isArray(galData)?galData:[]).map(r=>({id:r.id,src:r.url,filename:r.filename,event_label:r.event_label||"",event_id:r.event_id||null}));
+            setGallery(g); galRef.current=g;
+            const rm={}; (Array.isArray(regsData)?regsData:[]).forEach(r=>{if(!rm[r.event_id])rm[r.event_id]=[];rm[r.event_id].push(r);}); setRegs(rm);
+            setPosts(Array.isArray(postsData)?postsData:[]);
+            setRuns(Array.isArray(runsData)?runsData:[]);
+            const rxm={}; (Array.isArray(reactData)?reactData:[]).forEach(r=>{if(!rxm[r.post_id])rxm[r.post_id]={};if(!rxm[r.post_id][r.emoji])rxm[r.post_id][r.emoji]=[];rxm[r.post_id][r.emoji].push(r.user_id);}); setReactions(rxm);
+            const cm={}; (Array.isArray(commData)?commData:[]).forEach(c=>{if(!cm[c.parent_id])cm[c.parent_id]=[];cm[c.parent_id].push(c);}); setComments(cm);
+            const rrm={}; (Array.isArray(rrData)?rrData:[]).forEach(r=>{if(!rrm[r.run_id])rrm[r.run_id]={};if(!rrm[r.run_id][r.emoji])rrm[r.run_id][r.emoji]=[];rrm[r.run_id][r.emoji].push(r.user_id);}); setRunReactions(rrm);
+          } catch(e) { console.warn('Betöltési hiba:', e.message); }
           setLoaded(true);
         })();
       }, []);
