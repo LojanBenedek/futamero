@@ -1411,10 +1411,10 @@
           ]);
           await loadRegs();
           await loadPosts();
-          await loadRuns();
-          await loadReactions();
-          await loadComments();
-          await loadRunReactions();
+          try { await loadRuns(); } catch(e) { console.warn('runs:', e.message); }
+          try { await loadReactions(); } catch(e) { console.warn('reactions:', e.message); }
+          try { await loadComments(); } catch(e) { console.warn('comments tábla hiányzik:', e.message); }
+          try { await loadRunReactions(); } catch(e) { console.warn('run_reactions tábla hiányzik:', e.message); }
           if (evErr || galErr) { setDbErr(true); }
           else {
             setEvents(evData || []);
@@ -1919,6 +1919,15 @@
                         <label className="inp-lbl">{t("runs.photo")}</label>
                         <input className="inp" type="file" accept="image/*" ref={runFileRef} style={{padding:".5rem"}} />
                       </div>
+                      {newRun.km && (newRun.minutes || newRun.hours) && (() => {
+                        const liveDur = fmtDur(newRun.hours, newRun.minutes, newRun.seconds);
+                        const livePace = calcPace(newRun.km, liveDur);
+                        return livePace ? (
+                          <div style={{fontSize:".85rem",color:"var(--blue)",fontWeight:600,marginBottom:".5rem",display:"flex",alignItems:"center",gap:".4rem"}}>
+                            ⏱ {liveDur} &nbsp;·&nbsp; 🏃 {livePace}
+                          </div>
+                        ) : null;
+                      })()}
                       <button className="btn-p" disabled={runUploading||!newRun.km||(!newRun.minutes&&!newRun.hours)} onClick={submitRun}>
                         {runUploading && <span className="spin"/>}{t("runs.btn")}
                       </button>
