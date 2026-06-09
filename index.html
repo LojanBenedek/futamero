@@ -737,7 +737,7 @@
       const s = size || 100;
       return (
         <div style={{width:s,height:s,borderRadius:"50%",overflow:"hidden",flexShrink:0,display:"inline-block"}}>
-          <img src={LOGO_URI} width={s} height={s} alt="FUTaMÉRŐ logó" style={{objectFit:"cover",display:"block"}} />
+          <img src={LOGO_URI} width={s} height={s} alt="FUTaMÉRŐ logó" style={{objectFit:"cover",display:"block"}}  loading="lazy"/>
         </div>
       );
     }
@@ -1609,10 +1609,11 @@
         setUpProg(0); setTimeout(() => setUpMsg(""), 3500);
       };
 
-      const updateImageLabel = async (id, newLabel, newEventId) => {
-        await sb.from("gallery").update({ event_label: newLabel, event_id: newEventId||null }).eq("id", id);
-        setGallery(prev => prev.map(g => g.id===id ? {...g, event_label:newLabel, event_id:newEventId||null} : g));
-        setEditingLabel(null);
+      const updateImageLabel = async (id, newLabel) => {
+        const matchEv = events.find(e => e.title === newLabel);
+        await sb.from("gallery").update({ event_label: newLabel, event_id: matchEv?.id||null }).eq("id", id);
+        setGallery(prev => prev.map(g => g.id===id ? {...g, event_label:newLabel, event_id:matchEv?.id||null} : g));
+        setEditLabelId(null);
       };
       const deleteImage = async (id, filename) => {
         if (!window.confirm(t("confirm.delete_image"))) return;
@@ -1972,7 +1973,7 @@
                           <div className="user-ava" style={{width:30,height:30,fontSize:".68rem",flexShrink:0}}>{initials(item.user_name)}</div>
                           <div>
                             <div className="blog-author">{item.user_name}</div>
-                            <div className="run-feed-meta">🏃 {t("posts.run_entry")} · {new Date(item.created_at).toLocaleDateString(_lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric"})}</div>
+                            <div className="run-feed-meta">🏃 {t("posts.run_entry")} · {new Date(item.created_at||item.run_date+"T00:00:00").toLocaleDateString(_lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric"})} {item.created_at ? new Date(item.created_at).toLocaleTimeString(_lang==="en"?"en-GB":"hu-HU",{hour:"2-digit",minute:"2-digit"}) : ""}</div>
                           </div>
                           <div className="run-feed-km">{parseFloat(item.distance_km||0).toFixed(2)}<span>km</span></div>
                         </div>
@@ -2331,7 +2332,7 @@
                       {gallery.map(img => (
                         <div key={img.id} className="th">
                           <img src={img.src} alt=""  loading="lazy"/>
-                          {editingLabel === img.id ? (
+                          {editLabelId === img.id ? (
                             <div style={{display:"flex",gap:".3rem",alignItems:"center",padding:".3rem",background:"var(--bg3)"}}>
                               <input style={{flex:1,padding:".2rem .4rem",fontSize:".75rem",border:"1px solid var(--br)",background:"var(--bg)",color:"var(--tx)",fontFamily:"Rubik,sans-serif"}}
                                 value={editLabelVal} onChange={e=>setEditLabelVal(e.target.value)}
@@ -2339,13 +2340,13 @@
                               <button style={{background:"var(--blue)",color:"#fff",border:"none",padding:".2rem .5rem",cursor:"pointer",fontSize:".75rem"}}
                                 onClick={()=>updateImageLabel(img.id, editLabelVal, events.find(e=>e.title===editLabelVal)?.id||null)}>✓</button>
                               <button style={{background:"none",border:"none",color:"var(--mu)",cursor:"pointer",fontSize:".75rem"}}
-                                onClick={()=>setEditingLabel(null)}>✕</button>
+                                onClick={()=>setEditLabelId(null)}>✕</button>
                             </div>
                           ) : (
                             <div style={{display:"flex",alignItems:"center",gap:".3rem"}}>
                               {img.event_label && <div className="th-lbl">{img.event_label}</div>}
                               <button style={{background:"none",border:"none",color:"var(--mu)",cursor:"pointer",fontSize:".75rem",marginLeft:"auto"}}
-                                onClick={()=>{setEditingLabel(img.id);setEditLabelVal(img.event_label||'');}}>✏️</button>
+                                onClick={()=>{setEditLabelId(img.id);setEditLabelVal(img.event_label||'');}}>✏️</button>
                               <button className="th-del" onClick={() => deleteImage(img.id, img.filename)}>✕</button>
                             </div>
                           )}
