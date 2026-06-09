@@ -311,8 +311,8 @@
 
     /* ── NYELVVÁLTÓ ── */
     .lang-wrap{position:relative}
-    .lang-toggle{background:var(--bg3);border:1px solid var(--br);color:var(--tx2);padding:.3rem .65rem;cursor:pointer;font-size:.78rem;letter-spacing:.08em;transition:all .2s;display:flex;align-items:center;gap:.3rem;white-space:nowrap;font-family:"Rubik",sans-serif;font-weight:600}
-    .lang-toggle:hover{background:var(--bg3);border-color:var(--red)}
+    .lang-toggle{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;padding:.3rem .65rem;cursor:pointer;font-size:.78rem;letter-spacing:.08em;transition:all .2s;display:flex;align-items:center;gap:.3rem;white-space:nowrap;font-family:"Rubik",sans-serif;font-weight:600}
+    .lang-toggle:hover{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.5)}
     .lang-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
     .lang-toggle:hover{background:rgba(255,255,255,.2)}
     .lang-toggle small{font-size:.65rem;opacity:.7}
@@ -367,7 +367,7 @@
     /* ── OFFLINE BADGE ── */
     .offline-badge{background:#f59e0b;color:#000;font-size:.72rem;font-weight:700;padding:.2rem .6rem;letter-spacing:.05em;display:flex;align-items:center;gap:.3rem}
     /* ── PWA telepítés gomb ── */
-    .pwa-btn{display:flex;align-items:center;gap:.4rem;background:rgba(201,16,21,.08);border:1px solid rgba(201,16,21,.35);color:var(--red);padding:.3rem .7rem;cursor:pointer;font-size:.75rem;font-family:'Rubik',sans-serif;font-weight:500;transition:all .2s;white-space:nowrap}
+    .pwa-btn{display:flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:.3rem .7rem;cursor:pointer;font-size:.75rem;font-family:'Rubik',sans-serif;font-weight:500;transition:all .2s;white-space:nowrap}
     .pwa-btn:hover{background:rgba(201,16,21,.3)}
     .pwa-btn-icon{font-size:.9rem}
 
@@ -477,10 +477,10 @@
     .sec-tag { font-size:.62rem !important; letter-spacing:.2em !important; text-transform:uppercase !important; font-weight:700 !important; }
 
     /* Nav - erősebb vonal */
-    .nav { border-bottom:2px solid var(--red) !important; background:#fff !important; }
+    .nav { border-bottom:none !important; background:#4A90D9 !important; }
     .nav-logo-name { font-weight:900 !important; letter-spacing:.12em !important; }
     .nl { font-weight:600 !important; letter-spacing:.04em !important; }
-    .nl.a { border-bottom:2px solid var(--red) !important; color:var(--navy) !important; }
+    .nl.a { border-bottom:2px solid rgba(255,255,255,.9) !important; color:#fff !important; }
 
     /* Kártyák - élesebb */
     .ec { border-radius:0 !important; border-top-width:3px !important; }
@@ -511,6 +511,34 @@
       .h-title { font-size:clamp(2.6rem,14vw,6rem) !important; }
       .btn-p, .btn-o { width:auto !important; font-size:.8rem !important; }
     }
+
+  
+    /* Hero alig látható minta */
+    .hero::before {
+      content:'';
+      position:absolute;
+      inset:0;
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(255,255,255,.03) 0px,
+        rgba(255,255,255,.03) 1px,
+        transparent 1px,
+        transparent 28px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        rgba(255,255,255,.02) 0px,
+        rgba(255,255,255,.02) 1px,
+        transparent 1px,
+        transparent 28px
+      );
+      pointer-events:none;
+      z-index:1;
+    }
+    /* Nav mobil drawer is kék */
+    .nav-drawer { background:#2a6fb0 !important; }
+    .nd-close { color:#fff !important; }
+    .nd-close:hover { background:rgba(255,255,255,.15) !important; }
 
   </style>
 </head>
