@@ -1818,7 +1818,7 @@
                   {(() => {
                     // Kombinált feed: posts + runs, pinned felül, aztán legrégebbi felül
                     const feedPosts = (posts||[]).map(p => ({...p, _type:'post'}));
-                    const feedRuns = (runs||[]).map(r => ({...r, _type:'run', created_at: r.created_at || r.run_date+'T00:00:00'}));
+                    const feedRuns = (runs||[]).filter(r=>r.id).map(r => ({...r, _type:'run', created_at: r.created_at || (r.run_date ? r.run_date+'T12:00:00' : new Date().toISOString())}));
                     const allItems = [...feedPosts, ...feedRuns].sort((a,b) => {
                       if (a.is_pinned && !b.is_pinned) return -1;
                       if (!a.is_pinned && b.is_pinned) return 1;
@@ -1940,7 +1940,7 @@
                       </button>
                     </div>
                   ) : (
-                    <div className="blog-login"><span className="reg-hint" onClick={()=>document.dispatchEvent(new CustomEvent("openAuth"))}>Jelentkezz be</span> a futásaid rögzítéséhez</div>
+                    <div className="blog-login"><span className="reg-hint" onClick={()=>document.dispatchEvent(new CustomEvent("openAuth"))}>{_lang==="en"?"Log in":t("blog.login")}</span> {_lang==="en"?"to log your runs":t("runs.login_to")}</div>
                   )}
                   {runs.length === 0 ? <div className="empty">{t("runs.empty")}</div> : (
                     [...runs].map(run => (
