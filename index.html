@@ -1735,6 +1735,13 @@
               <button key={tid} className={"nl" + (tab===tid?" a":"")} onClick={() => { setTab(tid); setMobileMenu(false); }}>{lbl}</button>
             ))}
             {isAdmin && <button className={"nl" + (tab==="admin"?" a":"")} onClick={() => { setTab("admin"); setMobileMenu(false); }}>⚙️ Admin</button>}
+            {!isInStandalone && (
+              <button className="pwa-btn" style={{width:"100%",justifyContent:"center",margin:".5rem 0"}}
+                onClick={pwaPrompt ? installPwa : ()=>setShowIosInstall(true)}>
+                <span>📲</span>
+                <span style={{marginLeft:".4rem"}}>{_lang==="en"?"Install app":"Alkalmazás telepítése"}</span>
+              </button>
+            )}
             <div className="nav-drawer-btns">
               {user ? (
                 <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={doLogout}>{t("nav.logout")}</button>
