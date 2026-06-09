@@ -1358,7 +1358,7 @@
         setRunUploading(false);
       };
       const deleteRun = async (id, imageFilename) => {
-        if (!window.confirm(lang==="en" ? "Delete this run?" : "Törlöd ezt a futást?")) return;
+        if (!window.confirm(t("confirm.delete_run"))) return;
         if (imageFilename) await sb.storage.from(BUCKET).remove([imageFilename]);
         await sb.from("runs").delete().eq("id", id);
         setRuns(prev => prev.filter(r => r.id !== id));
@@ -1407,7 +1407,7 @@
       };
 
       const deletePost = async (id) => {
-        if (!window.confirm(lang==="en" ? "Delete this post?" : "Törlöd ezt a bejegyzést?")) return;
+        if (!window.confirm(t("confirm.delete_post"))) return;
         await sb.from("posts").delete().eq("id", id);
         setPosts(prev => prev.filter(p => p.id !== id));
       };
@@ -1473,7 +1473,7 @@
         const { data, error } = await sb.from("events").insert([{ title:newEv.title, date:newEv.date, time:newEv.time, location:newEv.location, description:newEv.description }]).select();
         if (!error && data) { setEvents(prev => [...prev, data[0]].sort((a,b)=>a.date.localeCompare(b.date))); setNewEv({ title:"",date:"",time:"",location:"",description:"" }); }
       };
-      const deleteEvent = async id => { if (!window.confirm(lang==="en" ? "Delete this event?" : "Biztosan törlöd ezt az eseményt?")) return; await sb.from("event_registrations").delete().eq("event_id", id); await sb.from("events").delete().eq("id", id); setEvents(e => e.filter(ev => ev.id !== id)); setRegs(prev => { const r = {...prev}; delete r[id]; return r; }); };
+      const deleteEvent = async id => { if (!window.confirm(t("confirm.delete_event"))) return; await sb.from("event_registrations").delete().eq("event_id", id); await sb.from("events").delete().eq("id", id); setEvents(e => e.filter(ev => ev.id !== id)); setRegs(prev => { const r = {...prev}; delete r[id]; return r; }); };
       const updateEvent = async (updated) => {
         // Gallery event_label frissítése ha az esemény neve/dátuma változott
         const newLabel = updated.title + " (" + updated.date + ")";
@@ -1525,7 +1525,7 @@
       };
 
       const deleteImage = async (id, filename) => {
-        if (!window.confirm(lang==="en" ? "Delete this photo?" : "Biztosan törlöd?")) return;
+        if (!window.confirm(t("confirm.delete_image"))) return;
         await sb.storage.from(BUCKET).remove([filename]);
         await sb.from("gallery").delete().eq("id", id);
         setGallery(g => g.filter(x => x.id !== id));
@@ -2000,8 +2000,8 @@
                       <div className="stat-card"><div className="stat-card-num">{totalKm.toFixed(1)}</div><div className="stat-card-lbl">{t("stats.total_km")}</div></div>
                       <div className="stat-card"><div className="stat-card-num">{runs.length}</div><div className="stat-card-lbl">{t("stats.total_runs")}</div></div>
                       <div className="stat-card" style={{borderTopColor:"var(--blue)"}}>
-                        <div className="stat-card-num" style={{color:"var(--blue)"}}>{lb[0]?.week.toFixed(1)||"0"}</div>
-                        <div className="stat-card-lbl">{t("stats.week")}<br/><span style={{color:"var(--navy)",fontWeight:600}}>{lb.sort((a,b)=>b.week-a.week)[0]?.name||"—"}</span></div>
+                        <div className="stat-card-num" style={{color:"var(--blue)"}}>{([...lbRaw].sort((a,b)=>b.week-a.week)[0]?.week||0).toFixed(1)}</div>
+                        <div className="stat-card-lbl">{t("stats.week")}<br/><span style={{color:"var(--navy)",fontWeight:600}}>{[...lb].sort((a,b)=>b.week-a.week)[0]?.name||"—"}</span></div>
                       </div>
                       <div className="stat-card" style={{borderTopColor:"var(--blue)"}}>
                         <div className="stat-card-num" style={{color:"var(--blue)"}}>{[...lbRaw].sort((a,b)=>b.month-a.month)[0]?.month.toFixed(1)||"0"}</div>
