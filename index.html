@@ -305,9 +305,9 @@
 
     /* ── NYELVVÁLTÓ ── */
     .lang-wrap{position:relative}
-    .lang-toggle{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;
-                 padding:.32rem .75rem;cursor:pointer;font-size:.9rem;transition:background .2s;
-                 display:flex;align-items:center;gap:.25rem;white-space:nowrap;font-family:"Rubik",sans-serif;font-weight:500}
+    .lang-toggle{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;padding:.3rem .65rem;cursor:pointer;font-size:.78rem;letter-spacing:.08em;transition:all .2s;display:flex;align-items:center;gap:.3rem;white-space:nowrap;font-family:"Rubik",sans-serif;font-weight:600}
+    .lang-toggle:hover{background:rgba(255,255,255,.18)}
+    .lang-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
     .lang-toggle:hover{background:rgba(255,255,255,.2)}
     .lang-toggle small{font-size:.65rem;opacity:.7}
     .lang-menu{position:absolute;top:calc(100% + 6px);right:0;background:var(--navy2);
@@ -1615,17 +1615,19 @@
             {/* Nyelvváltó */}
             <div className="lang-wrap">
               <button className="lang-toggle" onClick={()=>setShowLangMenu(m=>!m)}>
-                {lang==="hu"?"🇭🇺":"🇬🇧"} <span style={{fontSize:".78rem",marginLeft:".15rem"}}>{lang==="hu"?"HU":"EN"}</span> <small>▾</small>
+                <span className="lang-dot" style={{background:lang==="hu"?"#436f4d":"#1d4ed8"}}></span>
+                {lang==="hu"?"Magyar":"English"}
+                <small style={{opacity:.6}}>▾</small>
               </button>
               {showLangMenu && (
                 <>
                   <div style={{position:"fixed",inset:0,zIndex:499}} onClick={()=>setShowLangMenu(false)}/>
                   <div className="lang-menu">
                     <button className={"lang-opt"+(lang==="hu"?" active":"")} onClick={()=>switchLang("hu")}>
-                      <span className="lang-opt-flag">🇭🇺</span> Magyar
+                      <span className="lang-dot" style={{background:"#436f4d",marginRight:".4rem"}}></span> Magyar
                     </button>
                     <button className={"lang-opt"+(lang==="en"?" active":"")} onClick={()=>switchLang("en")}>
-                      <span className="lang-opt-flag">🇬🇧</span> English (EN)
+                      <span className="lang-dot" style={{background:"#1d4ed8",marginRight:".4rem"}}></span> English
                     </button>
                   </div>
                 </>
