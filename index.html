@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin></script>
   <script src="./supabase.js"></script>
@@ -46,15 +46,15 @@
     .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--navy);padding:0 4%;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.25)}
     .nav-logo{display:flex;align-items:center;gap:.65rem;cursor:pointer;user-select:none}
     .nav-logo-text{line-height:1}
-    .nav-logo-main{font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;letter-spacing:.06em;color:#fff;display:block}
-    .nav-logo-sub{font-size:.5rem;color:rgba(255,255,255,.5);letter-spacing:.18em;text-transform:uppercase;display:block;margin-top:-2px}
+    .nav-logo-main{font-family:'Outfit',sans-serif;font-size:1.5rem;letter-spacing:.06em;color:#fff;display:block}
+    .nav-logo-sub{font-size:.5rem;color:rgba(255,255,255,.5);letter-spacing:.18em;text-transform:none;display:block;margin-top:-2px}
     .nav-links{display:flex;gap:1.1rem;align-items:center;flex-wrap:wrap}
-    .nl{background:none;border:none;color:rgba(255,255,255,.65);font-family:'Rubik',sans-serif;font-size:.8rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;transition:color .2s;padding:4px 0;border-bottom:2px solid transparent}
+    .nl{background:none;border:none;color:rgba(255,255,255,.65);font-family:'Rubik',sans-serif;font-size:.8rem;font-weight:500;letter-spacing:.07em;text-transform:none;cursor:pointer;transition:color .2s;padding:4px 0;border-bottom:2px solid transparent}
     .nl:hover{color:#fff}.nl.a{color:#fff;border-bottom-color:var(--red)}
     .nav-user{display:flex;align-items:center;gap:.55rem}
     .user-ava{width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid rgba(255,255,255,.2)}
     .user-name{font-size:.78rem;color:rgba(255,255,255,.7);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .nav-btn{background:var(--red);color:#fff;border:none;padding:.38rem .9rem;font-family:'Rubik',sans-serif;font-size:.76rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+    .nav-btn{background:var(--red);color:#fff;border:none;padding:.38rem .9rem;font-family:'Rubik',sans-serif;font-size:.76rem;font-weight:600;letter-spacing:.07em;text-transform:none;cursor:pointer;transition:background .2s}
     .nav-btn:hover{background:var(--red2)}
     .nav-btn.out{background:none;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.7)}
     .nav-btn.out:hover{border-color:var(--red);color:#fff}
@@ -66,23 +66,23 @@
     .hero-blue-bar{position:absolute;left:8px;top:0;bottom:0;width:3px;background:var(--blue)}
     .hc{text-align:center;animation:fu .9s ease both;position:relative;z-index:1;padding:2rem 1.5rem;max-width:860px;display:flex;flex-direction:column;align-items:center;gap:1.2rem}
     .hero-logo-wrap{animation:pulse 3s ease-in-out infinite}
-    .h-eyebrow{font-size:.68rem;letter-spacing:.4em;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:500;display:flex;align-items:center;gap:.75rem}
+    .h-eyebrow{font-size:.68rem;letter-spacing:.05em;text-transform:none;color:rgba(255,255,255,.55);font-weight:500;display:flex;align-items:center;gap:.75rem}
     .h-eyebrow::before,.h-eyebrow::after{content:'';flex:1;max-width:50px;height:1px;background:rgba(255,255,255,.2)}
-    .h-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(3.5rem,12vw,9rem);line-height:.85;letter-spacing:.03em;color:#fff}
+    .h-title{font-family:'Outfit',sans-serif;font-size:clamp(3.5rem,12vw,9rem);line-height:.85;letter-spacing:.03em;color:#fff}
     .h-title .red{color:var(--red)}
-    .h-tagline{font-size:.85rem;color:rgba(255,255,255,.5);letter-spacing:.15em;text-transform:uppercase;font-weight:400}
+    .h-tagline{font-size:.85rem;color:rgba(255,255,255,.5);letter-spacing:.15em;text-transform:none;font-weight:400}
     .h-desc{font-size:.95rem;color:rgba(255,255,255,.6);max-width:400px;text-align:center;line-height:1.7}
     .h-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
     .hero-divider{display:none}
 
     /* BUTTONS */
-    .btn-p{background:var(--red);color:#fff;border:none;padding:.78rem 1.85rem;font-family:'Rubik',sans-serif;font-size:.83rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .15s;box-shadow:0 4px 12px rgba(201,16,21,.3)}
+    .btn-p{background:var(--red);color:#fff;border:none;padding:.78rem 1.85rem;font-family:'Rubik',sans-serif;font-size:.83rem;font-weight:600;letter-spacing:.03em;text-transform:none;cursor:pointer;transition:background .2s,transform .15s;box-shadow:0 4px 12px rgba(201,16,21,.3)}
     .btn-p:hover{background:var(--red2);transform:translateY(-1px)}.btn-p:disabled{opacity:.45;cursor:not-allowed;transform:none}
-    .btn-o{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3);padding:.78rem 1.85rem;font-family:'Rubik',sans-serif;font-size:.83rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+    .btn-o{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3);padding:.78rem 1.85rem;font-family:'Rubik',sans-serif;font-size:.83rem;font-weight:500;letter-spacing:.03em;text-transform:none;cursor:pointer;transition:all .2s}
     .btn-o:hover{border-color:#fff;color:#fff;background:rgba(255,255,255,.08)}
-    .btn-sm{background:none;border:1px solid var(--br2);color:var(--blue);font-family:'Rubik',sans-serif;font-size:.75rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;padding:.42rem .9rem;transition:all .2s}
+    .btn-sm{background:none;border:1px solid var(--br2);color:var(--blue);font-family:'Rubik',sans-serif;font-size:.75rem;font-weight:500;letter-spacing:.06em;text-transform:none;cursor:pointer;padding:.42rem .9rem;transition:all .2s}
     .btn-sm:hover{border-color:var(--red);color:var(--red)}
-    .btn-grn{background:#16a34a;color:#fff;border:none;padding:.5rem 1.2rem;font-family:'Rubik',sans-serif;font-size:.77rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap}
+    .btn-grn{background:#16a34a;color:#fff;border:none;padding:.5rem 1.2rem;font-family:'Rubik',sans-serif;font-size:.77rem;font-weight:600;letter-spacing:.06em;text-transform:none;cursor:pointer;transition:background .2s;white-space:nowrap}
     .btn-grn:hover{background:#15803d}
     .btn-unreg{background:none;color:var(--mu);border:1px solid var(--br);padding:.5rem 1.2rem;font-family:'Rubik',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
     .btn-unreg:hover{border-color:#ef4444;color:#ef4444}
@@ -90,8 +90,8 @@
     /* SECTIONS */
     .sec{max-width:980px;margin:0 auto;padding:5rem 5%}
     .sec-hd{margin-bottom:2.4rem}
-    .sec-tag{font-size:.64rem;letter-spacing:.3em;text-transform:uppercase;color:var(--red);font-weight:600;margin-bottom:.45rem;display:block}
-    .sec-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(2rem,5.5vw,3.2rem);line-height:1;color:var(--navy)}
+    .sec-tag{font-size:.64rem;letter-spacing:.05em;text-transform:none;color:var(--red);font-weight:600;margin-bottom:.45rem;display:block}
+    .sec-title{font-family:'Outfit',sans-serif;font-size:clamp(2rem,5.5vw,3.2rem);line-height:1;color:var(--navy)}
     .sec-divider{height:4px;width:50px;background:var(--red);margin-top:.6rem}
 
     /* ABOUT */
@@ -100,31 +100,31 @@
     @media(max-width:680px){.about-inner{grid-template-columns:1fr;gap:2rem}}
     .about-text{color:rgba(255,255,255,.7);font-size:.93rem;line-height:1.75;font-weight:300}
     .about-text p+p{margin-top:.9rem}
-    .about-sec-tag{font-size:.64rem;letter-spacing:.3em;text-transform:uppercase;color:var(--red);font-weight:600;margin-bottom:.45rem;display:block}
-    .about-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(2rem,5.5vw,3rem);line-height:1;color:#fff;margin-bottom:1.4rem}
+    .about-sec-tag{font-size:.64rem;letter-spacing:.05em;text-transform:none;color:var(--red);font-weight:600;margin-bottom:.45rem;display:block}
+    .about-title{font-family:'Outfit',sans-serif;font-size:clamp(2rem,5.5vw,3rem);line-height:1;color:#fff;margin-bottom:1.4rem}
     .about-facts{display:flex;flex-direction:column;gap:.65rem}
     .fact{display:flex;align-items:center;gap:1rem;padding:.85rem 1.1rem;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);border-left:3px solid var(--red)}
     .fact-ico{font-size:1.2rem;flex-shrink:0}
-    .fact-lbl{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);font-weight:500}
+    .fact-lbl{font-size:.62rem;letter-spacing:.04em;text-transform:none;color:rgba(255,255,255,.4);font-weight:500}
     .fact-val{font-size:.88rem;color:rgba(255,255,255,.85);font-weight:500;margin-top:1px}
 
     /* EVENT CARD */
     .ec{display:flex;gap:1.3rem;align-items:flex-start;padding:1.3rem;border:1px solid var(--br);background:var(--bg2);margin-bottom:.7rem;transition:all .2s;position:relative;box-shadow:var(--shadow)}
     .ec:hover{border-color:rgba(201,16,21,.25);transform:translateX(3px);box-shadow:0 4px 20px rgba(11,31,58,.12)}
     .ec-cal{display:flex;flex-direction:column;align-items:center;min-width:52px;background:var(--red);padding:.55rem .4rem}
-    .ec-day{font-family:'Barlow Condensed',sans-serif;font-size:1.85rem;line-height:1;color:#fff}
-    .ec-mon{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.85);font-weight:600}
+    .ec-day{font-family:'Outfit',sans-serif;font-size:1.85rem;line-height:1;color:#fff}
+    .ec-mon{font-size:.58rem;letter-spacing:.03em;text-transform:none;color:rgba(255,255,255,.85);font-weight:600}
     .ec-yr{font-size:.52rem;color:rgba(255,255,255,.5);margin-top:2px}
-    .ec-cd{font-family:'Rubik',sans-serif;font-size:.54rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:rgba(255,255,255,.18);color:#fff;padding:2px 4px;margin-top:4px;text-align:center;white-space:nowrap}
+    .ec-cd{font-family:'Rubik',sans-serif;font-size:.54rem;font-weight:700;letter-spacing:.05em;text-transform:none;background:rgba(255,255,255,.18);color:#fff;padding:2px 4px;margin-top:4px;text-align:center;white-space:nowrap}
     .ec-cd.today{background:#fff;color:var(--red)}
     .ec-body{flex:1;min-width:0}
-    .ec-title{font-family:'Barlow Condensed',sans-serif;font-size:1.35rem;letter-spacing:.03em;margin-bottom:.25rem;color:var(--navy)}
+    .ec-title{font-family:'Outfit',sans-serif;font-size:1.35rem;letter-spacing:.03em;margin-bottom:.25rem;color:var(--navy)}
     .ec-time{font-size:.78rem;color:var(--red);margin-bottom:.22rem;font-weight:500}
     .ec-loc{font-size:.78rem;color:var(--tx2);margin-bottom:.22rem}
     .ec-desc{font-size:.82rem;color:var(--mu);line-height:1.5}
     .ec-del{position:absolute;top:.85rem;right:.85rem;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.72rem;transition:background .2s}
     .ec-del:hover{background:rgba(239,68,68,.2)}
-    .past-lbl{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mu);margin:2.5rem 0 .9rem;font-weight:500}
+    .past-lbl{font-size:.64rem;letter-spacing:.05em;text-transform:none;color:var(--mu);margin:2.5rem 0 .9rem;font-weight:500}
     .past-item{opacity:.45}
 
     /* REGISTRATION */
@@ -162,25 +162,25 @@
     .auth-ov{position:fixed;inset:0;background:rgba(11,31,58,.88);z-index:150;display:flex;align-items:center;justify-content:center;animation:fi .25s ease}
     .auth-box{background:var(--bg2);border:1px solid var(--br2);border-top:4px solid var(--red);padding:2.2rem;width:100%;max-width:370px;box-shadow:0 20px 60px rgba(11,31,58,.3);animation:slideUp .28s cubic-bezier(.34,1.4,.64,1) both}
     .auth-tabs{display:flex;border-bottom:1px solid var(--br);margin-bottom:1.5rem}
-    .auth-tab{flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--mu);font-family:'Rubik',sans-serif;font-size:.82rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;padding:.58rem;transition:color .2s}
+    .auth-tab{flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--mu);font-family:'Rubik',sans-serif;font-size:.82rem;font-weight:500;letter-spacing:.06em;text-transform:none;cursor:pointer;padding:.58rem;transition:color .2s}
     .auth-tab.a{color:var(--red);border-bottom-color:var(--red)}
     .inp{width:100%;background:var(--bg);border:1px solid var(--br);color:var(--tx);font-family:'Rubik',sans-serif;font-size:.9rem;padding:.66rem .92rem;margin-bottom:.55rem;outline:none;transition:border-color .2s}
     .inp:focus{border-color:var(--blue)}.inp.err{border-color:var(--red)}
     select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%236b80a0'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .9rem center}
-    .inp-lbl{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);font-weight:500;display:block;margin-bottom:.3rem}
+    .inp-lbl{font-size:.7rem;letter-spacing:.04em;text-transform:none;color:var(--mu);font-weight:500;display:block;margin-bottom:.3rem}
     .auth-err{background:rgba(201,16,21,.08);border:1px solid rgba(201,16,21,.2);color:var(--red);font-size:.8rem;padding:.5rem .75rem;margin-bottom:.7rem;line-height:1.4}
     .auth-ok{background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);color:#15803d;font-size:.8rem;padding:.5rem .75rem;margin-bottom:.7rem;line-height:1.4}
     .spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:5px}
 
     /* ADMIN */
     .adm{max-width:800px;margin:0 auto;padding:5rem 5% 4rem}
-    .adm-title{font-family:'Barlow Condensed',sans-serif;font-size:2.6rem;letter-spacing:.03em;color:var(--navy)}
-    .badge{display:inline-block;background:rgba(201,16,21,.1);color:var(--red);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;padding:2px 8px;margin-bottom:.5rem}
+    .adm-title{font-family:'Outfit',sans-serif;font-size:2.6rem;letter-spacing:.03em;color:var(--navy)}
+    .badge{display:inline-block;background:rgba(201,16,21,.1);color:var(--red);font-size:.62rem;letter-spacing:.04em;text-transform:none;font-weight:600;padding:2px 8px;margin-bottom:.5rem}
     .atabs{display:flex;border-bottom:2px solid var(--br);margin-bottom:2rem}
-    .atab{background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;color:var(--mu);font-family:'Rubik',sans-serif;font-size:.82rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;padding:.65rem 1.3rem;transition:color .2s}
+    .atab{background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;color:var(--mu);font-family:'Rubik',sans-serif;font-size:.82rem;font-weight:500;letter-spacing:.07em;text-transform:none;cursor:pointer;padding:.65rem 1.3rem;transition:color .2s}
     .atab.a{color:var(--red);border-bottom-color:var(--red)}
     .fg{margin-bottom:.88rem}
-    .fl{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);font-weight:500;display:block;margin-bottom:.32rem}
+    .fl{font-size:.7rem;letter-spacing:.04em;text-transform:none;color:var(--mu);font-weight:500;display:block;margin-bottom:.32rem}
     .textarea{width:100%;background:var(--bg);border:1px solid var(--br);color:var(--tx);font-family:'Rubik',sans-serif;font-size:.88rem;padding:.66rem .92rem;outline:none;resize:vertical;min-height:86px;transition:border-color .2s}
     .textarea:focus{border-color:var(--blue)}
     .up-area{border:2px dashed var(--br2);padding:2.2rem;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:1.3rem;background:var(--bg2)}
@@ -203,10 +203,10 @@
     .ft-stripe{height:5px;background:linear-gradient(90deg,var(--red) 33%,#fff 33%,#fff 66%,var(--blue) 66%)}
     .ft-main{max-width:980px;margin:0 auto;padding:3.5rem 5% 2.5rem;display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:3rem}
     @media(max-width:680px){.ft-main{grid-template-columns:1fr;gap:2rem}}
-    .ft-logo{font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;color:#fff;letter-spacing:.05em;line-height:1}
-    .ft-sub{font-size:.58rem;color:rgba(255,255,255,.4);letter-spacing:.18em;text-transform:uppercase;margin-top:1px}
+    .ft-logo{font-family:'Outfit',sans-serif;font-size:1.8rem;color:#fff;letter-spacing:.05em;line-height:1}
+    .ft-sub{font-size:.58rem;color:rgba(255,255,255,.4);letter-spacing:.18em;text-transform:none;margin-top:1px}
     .ft-desc{font-size:.78rem;color:rgba(255,255,255,.5);line-height:1.6;margin-top:.7rem;max-width:240px}
-    .ft-head{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--red);font-weight:600;margin-bottom:.85rem}
+    .ft-head{font-size:.6rem;letter-spacing:.05em;text-transform:none;color:var(--red);font-weight:600;margin-bottom:.85rem}
     .ft-item{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.55rem;font-size:.78rem;color:rgba(255,255,255,.6);line-height:1.45}
     .ft-ico{flex-shrink:0;font-size:.9rem}
     .ft-link{color:rgba(255,255,255,.6);text-decoration:none;transition:color .2s;font-size:.78rem;display:block;margin-bottom:.4rem}
@@ -221,11 +221,11 @@
     .modal-close{position:absolute;top:.9rem;right:.9rem;background:none;border:none;color:var(--mu);font-size:1.2rem;cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;transition:color .2s}
     .modal-close:hover{color:var(--red)}
     .modal-date{font-size:.8rem;color:var(--blue);font-weight:500;margin-bottom:.3rem;text-transform:capitalize}
-    .modal-title{font-family:'Barlow Condensed',sans-serif;font-size:2rem;letter-spacing:.03em;color:var(--navy);margin-bottom:.65rem;line-height:1.1}
+    .modal-title{font-family:'Outfit',sans-serif;font-size:2rem;letter-spacing:.03em;color:var(--navy);margin-bottom:.65rem;line-height:1.1}
     .modal-meta{font-size:.85rem;color:var(--tx2);margin-bottom:.4rem}
     .modal-desc{font-size:.92rem;color:var(--tx);line-height:1.75;margin:1rem 0;padding:1rem;background:var(--bg);border-left:3px solid var(--red)}
     .modal-reg-sec{border-top:1px solid var(--br);padding-top:1rem;margin-top:1rem}
-    .modal-reg-title{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:.6rem;font-weight:600}
+    .modal-reg-title{font-size:.72rem;letter-spacing:.04em;text-transform:none;color:var(--mu);margin-bottom:.6rem;font-weight:600}
     .modal-names{font-size:.82rem;color:var(--tx2);line-height:1.6;margin-bottom:.9rem}
     .ec-edit{background:rgba(14,64,160,.1);border:1px solid rgba(14,64,160,.2);color:var(--blue);width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.88rem;transition:background .2s}
     .ec-edit:hover{background:rgba(14,64,160,.22)}
@@ -274,26 +274,26 @@
     .run-card-img{width:100%;aspect-ratio:16/7;object-fit:cover;display:block}
     .run-card-body{padding:1.1rem}
     .run-card-hd{display:flex;align-items:center;gap:.65rem;margin-bottom:.6rem}
-    .run-km{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;color:var(--blue);line-height:1;flex-shrink:0}
+    .run-km{margin-left:auto;font-family:'Outfit',sans-serif;font-size:1.6rem;color:var(--blue);line-height:1;flex-shrink:0}
     .run-km span{font-family:'Rubik',sans-serif;font-size:.7rem;color:var(--mu);font-weight:500;margin-left:2px}
     .run-date-badge{font-size:.7rem;color:var(--mu)}
 
     .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:2.5rem}
     .stat-card{background:var(--bg2);border:1px solid var(--br);border-top:3px solid var(--red);padding:1.2rem;text-align:center;box-shadow:var(--shadow)}
-    .stat-card-num{font-family:'Barlow Condensed',sans-serif;font-size:2.8rem;color:var(--navy);line-height:1}
-    .stat-card-lbl{font-size:.7rem;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-top:.3rem}
+    .stat-card-num{font-family:'Outfit',sans-serif;font-size:2.8rem;color:var(--navy);line-height:1}
+    .stat-card-lbl{font-size:.7rem;color:var(--mu);letter-spacing:.04em;text-transform:none;margin-top:.3rem}
 
     .lb-table{width:100%;border-collapse:collapse;font-size:.88rem}
-    .lb-table th{text-align:left;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);font-weight:600;padding:.6rem .8rem;border-bottom:2px solid var(--br)}
+    .lb-table th{text-align:left;font-size:.66rem;letter-spacing:.04em;text-transform:none;color:var(--mu);font-weight:600;padding:.6rem .8rem;border-bottom:2px solid var(--br)}
     .lb-table td{padding:.65rem .8rem;border-bottom:1px solid var(--br);color:var(--tx)}
     .lb-table tr:last-child td{border-bottom:none}
     .lb-table tr:hover td{background:var(--bg3)}
-    .lb-rank{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;color:var(--mu)}
+    .lb-rank{font-family:'Outfit',sans-serif;font-size:1.1rem;color:var(--mu)}
     .lb-rank.gold{color:#f59e0b}
     .lb-rank.silver{color:#94a3b8}
     .lb-rank.bronze{color:#cd7c3f}
     .lb-name{font-weight:600;color:var(--navy)}
-    .lb-km{font-weight:600;color:var(--blue);font-family:'Barlow Condensed',sans-serif;font-size:1.05rem}
+    .lb-km{font-weight:600;color:var(--blue);font-family:'Outfit',sans-serif;font-size:1.05rem}
 
     .reactions{display:flex;gap:.4rem;margin-top:.85rem;flex-wrap:wrap}
     .rxn-btn{background:var(--bg3);border:1px solid var(--br);padding:.35rem .75rem;font-size:.82rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.3rem;border-radius:2px;color:var(--tx2)}
@@ -306,8 +306,8 @@
     /* ── NYELVVÁLTÓ ── */
     .lang-wrap{position:relative}
     .lang-toggle{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;
-                 padding:.32rem .62rem;cursor:pointer;font-size:.95rem;transition:background .2s;
-                 display:flex;align-items:center;gap:.3rem;white-space:nowrap}
+                 padding:.32rem .75rem;cursor:pointer;font-size:.9rem;transition:background .2s;
+                 display:flex;align-items:center;gap:.25rem;white-space:nowrap;font-family:"Rubik",sans-serif;font-weight:500}
     .lang-toggle:hover{background:rgba(255,255,255,.2)}
     .lang-toggle small{font-size:.65rem;opacity:.7}
     .lang-menu{position:absolute;top:calc(100% + 6px);right:0;background:var(--navy2);
@@ -322,14 +322,14 @@
 
 
     /* ── KIEMELT BEJEGYZÉS + RUN IN FEED ── */
-    .pinned-badge{display:inline-flex;align-items:center;gap:.3rem;background:rgba(201,16,21,.1);color:var(--red);font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .55rem;border-radius:2px;margin-bottom:.5rem}
+    .pinned-badge{display:inline-flex;align-items:center;gap:.3rem;background:rgba(201,16,21,.1);color:var(--red);font-size:.68rem;font-weight:700;letter-spacing:.03em;text-transform:none;padding:.2rem .55rem;border-radius:2px;margin-bottom:.5rem}
     .blog-post.pinned{border-top:3px solid var(--red);background:rgba(201,16,21,.03)}
     .blog-pin-btn{background:none;border:none;cursor:pointer;font-size:.85rem;padding:.15rem .35rem;color:var(--mu);transition:color .2s;border-radius:2px}
     .blog-pin-btn:hover{color:var(--red)}
     .blog-pin-btn.pinned{color:var(--red)}
     .run-feed-card{background:var(--bg2);border:1px solid var(--br);border-left:3px solid var(--red);padding:.9rem 1rem;margin-bottom:.7rem}
     .run-feed-hd{display:flex;align-items:center;gap:.6rem}
-    .run-feed-km{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;color:var(--blue)}
+    .run-feed-km{margin-left:auto;font-family:'Outfit',sans-serif;font-size:1.4rem;color:var(--blue)}
     .run-feed-km span{font-size:.65rem;font-family:'Rubik',sans-serif;color:var(--mu)}
     .run-feed-meta{font-size:.75rem;color:var(--mu);margin-top:.35rem}
     .run-feed-card:hover{border-left-color:var(--blue);background:rgba(14,64,160,.03)}
@@ -1068,7 +1068,7 @@
         <div className="modal-ov" onClick={onClose}>
           <div className="modal-box" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={onClose}>✕</button>
-            <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.7rem",letterSpacing:".03em",color:"var(--navy)",marginBottom:"1.2rem"}}>Esemény szerkesztése</div>
+            <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.7rem",letterSpacing:".03em",color:"var(--navy)",marginBottom:"1.2rem"}}>Esemény szerkesztése</div>
             <div className="fg"><label className="inp-lbl">Esemény neve *</label><input className="inp" type="text" value={form.title} onChange={e => setForm({...form,title:e.target.value})} /></div>
             <div className="fg"><label className="inp-lbl">{t("admin.ev_date")}</label><input className="inp" type="date" value={form.date} onChange={e => setForm({...form,date:e.target.value})} /></div>
             <div className="fg"><label className="inp-lbl">Időpont</label><input className="inp" type="time" value={form.time} onChange={e => setForm({...form,time:e.target.value})} /></div>
@@ -1089,7 +1089,7 @@
         <div className="modal-ov" onClick={onClose}>
           <div className="modal-box" style={{maxWidth:"320px",textAlign:"center"}} onClick={e => e.stopPropagation()}>
             <div style={{fontSize:"2.5rem",marginBottom:".75rem"}}>🔐</div>
-            <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.6rem",color:"var(--navy)",marginBottom:".5rem"}}>Kijelentkezés</div>
+            <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.6rem",color:"var(--navy)",marginBottom:".5rem"}}>Kijelentkezés</div>
             <p style={{fontSize:".9rem",color:"var(--mu)",marginBottom:"1.5rem",lineHeight:1.5}}>Biztosan ki akarsz jelentkezni?</p>
             <div style={{display:"flex",gap:".75rem",justifyContent:"center"}}>
               <button className="btn-p" onClick={onConfirm}>Igen, kilépek</button>
@@ -1127,7 +1127,7 @@
         <div className="modal-ov">
           <div className="modal-box" style={{maxWidth:"380px"}} onClick={e => e.stopPropagation()}>
             <div style={{textAlign:"center",marginBottom:"1.2rem"}}><FutameroLogo size={56} /></div>
-            <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.7rem",color:"var(--navy)",marginBottom:"1.2rem",letterSpacing:".03em"}}>Új jelszó beállítása</div>
+            <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.7rem",color:"var(--navy)",marginBottom:"1.2rem",letterSpacing:".03em"}}>Új jelszó beállítása</div>
             {err && <div className="auth-err">{err}</div>}
             {ok  && <div className="auth-ok">{ok}</div>}
             {!ok && (
@@ -1615,7 +1615,7 @@
             {/* Nyelvváltó */}
             <div className="lang-wrap">
               <button className="lang-toggle" onClick={()=>setShowLangMenu(m=>!m)}>
-                {lang==="hu"?"🇭🇺":"🇬🇧"} <small>▾</small>
+                {lang==="hu"?"🇭🇺":"🇬🇧"} <span style={{fontSize:".78rem",marginLeft:".15rem"}}>{lang==="hu"?"HU":"EN"}</span> <small>▾</small>
               </button>
               {showLangMenu && (
                 <>
@@ -1625,7 +1625,7 @@
                       <span className="lang-opt-flag">🇭🇺</span> Magyar
                     </button>
                     <button className={"lang-opt"+(lang==="en"?" active":"")} onClick={()=>switchLang("en")}>
-                      <span className="lang-opt-flag">🇬🇧</span> English
+                      <span className="lang-opt-flag">🇬🇧</span> English (EN)
                     </button>
                   </div>
                 </>
@@ -2024,7 +2024,7 @@
                         <div className="stat-card-lbl">{t("stats.month")}<br/><span style={{color:"var(--navy)",fontWeight:600}}>{[...lbRaw].sort((a,b)=>b.month-a.month)[0]?.name||"—"}</span></div>
                       </div>
                     </div>
-                    <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>
+                    <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>
                       {now.getFullYear()}. {t("stats.year_rank")}
                     </div>
                     <div style={{marginBottom:"1rem"}}>
@@ -2093,7 +2093,7 @@
                     const myRuns = runs.filter(r => r.user_id === user.id);
                     if (myRuns.length === 0) return (
                       <div style={{marginTop:"2.5rem"}}>
-                        <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>{t("stats.my")}</div>
+                        <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>{t("stats.my")}</div>
                         <div className="empty">{t("stats.no_runs")}</div>
                       </div>
                     );
@@ -2118,7 +2118,7 @@
                     const myMonthSecs=myRuns.filter(r=>new Date(r.created_at||r.run_date+'T00:00:00')>=mStart2).reduce((s,r)=>s+parseDurSecs(r.duration),0);
                     return (
                       <div style={{marginTop:"2.5rem"}}>
-                        <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>{t("stats.my")}</div>
+                        <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>{t("stats.my")}</div>
                         <div className="stats-grid" style={{marginBottom:"1rem"}}>
                           <div className="stat-card"><div className="stat-card-num">{myTotal.toFixed(1)}</div><div className="stat-card-lbl">{t("stats.my_total")}</div></div>
                           <div className="stat-card"><div className="stat-card-num">{myRuns.length}</div><div className="stat-card-lbl">{t("stats.my_runs")}</div></div>
@@ -2178,7 +2178,7 @@
               {aTab === "ev" && (
                 <>
                   <div style={{background:"var(--bg2)",border:"1px solid var(--br)",borderTop:"3px solid var(--red)",padding:"1.4rem",marginBottom:"2rem",boxShadow:"var(--shadow)"}}>
-                    <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.2rem",marginBottom:"1rem",letterSpacing:".05em",color:"var(--navy)"}}>{t("admin.new_ev")}</div>
+                    <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.2rem",marginBottom:"1rem",letterSpacing:".05em",color:"var(--navy)"}}>{t("admin.new_ev")}</div>
                     <div className="fg"><label className="fl">{t("admin.ev_name")}</label><input className="inp" type="text" placeholder={lang==="en"?"e.g. Autumn race":"Pl. Őszi futóverseny"} value={newEv.title} onChange={e => setNewEv({...newEv,title:e.target.value})} /></div>
                     <div className="fg"><label className="fl">{t("admin.ev_date")}</label><input className="inp" type="date" value={newEv.date} onChange={e => setNewEv({...newEv,date:e.target.value})} /></div>
                     <div className="fg"><label className="fl">{t("admin.ev_time")}</label><input className="inp" type="time" value={newEv.time} onChange={e => setNewEv({...newEv,time:e.target.value})} /></div>
@@ -2186,7 +2186,7 @@
                     <div className="fg"><label className="fl">{t("admin.ev_desc")}</label><textarea className="textarea" placeholder="Esemény részletei..." value={newEv.description} onChange={e => setNewEv({...newEv,description:e.target.value})} /></div>
                     <button className="btn-p" onClick={addEvent} disabled={!newEv.title||!newEv.date}>{t("admin.ev_btn")}</button>
                   </div>
-                  <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.15rem",marginBottom:"1rem",letterSpacing:".05em",color:"var(--navy)"}}>{t("admin.all_ev")} ({events.length})</div>
+                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.15rem",marginBottom:"1rem",letterSpacing:".05em",color:"var(--navy)"}}>{t("admin.all_ev")} ({events.length})</div>
                   {events.length === 0 ? <div className="empty">{t("admin.ev_empty")}</div>
                     : [...events].sort((a,b)=>b.date.localeCompare(a.date)).map(ev => <EventCard key={ev.id} ev={ev} user={user} profile={profile} regs={regs[ev.id]||[]} onRegister={register} onUnregister={unregister} isAdmin={true} onDelete={deleteEvent} onAdminDelReg={adminDelReg} gallery={gallery} onEdit={ev => setEditEv(ev)} onOpenDetail={(ev, hp) => setActiveEvent({...ev, _hasPhotos: hp})} />)}
                 </>
@@ -2211,7 +2211,7 @@
                     {upProg > 0 && <div className="pb-wrap" style={{marginTop:".6rem"}}><div className="pb" style={{width:upProg+"%"}} /></div>}
                     <input ref={fileRef} type="file" multiple accept="image/*" style={{display:"none"}} onChange={e => uploadImages(e.target.files)} />
                   </div>
-                  <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.15rem",marginBottom:".7rem",letterSpacing:".05em",color:"var(--navy)"}}>{t("admin.gal_count")} ({gallery.length})</div>
+                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.15rem",marginBottom:".7rem",letterSpacing:".05em",color:"var(--navy)"}}>{t("admin.gal_count")} ({gallery.length})</div>
                   {gallery.length === 0 ? <div className="empty">{t("admin.gal_empty")}</div> : (
                     <div className="tg">
                       {gallery.map(img => (
