@@ -488,12 +488,12 @@
         "runs.title":"Futás rögzítése","posts.pinned":"📌 Kiemelt","posts.pin":"📌 Kiemel","posts.unpin":"📌 Kiemelés eltávolítása","posts.run_entry":"🏃 Futás","feed.empty":"Még nincs bejegyzés.","runs.km":"Távolság (km) *","runs.duration":"Időtartam (kötelező, pl. 28:45 vagy 1:10:00)","runs.duration_ph":"pl. 28:45 vagy 1:10:00",
         "runs.desc":"Megjegyzés (opcionális)","runs.photo":"Fotó (opcionális)",
         "runs.btn":"Futás rögzítése","runs.empty":"Még nincs rögzített futás.",
-        "runs.login_to":"a futásaid rögzítéséhez","lbsort.km":"Km szerint","lbsort.runs":"Futások száma","lbsort.pace":"Tempó szerint","lbsort.duration":"Idő szerint","runs.pace":"Tempó","runs.hours":"ó","runs.minutes":"p","runs.seconds":"mp","comments.title":"Hozzászólások","comments.placeholder":"Írj hozzászólást...","comments.send":"Küldés","comments.empty":"Még nincs hozzászólás.","comments.delete":"Törlés","runs.login_to_react":"a reakciókhoz","runs.delete":"✕ Törlés",
+        "runs.login_to":"a futásaid rögzítéséhez","runs.no_file":"Nincs fájl kiválasztva","lbsort.km":"Km szerint","lbsort.runs":"Futások száma","lbsort.pace":"Tempó szerint","lbsort.duration":"Idő szerint","runs.pace":"Tempó","runs.hours":"ó","runs.minutes":"p","runs.seconds":"mp","comments.title":"Hozzászólások","comments.placeholder":"Írj hozzászólást...","comments.send":"Küldés","comments.empty":"Még nincs hozzászólás.","comments.delete":"Törlés","runs.login_to_react":"a reakciókhoz","runs.delete":"✕ Törlés",
         "stats.total_km":"Összes km","stats.total_runs":"Futások száma",
         "stats.week":"Heti legtöbb km","stats.month":"Havi legtöbb km",
         "stats.year_rank":"évi rangsor","stats.runner":"Futó",
         "stats.wkm":"Heti km","stats.mkm":"Havi km","stats.ykm":"Éves km",
-        "stats.count":"Futások","stats.empty":"Még nincs adat.","stats.my":"Saját statisztika","stats.my_total":"Összes km (én)","stats.my_runs":"Futásaim száma","stats.my_best_week":"Legjobb hetem","stats.my_best_month":"Legjobb hónapom","stats.no_runs":"Még nem rögzítettél futást.",
+        "stats.count":"Futások","stats.empty":"Még nincs adat.","stats.my":"Saját statisztika","stats.my_total":"Összes km (én)","stats.my_runs":"Futásaim száma","stats.my_best_week":"Legjobb hetem","stats.my_best_month":"Legjobb hónapom","stats.my_total_time":"Összes futott idő","stats.my_avg_pace":"Átlag tempó","stats.no_runs":"Még nem rögzítettél futást.",
         "auth.login":"Bejelentkezés","auth.register":"Regisztráció",
         "auth.name":"Teljes név","auth.email":"Email","auth.password":"Jelszó",
         "auth.pw2":"Jelszó megerősítése","auth.forgot":"Elfelejtett jelszó?",
@@ -561,12 +561,12 @@
         "runs.title":"Log a run","posts.pinned":"📌 Pinned","posts.pin":"📌 Pin","posts.unpin":"📌 Unpin","posts.run_entry":"🏃 Run","feed.empty":"No posts yet.","runs.km":"Distance (km) *","runs.duration":"Duration (required, e.g. 28:45 or 1:10:00)","runs.duration_ph":"e.g. 28:45 or 1:10:00",
         "runs.desc":"Note (optional)","runs.photo":"Photo (optional)",
         "runs.btn":"Log run","runs.empty":"No runs logged yet.",
-        "runs.login_to":"to log your runs","lbsort.km":"By km","lbsort.runs":"By runs","lbsort.pace":"By pace","lbsort.duration":"By time","runs.pace":"Pace","runs.hours":"h","runs.minutes":"m","runs.seconds":"s","comments.title":"Comments","comments.placeholder":"Write a comment...","comments.send":"Send","comments.empty":"No comments yet.","comments.delete":"Delete","runs.login_to_react":"to react","runs.delete":"✕ Delete",
+        "runs.login_to":"to log your runs","runs.no_file":"No file selected","lbsort.km":"By km","lbsort.runs":"By runs","lbsort.pace":"By pace","lbsort.duration":"By time","runs.pace":"Pace","runs.hours":"h","runs.minutes":"m","runs.seconds":"s","comments.title":"Comments","comments.placeholder":"Write a comment...","comments.send":"Send","comments.empty":"No comments yet.","comments.delete":"Delete","runs.login_to_react":"to react","runs.delete":"✕ Delete",
         "stats.total_km":"Total km","stats.total_runs":"Number of runs",
         "stats.week":"Most km this week","stats.month":"Most km this month",
         "stats.year_rank":"annual ranking","stats.runner":"Runner",
         "stats.wkm":"Weekly km","stats.mkm":"Monthly km","stats.ykm":"Annual km",
-        "stats.count":"Runs","stats.empty":"No data yet.","stats.my":"My statistics","stats.my_total":"Total km (me)","stats.my_runs":"My runs","stats.my_best_week":"Best week","stats.my_best_month":"Best month","stats.no_runs":"You have not logged any runs yet.",
+        "stats.count":"Runs","stats.empty":"No data yet.","stats.my":"My statistics","stats.my_total":"Total km (me)","stats.my_runs":"My runs","stats.my_best_week":"Best week","stats.my_best_month":"Best month","stats.my_total_time":"Total time","stats.my_avg_pace":"Avg pace","stats.no_runs":"You have not logged any runs yet.",
         "auth.login":"Login","auth.register":"Sign Up",
         "auth.name":"Full name","auth.email":"Email","auth.password":"Password",
         "auth.pw2":"Confirm password","auth.forgot":"Forgot password?",
@@ -675,6 +675,13 @@
     }
 
 
+    // Másodpercekből olvasható időtartam (pl. 1:23:45)
+    const fmtSecs = (s) => {
+      if (!s) return '—';
+      const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=Math.round(s%60);
+      if (h>0) return h+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+      return m+':'+String(sec).padStart(2,'0');
+    };
     // Időtartam másodpercbe
     const parseDurSecs = (dur) => {
       if (!dur) return 0;
@@ -1180,6 +1187,7 @@
       const [reactions, setReactions] = useState({});
       const [newRun, setNewRun] = useState({ km:'', hours:'', minutes:'', seconds:'', desc:'' });
       const [runUploading, setRunUploading] = useState(false);
+      const [runFileName, setRunFileName] = useState('');
       const [blogSubTab, setBlogSubTab] = useState('posts');
       const [pinNewPost, setPinNewPost] = useState(false);
       const [comments, setComments] = useState({});
@@ -1311,7 +1319,7 @@
         }
       };
       const loadRuns = async () => {
-        const { data } = await sb.from("runs").select("*").order("created_at",{ascending:true});
+        const { data } = await sb.from("runs").select("*").order("created_at",{ascending:false});
         setRuns(data || []);
       };
       const loadReactions = async () => {
@@ -1343,6 +1351,7 @@
         if (!error && data) setRuns(prev => [data, ...prev]);
         if (runError) { alert('Hiba a futás rögzítésekor: ' + runError + '\n\nEllenőrizd hogy fut-e le a szükséges SQL (duration oszlop hozzáadása).'); }
         setNewRun({ km:'', hours:'', minutes:'', seconds:'', desc:'' });
+        setRunFileName('');
         if (runFileRef.current) runFileRef.current.value='';
         setRunUploading(false);
       };
@@ -1822,7 +1831,7 @@
                     const allItems = [...feedPosts, ...feedRuns].sort((a,b) => {
                       if (a.is_pinned && !b.is_pinned) return -1;
                       if (!a.is_pinned && b.is_pinned) return 1;
-                      return new Date(a.created_at||a.run_date+'T00:00:00') - new Date(b.created_at||b.run_date+'T00:00:00');
+                      return new Date(b.created_at||b.run_date+'T00:00:00') - new Date(a.created_at||a.run_date+'T00:00:00');
                     });
                     if (allItems.length === 0) return <div className="empty">{t("feed.empty")}</div>;
                     return allItems.map(item => item._type === 'run' ? (
@@ -2074,6 +2083,7 @@
                               <th>{lang==="en"?"Date":"Dátum"}</th>
                               <th>km</th>
                               <th>{lang==="en"?"Duration":"Időtartam"}</th>
+                              <th>{lang==="en"?"Pace":"Tempó"}</th>
                               <th>{lang==="en"?"Note":"Megjegyzés"}</th>
                             </tr></thead>
                             <tbody>
@@ -2082,6 +2092,7 @@
                                   <td>{new Date(r.created_at||r.run_date+"T00:00:00").toLocaleDateString(lang==="en"?"en-GB":"hu-HU",{month:"short",day:"numeric"})}</td>
                                   <td><span className="lb-km">{parseFloat(r.distance_km).toFixed(2)}</span></td>
                                   <td style={{color:"var(--mu)"}}>{r.duration||"—"}</td>
+                                  <td style={{color:"var(--red)",fontWeight:600}}>{calcPace(r.distance_km,r.duration)||"—"}</td>
                                   <td style={{color:"var(--mu)",fontSize:".82rem"}}>{r.description||""}</td>
                                 </tr>
                               ))}
