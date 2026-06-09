@@ -1156,6 +1156,7 @@
       const [loadTimeout, setLoadTimeout] = useState(false);
       const [lang, setLang] = useState(() => { try { return localStorage.getItem('fm_lang')||'hu'; } catch(e) { return 'hu'; } });
       const [showLangMenu, setShowLangMenu] = useState(false);
+      const authTimeoutRef = useRef(null);
       const switchLang = (l) => { _lang = l; setLang(l); setShowLangMenu(false); try { localStorage.setItem('fm_lang',l); } catch(e) {} };
 
       const doLogout = async () => {
@@ -1408,10 +1409,15 @@
 
       useEffect(() => {
         (async () => {
-          const [{ data: evData, error: evErr }, { data: galData, error: galErr }] = await Promise.all([
-            sb.from("events").select("*").order("date"),
-            sb.from("gallery").select("*").order("created_at", { ascending: false })
-          ]);
+          let evData=[], galData=[], evErr=null, galErr=null;
+          try {
+            const res = await Promise.all([
+              sb.from("events").select("*").order("date"),
+              sb.from("gallery").select("*").order("created_at", { ascending: false })
+            ]);
+            evData=res[0].data||[]; evErr=res[0].error;
+            galData=res[1].data||[]; galErr=res[1].error;
+          } catch(e) { console.warn('Events/Gallery hálózati hiba:', e.message); }
           try { await loadRegs(); } catch(e) { console.warn('regs:', e.message); }
           try { await loadPosts(); } catch(e) { console.warn('posts:', e.message); }
           try { await loadRuns(); } catch(e) { console.warn('runs:', e.message); }
@@ -1816,7 +1822,7 @@
                     const allItems = [...feedPosts, ...feedRuns].sort((a,b) => {
                       if (a.is_pinned && !b.is_pinned) return -1;
                       if (!a.is_pinned && b.is_pinned) return 1;
-                      return new Date(a.created_at) - new Date(b.created_at);
+                      return new Date(a.created_at||a.run_date+'T00:00:00') - new Date(b.created_at||b.run_date+'T00:00:00');
                     });
                     if (allItems.length === 0) return <div className="empty">{t("feed.empty")}</div>;
                     return allItems.map(item => item._type === 'run' ? (
@@ -1896,16 +1902,16 @@
                           <label className="inp-lbl">{t("runs.duration")} *</label>
                           <div style={{display:"flex",gap:".4rem",alignItems:"center",flexWrap:"wrap"}}>
                             <input className="inp" type="number" min="0" max="99" placeholder="0"
-                              style={{width:54,textAlign:"center"}} value={newRun.hours}
+                              style={{width:72,textAlign:"center",padding:".4rem .3rem"}} value={newRun.hours}
                               onChange={e=>setNewRun({...newRun,hours:e.target.value})} />
                             <span style={{fontSize:".8rem",color:"var(--mu)"}}>{t("runs.hours")}</span>
                             <input className="inp" type="number" min="0" max="59" placeholder="0"
-                              style={{width:54,textAlign:"center"}} value={newRun.minutes}
-                              onChange={e=>setNewRun({...newRun,minutes:e.target.value})} />
+                              style={{width:72,textAlign:"center",padding:".4rem .3rem"}} value={newRun.minutes}
+                              onChange={e=>setNewRun({...newRun,minutes:Math.min(59,parseInt(e.target.value)||0).toString()})} />
                             <span style={{fontSize:".8rem",color:"var(--mu)"}}>{t("runs.minutes")}</span>
                             <input className="inp" type="number" min="0" max="59" placeholder="0"
-                              style={{width:54,textAlign:"center"}} value={newRun.seconds}
-                              onChange={e=>setNewRun({...newRun,seconds:e.target.value})} />
+                              style={{width:72,textAlign:"center",padding:".4rem .3rem"}} value={newRun.seconds}
+                              onChange={e=>setNewRun({...newRun,seconds:Math.min(59,parseInt(e.target.value)||0).toString()})} />
                             <span style={{fontSize:".8rem",color:"var(--mu)"}}>{t("runs.seconds")}</span>
                           </div>
                         </div>
