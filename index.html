@@ -101,7 +101,7 @@
     .sec-divider{height:4px;width:50px;background:var(--red);margin-top:.6rem}
 
     /* ABOUT */
-    .about-wrap{background:var(--navy);padding:5rem 5%}
+    .about-wrap{background:linear-gradient(135deg,#1a5295 0%,#1e5fa8 60%,#2470b8 100%);padding:5rem 5%}
     .about-inner{max-width:980px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
     @media(max-width:680px){.about-inner{grid-template-columns:1fr;gap:2rem}}
     .about-text{color:rgba(255,255,255,.7);font-size:.93rem;line-height:1.75;font-weight:300}
@@ -109,8 +109,7 @@
     .about-sec-tag{font-size:.64rem;letter-spacing:.05em;text-transform:none;color:var(--red);font-weight:600;margin-bottom:.45rem;display:block}
     .about-title{font-family:'Outfit',sans-serif;font-size:clamp(2.2rem,5.5vw,3.2rem);font-weight:900;line-height:.9;color:#fff;margin-bottom:1.2rem;letter-spacing:-.02em}
     .about-facts{display:flex;flex-direction:column;gap:.65rem}
-    .fact{display:flex;align-items:center;gap:1rem;padding:.85rem 1.1rem;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);border-left:3px solid var(--red)}
-    .fact-ico{font-size:1.2rem;flex-shrink:0}
+    .fact{display:flex;align-items:center;gap:1rem;padding:.85rem 1.1rem;border:1px solid rgba(255,255,255,.12);background:linear-gradient(135deg,rgba(255,255,255,.1) 0%,rgba(255,255,255,.05) 100%);border-left:none;flex-shrink:0}
     .fact-lbl{font-size:.62rem;letter-spacing:.04em;text-transform:none;color:rgba(255,255,255,.4);font-weight:500}
     .fact-val{font-size:.88rem;color:rgba(255,255,255,.85);font-weight:500;margin-top:1px}
 
@@ -205,20 +204,20 @@
     .empty{text-align:center;padding:3rem;color:var(--mu);font-size:.86rem}
 
     /* FOOTER */
-    .ft-wrap{background:var(--navy);margin-top:2rem}
+    .ft-wrap{background:linear-gradient(135deg,#9e1010 0%,#c91015 20%,#f8f8ff 50%,#1e6bb8 80%,#1a5295 100%);margin-top:2rem;position:relative;overflow:hidden}
     .ft-stripe{height:5px;background:linear-gradient(90deg,var(--red) 33%,#fff 33%,#fff 66%,var(--blue) 66%)}
     .ft-main{max-width:980px;margin:0 auto;padding:3.5rem 5% 2.5rem;display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:3rem}
     @media(max-width:680px){.ft-main{grid-template-columns:1fr;gap:2rem}}
-    .ft-logo{font-family:'Outfit',sans-serif;font-size:1.8rem;color:#fff;letter-spacing:.05em;line-height:1}
-    .ft-sub{font-size:.58rem;color:rgba(255,255,255,.4);letter-spacing:.18em;text-transform:none;margin-top:1px}
-    .ft-desc{font-size:.78rem;color:rgba(255,255,255,.5);line-height:1.6;margin-top:.7rem;max-width:240px}
-    .ft-head{font-size:.6rem;letter-spacing:.05em;text-transform:none;color:var(--red);font-weight:600;margin-bottom:.85rem}
-    .ft-item{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.55rem;font-size:.78rem;color:rgba(255,255,255,.6);line-height:1.45}
+    .ft-logo{font-family:'Outfit',sans-serif;font-size:1.8rem;color:var(--navy);letter-spacing:.05em;line-height:1}
+    .ft-sub{font-size:.58rem;color:rgba(11,31,58,.45);letter-spacing:.18em;text-transform:none;margin-top:1px}
+    .ft-desc{font-size:.78rem;color:rgba(11,31,58,.55);line-height:1.6;margin-top:.7rem;max-width:240px}
+    .ft-head{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);font-weight:700;margin-bottom:.85rem;opacity:.6}
+    .ft-item{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.55rem;font-size:.78rem;color:rgba(11,31,58,.6);line-height:1.45}
     .ft-ico{flex-shrink:0;font-size:.9rem}
-    .ft-link{color:rgba(255,255,255,.6);text-decoration:none;transition:color .2s;font-size:.78rem;display:block;margin-bottom:.4rem}
-    .ft-link:hover{color:var(--red)}
-    .ft-bottom{border-top:1px solid rgba(255,255,255,.08);max-width:980px;margin:0 auto;padding:1.1rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
-    .ft-copy{font-size:.7rem;color:rgba(255,255,255,.35)}
+    .ft-link{color:rgba(11,31,58,.6);text-decoration:none;transition:color .2s;font-size:.78rem;display:block;margin-bottom:.4rem}
+    .ft-link:hover{color:var(--navy)}
+    .ft-bottom{border-top:1px solid rgba(11,31,58,.1);max-width:980px;margin:0 auto;padding:1.1rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+    .ft-copy{font-size:.7rem;color:rgba(11,31,58,.4)}
 
 
     /* ── MODÁLOK ── */
@@ -477,7 +476,7 @@
     .sec-tag { font-size:.62rem !important; letter-spacing:.2em !important; text-transform:uppercase !important; font-weight:700 !important; }
 
     /* Nav - erősebb vonal */
-    .nav { border-bottom:none !important; background:#4A90D9 !important; }
+    .nav { border-bottom:none !important; background:#2E72B8 !important; }
     .nav-logo-name { font-weight:900 !important; letter-spacing:.12em !important; }
     .nl { font-weight:600 !important; letter-spacing:.04em !important; }
     .nl.a { border-bottom:2px solid rgba(255,255,255,.9) !important; color:#fff !important; }
@@ -539,6 +538,32 @@
     .nav-drawer { background:#2a6fb0 !important; }
     .nd-close { color:#fff !important; }
     .nd-close:hover { background:rgba(255,255,255,.15) !important; }
+
+  
+    /* Footer minta (ugyanolyan mint a hero) */
+    .ft-wrap::before {
+      content:'';
+      position:absolute;
+      inset:0;
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(255,255,255,.04) 0px,
+        rgba(255,255,255,.04) 1px,
+        transparent 1px,
+        transparent 28px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        rgba(0,0,0,.02) 0px,
+        rgba(0,0,0,.02) 1px,
+        transparent 1px,
+        transparent 28px
+      );
+      pointer-events:none;
+      z-index:0;
+    }
+    .ft-main, .ft-bottom { position:relative; z-index:1; }
+    .ft-stripe { display:none; }
 
   </style>
 </head>
