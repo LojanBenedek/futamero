@@ -355,6 +355,7 @@
     .lb-sort-btn{background:var(--bg2);border:1px solid var(--br);color:var(--tx2);padding:.35rem .75rem;font-size:.78rem;cursor:pointer;font-family:'Rubik',sans-serif;transition:all .18s}
     .lb-sort-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
     .lb-sort-btn:hover:not(.active){border-color:var(--blue);color:var(--blue)}
+    .active-col{color:var(--red)!important}
 
     /* ── RESPONSIVE ── */
 
@@ -493,7 +494,7 @@
         "stats.week":"Heti legtöbb km","stats.month":"Havi legtöbb km",
         "stats.year_rank":"évi rangsor","stats.runner":"Futó",
         "stats.wkm":"Heti km","stats.mkm":"Havi km","stats.ykm":"Éves km",
-        "stats.count":"Futások","stats.empty":"Még nincs adat.","stats.my":"Saját statisztika","stats.my_total":"Összes km (én)","stats.my_runs":"Futásaim száma","stats.my_best_week":"Legjobb hetem","stats.my_best_month":"Legjobb hónapom","stats.my_total_time":"Összes futott idő","stats.my_avg_pace":"Átlag tempó","stats.no_runs":"Még nem rögzítettél futást.",
+        "stats.count":"Futások","stats.empty":"Még nincs adat.","stats.my":"Saját statisztika","stats.my_total":"Összes km (én)","stats.my_runs":"Futásaim száma","stats.my_best_week":"Legjobb hetem","stats.my_best_month":"Legjobb hónapom","stats.my_total_time":"Összes futott idő","stats.my_avg_pace":"Átlag tempó","stats.my_week_time":"Heti futott idő","stats.my_month_time":"Havi futott idő","lbsort.pace":"Legjobb tempó","lbperiod.year":"Idei év","lbperiod.d7":"Elmúlt 7 nap","lbperiod.d30":"Elmúlt 30 nap","stats.top10":"Top 10 futó","stats.no_runs":"Még nem rögzítettél futást.",
         "auth.login":"Bejelentkezés","auth.register":"Regisztráció",
         "auth.name":"Teljes név","auth.email":"Email","auth.password":"Jelszó",
         "auth.pw2":"Jelszó megerősítése","auth.forgot":"Elfelejtett jelszó?",
@@ -566,7 +567,7 @@
         "stats.week":"Most km this week","stats.month":"Most km this month",
         "stats.year_rank":"annual ranking","stats.runner":"Runner",
         "stats.wkm":"Weekly km","stats.mkm":"Monthly km","stats.ykm":"Annual km",
-        "stats.count":"Runs","stats.empty":"No data yet.","stats.my":"My statistics","stats.my_total":"Total km (me)","stats.my_runs":"My runs","stats.my_best_week":"Best week","stats.my_best_month":"Best month","stats.my_total_time":"Total time","stats.my_avg_pace":"Avg pace","stats.no_runs":"You have not logged any runs yet.",
+        "stats.count":"Runs","stats.empty":"No data yet.","stats.my":"My statistics","stats.my_total":"Total km (me)","stats.my_runs":"My runs","stats.my_best_week":"Best week","stats.my_best_month":"Best month","stats.my_total_time":"Total time","stats.my_avg_pace":"Avg pace","stats.my_week_time":"Weekly time","stats.my_month_time":"Monthly time","lbsort.pace":"Best pace","lbperiod.year":"This year","lbperiod.d7":"Last 7 days","lbperiod.d30":"Last 30 days","stats.top10":"Top 10 runners","stats.no_runs":"You have not logged any runs yet.",
         "auth.login":"Login","auth.register":"Sign Up",
         "auth.name":"Full name","auth.email":"Email","auth.password":"Password",
         "auth.pw2":"Confirm password","auth.forgot":"Forgot password?",
@@ -1194,6 +1195,7 @@
       const [runReactions, setRunReactions] = useState({});
       const [newComment, setNewComment] = useState({});
       const [lbSort, setLbSort] = useState('km');
+      const [lbPeriod, setLbPeriod] = useState('year');
       const [openComments, setOpenComments] = useState({});
       const runFileRef = useRef(null);
       const [aTab,       setATab]       = useState("ev");
@@ -2009,44 +2011,67 @@
                     <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>
                       {now.getFullYear()}. {t("stats.year_rank")}
                     </div>
+                    <div style={{marginBottom:"1rem"}}>
+                    <div style={{display:"flex",gap:".4rem",flexWrap:"wrap",marginBottom:".6rem"}}>
+                      {[["year",t("lbperiod.year")],["d7",t("lbperiod.d7")],["d30",t("lbperiod.d30")]].map(([k,lbl])=>(
+                        <button key={k} className={"lb-sort-btn"+(lbPeriod===k?" active":"")} onClick={()=>setLbPeriod(k)}>{lbl}</button>
+                      ))}
+                    </div>
                     <div className="lb-sort-row">
-                      {[["km",t("lbsort.km")],["runs",t("lbsort.runs")],["pace",t("lbsort.pace")],["dur",t("lbsort.duration")]].map(([k,lbl])=>(
+                      {[["km",t("lbsort.km")],["dur",t("lbsort.duration")],["runs",t("lbsort.runs")],["pace",t("lbsort.pace")]].map(([k,lbl])=>(
                         <button key={k} className={"lb-sort-btn"+(lbSort===k?" active":"")} onClick={()=>setLbSort(k)}>{lbl}</button>
                       ))}
                     </div>
-                    {lb.length === 0 ? <div className="empty">{t("stats.empty")}</div> : (
+                  </div>
+                  {(() => {
+                    const now2 = new Date();
+                    const pStart = lbPeriod==="d7" ? new Date(now2-7*864e5) : lbPeriod==="d30" ? new Date(now2-30*864e5) : new Date(now2.getFullYear(),0,1);
+                    const filtRuns = runs.filter(r => new Date(r.created_at||r.run_date+'T00:00:00') >= pStart);
+                    const uMap = {};
+                    filtRuns.forEach(r => {
+                      if (!uMap[r.user_name]) uMap[r.user_name]={km:0,secs:0,count:0};
+                      const km=parseFloat(r.distance_km)||0;
+                      uMap[r.user_name].km+=km;
+                      uMap[r.user_name].secs+=parseDurSecs(r.duration);
+                      uMap[r.user_name].count++;
+                    });
+                    const lb2 = Object.entries(uMap).map(([name,s])=>({name,...s,pace:s.secs&&s.km?s.secs/s.km:Infinity}))
+                      .sort((a,b)=>{
+                        if(lbSort==="dur") return b.secs-a.secs;
+                        if(lbSort==="runs") return b.count-a.count;
+                        if(lbSort==="pace") return a.pace-b.pace;
+                        return b.km-a.km;
+                      }).slice(0,10);
+                    if (lb2.length===0) return <div className="empty">{t("stats.empty")}</div>;
+                    return (
                       <div style={{background:"var(--bg2)",border:"1px solid var(--br)",boxShadow:"var(--shadow)",overflowX:"auto"}}>
                         <table className="lb-table">
                           <thead><tr>
-                            <th>#</th><th>{t("stats.runner")}</th>
-                            <th>{t("stats.wkm")}</th><th>{t("stats.mkm")}</th><th>{t("stats.ykm")}</th><th>{t("stats.count")}</th>
+                            <th>#</th>
+                            <th>{t("stats.runner")}</th>
+                            <th>km</th>
+                            <th>{t("lbsort.duration")}</th>
+                            <th>{t("stats.count")}</th>
+                            <th>{t("lbsort.pace")}</th>
                           </tr></thead>
                           <tbody>
-                            {[...lb].sort((a,b)=>{
-                              if(lbSort==="runs") return b.count-a.count;
-                              if(lbSort==="pace") {
-                                const pa=b.totalSecs&&b.totalKm?b.totalSecs/b.totalKm:Infinity;
-                                const pb=a.totalSecs&&a.totalKm?a.totalSecs/a.totalKm:Infinity;
-                                return pa-pb;
-                              }
-                              if(lbSort==="dur") return b.totalSecs-a.totalSecs;
-                              return b.year-a.year;
-                            }).map((u,i)=>(
+                            {lb2.map((u,i)=>(
                               <tr key={u.name}>
                                 <td><span className={"lb-rank"+(i===0?" gold":i===1?" silver":i===2?" bronze":"")}>
                                   {i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}
                                 </span></td>
                                 <td><span className="lb-name">{u.name}</span></td>
-                                <td><span className="lb-km">{(u.week||0).toFixed(2)}</span></td>
-                                <td><span className="lb-km">{(u.month||0).toFixed(2)}</span></td>
-                                <td><span className="lb-km" style={{color:"var(--red)"}}>{(u.year||0).toFixed(2)}</span></td>
-                                <td style={{color:"var(--mu)"}}>{u.count}</td>
+                                <td><span className={"lb-km"+(lbSort==="km"?" active-col":"")}>{(u.km||0).toFixed(2)}</span></td>
+                                <td><span className={"lb-km"+(lbSort==="dur"?" active-col":"")} style={{fontSize:".95rem"}}>{fmtSecs(u.secs)||"—"}</span></td>
+                                <td><span className={"lb-km"+(lbSort==="runs"?" active-col":"")}>{u.count}</span></td>
+                                <td><span className={"lb-km"+(lbSort==="pace"?" active-col":"")} style={{fontSize:".9rem"}}>{u.pace<Infinity?fmtSecs(u.pace)+" /km":"—"}</span></td>
                               </tr>
                             ))}
                           </tbody>
                         </table>
                       </div>
-                    )}
+                    );
+                  })()}
                   {/* Személyes statisztika */}
                   {user && (function MyStats() {
                     const myRuns = runs.filter(r => r.user_id === user.id);
