@@ -10,6 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FUTaMÉRŐ">
   <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-192.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FUTaMÉRŐ Sport és Kulturális Egyesület – Kaposmérő</title>
   <meta name="description" content="A FUTaMÉRŐ Sport és Kulturális Egyesület 2015 óta köti össze a futás szerelmeseit Kaposmérőn és Somogy megyében." />
@@ -361,6 +362,12 @@
     .lb-sort-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
     .lb-sort-btn:hover:not(.active){border-color:var(--blue);color:var(--blue)}
     .active-col{color:var(--red)!important}
+
+
+    /* ── PWA telepítés gomb ── */
+    .pwa-btn{display:flex;align-items:center;gap:.4rem;background:rgba(201,16,21,.15);border:1px solid rgba(201,16,21,.4);color:#fff;padding:.3rem .7rem;cursor:pointer;font-size:.75rem;font-family:'Rubik',sans-serif;font-weight:500;transition:all .2s;white-space:nowrap}
+    .pwa-btn:hover{background:rgba(201,16,21,.3)}
+    .pwa-btn-icon{font-size:.9rem}
 
     /* ── RESPONSIVE ── */
 
@@ -1176,7 +1183,25 @@
       const [loadTimeout, setLoadTimeout] = useState(false);
       const [lang, setLang] = useState(() => { try { const v=localStorage.getItem('fm_lang'); return (v==='hu'||v==='en')?v:'hu'; } catch(e) { return 'hu'; } });
       const [showLangMenu, setShowLangMenu] = useState(false);
+      const [pwaPrompt, setPwaPrompt] = useState(null);
+      const [pwaInstalled, setPwaInstalled] = useState(false);
       const switchLang = (l) => { _lang = l; setLang(l); setShowLangMenu(false); try { localStorage.setItem('fm_lang',l); } catch(e) {} };
+
+      // PWA telepítés prompt kezelése
+      useEffect(() => {
+        const handler = (e) => { e.preventDefault(); setPwaPrompt(e); };
+        window.addEventListener('beforeinstallprompt', handler);
+        window.addEventListener('appinstalled', () => setPwaInstalled(true));
+        return () => window.removeEventListener('beforeinstallprompt', handler);
+      }, []);
+
+      const installPwa = async () => {
+        if (!pwaPrompt) return;
+        pwaPrompt.prompt();
+        const { outcome } = await pwaPrompt.userChoice;
+        if (outcome === 'accepted') setPwaInstalled(true);
+        setPwaPrompt(null);
+      };
 
       const doLogout = async () => {
         if (!window.confirm(t("confirm.logout"))) return;
@@ -1617,6 +1642,13 @@
                 </>
               )}
             </div>
+            {/* PWA telepítés gomb */}
+            {pwaPrompt && !pwaInstalled && (
+              <button className="pwa-btn" onClick={installPwa}>
+                <span className="pwa-btn-icon">📲</span>
+                <span>{_lang==="en"?"Install app":"Alkalmazás letöltése"}</span>
+              </button>
+            )}
             {/* Nyelvváltó */}
             <div className="lang-wrap">
               <button className="lang-toggle" onClick={()=>setShowLangMenu(m=>!m)}>
