@@ -1221,7 +1221,7 @@
         const _authDone = { v: false };
         const fallback = setTimeout(() => {
           if (!_authDone.v) { setAuthReady(true); setLoaded(true); }
-        }, 6000);
+        }, 3000);
 
         const { data: { subscription } } = sb.auth.onAuthStateChange(async (event, session) => {
           if (event === "PASSWORD_RECOVERY") { setShowResetPw(true); return; }
@@ -1421,12 +1421,15 @@
             evData=res[0].data||[]; evErr=res[0].error;
             galData=res[1].data||[]; galErr=res[1].error;
           } catch(e) { console.warn('Events/Gallery hálózati hiba:', e.message); }
-          try { await loadRegs(); } catch(e) { console.warn('regs:', e.message); }
-          try { await loadPosts(); } catch(e) { console.warn('posts:', e.message); }
-          try { await loadRuns(); } catch(e) { console.warn('runs:', e.message); }
-          try { await loadReactions(); } catch(e) { console.warn('reactions:', e.message); }
-          try { await loadComments(); } catch(e) { console.warn('comments:', e.message); }
-          try { await loadRunReactions(); } catch(e) { console.warn('run_reactions:', e.message); }
+          // Párhuzamos betöltés - gyorsabb
+          await Promise.all([
+            loadRegs().catch(e => console.warn('regs:', e.message)),
+            loadPosts().catch(e => console.warn('posts:', e.message)),
+            loadRuns().catch(e => console.warn('runs:', e.message)),
+            loadReactions().catch(e => console.warn('reactions:', e.message)),
+            loadComments().catch(e => console.warn('comments:', e.message)),
+            loadRunReactions().catch(e => console.warn('run_reactions:', e.message)),
+          ]);
           if (evErr || galErr) { console.warn('DB hiba:', evErr || galErr); }
           setEvents(evData || []);
           const g = (galData || []).map(r => ({ id:r.id, src:r.url, filename:r.filename, event_label:r.event_label||"", event_id:r.event_id||null }));
@@ -1436,7 +1439,7 @@
       }, []);
 
       useEffect(() => {
-        const tId2 = setTimeout(() => setLoadTimeout(true), 10000);
+        const tId2 = setTimeout(() => setLoadTimeout(true), 20000);
         return () => clearTimeout(tId2);
       }, []);
 
