@@ -1332,12 +1332,15 @@
             if (!upErr) { const { data:{publicUrl} } = sb.storage.from(BUCKET).getPublicUrl(fname); imageUrl=publicUrl; imageFilename=fname; }
           } catch(e) { console.error(e); }
         }
+        let runError = null;
         const { data, error } = await sb.from("runs").insert([{
           user_id:user.id, user_name:profile?.full_name||user.email?.split("@")[0]||"Ismeretlen",
           distance_km:parseFloat(newRun.km), run_date:new Date().toISOString().slice(0,10), duration:fmtDur(newRun.hours,newRun.minutes,newRun.seconds),
           description:newRun.desc, image_url:imageUrl, image_filename:imageFilename
         }]).select().single();
+        if (error) { console.error('Run insert hiba:', error); runError = error.message; }
         if (!error && data) setRuns(prev => [data, ...prev]);
+        if (runError) { alert('Hiba a futás rögzítésekor: ' + runError + '\n\nEllenőrizd hogy fut-e le a szükséges SQL (duration oszlop hozzáadása).'); }
         setNewRun({ km:'', hours:'', minutes:'', seconds:'', desc:'' });
         if (runFileRef.current) runFileRef.current.value='';
         setRunUploading(false);
@@ -1409,18 +1412,16 @@
             sb.from("events").select("*").order("date"),
             sb.from("gallery").select("*").order("created_at", { ascending: false })
           ]);
-          await loadRegs();
-          await loadPosts();
+          try { await loadRegs(); } catch(e) { console.warn('regs:', e.message); }
+          try { await loadPosts(); } catch(e) { console.warn('posts:', e.message); }
           try { await loadRuns(); } catch(e) { console.warn('runs:', e.message); }
           try { await loadReactions(); } catch(e) { console.warn('reactions:', e.message); }
-          try { await loadComments(); } catch(e) { console.warn('comments tábla hiányzik:', e.message); }
-          try { await loadRunReactions(); } catch(e) { console.warn('run_reactions tábla hiányzik:', e.message); }
-          if (evErr || galErr) { setDbErr(true); }
-          else {
-            setEvents(evData || []);
-            const g = (galData || []).map(r => ({ id:r.id, src:r.url, filename:r.filename, event_label:r.event_label||"", event_id:r.event_id||null }));
-            setGallery(g); galRef.current = g;
-          }
+          try { await loadComments(); } catch(e) { console.warn('comments:', e.message); }
+          try { await loadRunReactions(); } catch(e) { console.warn('run_reactions:', e.message); }
+          if (evErr || galErr) { console.warn('DB hiba:', evErr || galErr); }
+          setEvents(evData || []);
+          const g = (galData || []).map(r => ({ id:r.id, src:r.url, filename:r.filename, event_label:r.event_label||"", event_id:r.event_id||null }));
+          setGallery(g); galRef.current = g;
           setLoaded(true);
         })();
       }, []);
