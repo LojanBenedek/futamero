@@ -311,19 +311,19 @@
 
     /* ── NYELVVÁLTÓ ── */
     .lang-wrap{position:relative}
-    .lang-toggle{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;padding:.3rem .65rem;cursor:pointer;font-size:.78rem;letter-spacing:.08em;transition:all .2s;display:flex;align-items:center;gap:.3rem;white-space:nowrap;font-family:"Rubik",sans-serif;font-weight:600}
-    .lang-toggle:hover{background:rgba(255,255,255,.18)}
+    .lang-toggle{background:var(--bg3);border:1px solid var(--br);color:var(--tx2);padding:.3rem .65rem;cursor:pointer;font-size:.78rem;letter-spacing:.08em;transition:all .2s;display:flex;align-items:center;gap:.3rem;white-space:nowrap;font-family:"Rubik",sans-serif;font-weight:600}
+    .lang-toggle:hover{background:var(--bg3);border-color:var(--red)}
     .lang-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
     .lang-toggle:hover{background:rgba(255,255,255,.2)}
     .lang-toggle small{font-size:.65rem;opacity:.7}
-    .lang-menu{position:absolute;top:calc(100% + 6px);right:0;background:var(--navy2);
-               border:1px solid rgba(255,255,255,.15);z-index:500;min-width:150px;
+    .lang-menu{position:absolute;top:calc(100% + 6px);right:0;background:#fff;
+               border:1px solid var(--br);z-index:500;min-width:150px;
                box-shadow:0 8px 24px rgba(0,0,0,.35);animation:fi .15s ease}
     .lang-opt{display:flex;align-items:center;gap:.6rem;width:100%;background:none;border:none;
               color:rgba(255,255,255,.8);text-align:left;padding:.65rem 1rem;cursor:pointer;
               font-family:'Rubik',sans-serif;font-size:.88rem;transition:background .2s}
-    .lang-opt:hover{background:rgba(255,255,255,.1);color:#fff}
-    .lang-opt.active{color:#fff;font-weight:600;background:rgba(201,16,21,.2)}
+    .lang-opt:hover{background:var(--bg3);color:var(--navy)}
+    .lang-opt.active{color:var(--red);font-weight:600;background:rgba(201,16,21,.06)}
     .lang-opt-flag{font-size:1.15rem}
 
 
@@ -367,7 +367,7 @@
     /* ── OFFLINE BADGE ── */
     .offline-badge{background:#f59e0b;color:#000;font-size:.72rem;font-weight:700;padding:.2rem .6rem;letter-spacing:.05em;display:flex;align-items:center;gap:.3rem}
     /* ── PWA telepítés gomb ── */
-    .pwa-btn{display:flex;align-items:center;gap:.4rem;background:rgba(201,16,21,.15);border:1px solid rgba(201,16,21,.4);color:#fff;padding:.3rem .7rem;cursor:pointer;font-size:.75rem;font-family:'Rubik',sans-serif;font-weight:500;transition:all .2s;white-space:nowrap}
+    .pwa-btn{display:flex;align-items:center;gap:.4rem;background:rgba(201,16,21,.08);border:1px solid rgba(201,16,21,.35);color:var(--red);padding:.3rem .7rem;cursor:pointer;font-size:.75rem;font-family:'Rubik',sans-serif;font-weight:500;transition:all .2s;white-space:nowrap}
     .pwa-btn:hover{background:rgba(201,16,21,.3)}
     .pwa-btn-icon{font-size:.9rem}
 
@@ -477,10 +477,10 @@
     .sec-tag { font-size:.62rem !important; letter-spacing:.2em !important; text-transform:uppercase !important; font-weight:700 !important; }
 
     /* Nav - erősebb vonal */
-    .nav { border-bottom:2px solid var(--red) !important; }
+    .nav { border-bottom:2px solid var(--red) !important; background:#fff !important; }
     .nav-logo-name { font-weight:900 !important; letter-spacing:.12em !important; }
     .nl { font-weight:600 !important; letter-spacing:.04em !important; }
-    .nl.a { border-bottom:2px solid var(--red) !important; }
+    .nl.a { border-bottom:2px solid var(--red) !important; color:var(--navy) !important; }
 
     /* Kártyák - élesebb */
     .ec { border-radius:0 !important; border-top-width:3px !important; }
