@@ -1688,7 +1688,7 @@
             </div>
             {isOffline && <div className="offline-badge">📴 {_lang==="en"?"Offline":"Offline"}</div>}
             {/* PWA telepítés gomb */}
-            {!isInStandalone && (
+            {!isInStandalone && window.innerWidth > 760 && (
               <button className="pwa-btn" onClick={pwaPrompt ? installPwa : ()=>setShowIosInstall(true)}>
                 <span className="pwa-btn-icon">📲</span>
                 <span>{_lang==="en"?"Install":"Letöltés"}</span>
