@@ -241,7 +241,7 @@
 
 
     /* ── SÖTÉT GALÉRIA SZEKCIÓ ── */
-    .dark-gal-wrap{background:linear-gradient(150deg,#060e1c 0%,#0d2244 45%,#071526 100%);padding:5rem 5%;position:relative;overflow:hidden}
+    .dark-gal-wrap{background:linear-gradient(150deg,#0f2540 0%,#1a3e72 45%,#122d56 100%);padding:5rem 5%;position:relative;overflow:hidden}
     .dark-gal-wrap::before{content:'';position:absolute;inset:0;pointer-events:none;
       background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.018) 0px,rgba(255,255,255,.018) 1px,transparent 1px,transparent 8%),
                         repeating-linear-gradient(rgba(255,255,255,.012) 0px,rgba(255,255,255,.012) 1px,transparent 1px,transparent 80px)}
@@ -456,9 +456,8 @@
     }
   
     /* ════ DESIGN OVERRIDES — sporty + elegant ════ */
-    /* Hero és Footer gradiens */
-    .hero { background: linear-gradient(150deg, #1a5fa8 0%, #1e6bb8 40%, #8a1515 80%, #9e1010 100%) !important; }
-    .ft-wrap { background: linear-gradient(150deg, #9e1010 0%, #8a1515 20%, #1e6bb8 60%, #1a5fa8 100%) !important; }
+    /* Footer: ugyanolyan mint a hero, fordítva */
+    .ft-wrap { background: linear-gradient(330deg, #1a5fa8 0%, #1e6bb8 40%, #8a1515 80%, #9e1010 100%) !important; }
 
     /* Hero - balra igazítva */
     .hc { text-align:left !important; align-items:flex-start !important; padding-left:5% !important; padding-right:5% !important; }
@@ -1943,7 +1942,11 @@
                 <div className="about-inner">
                   <div>
                     <span className="about-sec-tag">{t("about.tag")}</span>
-                    <div className="about-title">{t("about.title")}</div>
+                    <div className="about-title">
+                      {_lang==="en"
+                        ? <>The <span style={{color:"#fff"}}>FUT</span><span style={{color:"#7BBFEF"}}>a</span><span style={{color:"var(--red)"}}>MÉRŐ</span> Team</>
+                        : <>A <span style={{color:"#fff"}}>FUT</span><span style={{color:"#7BBFEF"}}>a</span><span style={{color:"var(--red)"}}>MÉRŐ</span> csapata</>}
+                    </div>
                     <div className="about-text">
                       <p>{t("about.p1")}</p>
                       <p>{t("about.p2")}</p>
