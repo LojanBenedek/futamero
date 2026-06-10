@@ -457,7 +457,7 @@
   
     /* ════ DESIGN OVERRIDES — sporty + elegant ════ */
     /* Kezdőlap galéria szekció elválasztás */
-    .dark-gal-wrap { border-top: 2px solid #fff !important; margin-top: 0 !important; }
+    .dark-gal-wrap { border-top: 2px solid #0b1f3a !important; margin-top: 0 !important; }
 
     /* Galéria esemény címek kisebbek */
     .gal-group-title { font-size: 1.1rem !important; font-weight:700 !important; }
@@ -1384,6 +1384,7 @@
       const [showIosInstall,    setShowIosInstall]    = useState(false);
       const [notifications,    setNotifications]    = useState([]);
       const [showNotif,        setShowNotif]        = useState(false);
+      const [showUserMenu,     setShowUserMenu]     = useState(false);
       const [showChangePw,     setShowChangePw]     = useState(false);
       const [changePwForm,     setChangePwForm]     = useState({pw:'',pw2:''});
       const [changePwMsg,      setChangePwMsg]      = useState('');
@@ -1911,10 +1912,24 @@
               {isAdmin && <button className={"nl" + (tab==="admin"?" a":"")} onClick={() => setTab("admin")}>{t("nav.admin")}</button>}
               {user ? (
                 <div className="nav-user" style={{position:"relative"}}>
-                  <div className="user-ava">{initials(displayName)}</div>
-                  <span className="user-name">{displayName}</span>
-                  <button className="nav-btn" style={{padding:".3rem .5rem"}} onClick={()=>setShowChangePw(true)} title={t("pw.change")}>🔑</button>
-                  <button className="nav-btn out" onClick={doLogout}>{t("nav.logout")}</button>
+                  <button style={{display:"flex",alignItems:"center",gap:".5rem",background:"none",border:"none",cursor:"pointer",padding:0}} onClick={()=>setShowUserMenu(m=>!m)}>
+                    <div className="user-ava">{initials(displayName)}</div>
+                    <span className="user-name">{displayName}</span>
+                    <span style={{color:"#fff",fontSize:".7rem",opacity:.7}}>▾</span>
+                  </button>
+                  {showUserMenu && (
+                    <>
+                      <div style={{position:"fixed",inset:0,zIndex:499}} onClick={()=>setShowUserMenu(false)}/>
+                      <div style={{position:"absolute",top:"calc(100% + 8px)",right:0,background:"#fff",border:"1px solid var(--br)",boxShadow:"0 8px 28px rgba(11,31,58,.18)",zIndex:600,minWidth:200,overflow:"hidden"}}>
+                        <button style={{display:"flex",alignItems:"center",gap:".6rem",width:"100%",background:"none",border:"none",padding:".7rem 1rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".85rem",color:"#1a1a1a",textAlign:"left",borderBottom:"1px solid var(--br)"}}
+                          onClick={()=>{setShowChangePw(true);setShowUserMenu(false);}}>🔑 {t("pw.change")}</button>
+                        <button style={{display:"flex",alignItems:"center",gap:".6rem",width:"100%",background:"none",border:"none",padding:".7rem 1rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".85rem",color:"#1a1a1a",textAlign:"left",borderBottom:"1px solid var(--br)"}}
+                          onClick={()=>{doLogout();setShowUserMenu(false);}}>🚪 {t("nav.logout")}</button>
+                        <button style={{display:"flex",alignItems:"center",gap:".6rem",width:"100%",background:"none",border:"none",padding:".7rem 1rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".85rem",color:"var(--red)",textAlign:"left"}}
+                          onClick={()=>{doDeleteAccount();setShowUserMenu(false);}}>🗑 {t("account.delete")}</button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : (
                 <>
