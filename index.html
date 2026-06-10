@@ -580,6 +580,27 @@
     .ft-main, .ft-bottom { position:relative; z-index:1; }
     .ft-stripe { display:none; }
 
+  
+    /* ── Értesítések ── */
+    .notif-btn{position:relative;background:none;border:none;color:rgba(255,255,255,.85);cursor:pointer;font-size:1.15rem;padding:.3rem .4rem;display:flex;align-items:center}
+    .notif-badge{position:absolute;top:2px;right:2px;background:var(--red);color:#fff;font-size:.55rem;font-weight:700;border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center;line-height:1}
+    .notif-panel{position:absolute;top:calc(100% + 8px);right:0;width:320px;max-width:90vw;background:#fff;border:1px solid var(--br);box-shadow:0 8px 32px rgba(11,31,58,.18);z-index:600;max-height:420px;display:flex;flex-direction:column}
+    .notif-head{padding:.7rem 1rem;border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;background:var(--bg3)}
+    .notif-head-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:.9rem;color:var(--navy)}
+    .notif-list{overflow-y:auto;flex:1}
+    .notif-item{padding:.6rem 1rem;border-bottom:1px solid var(--br);display:flex;gap:.6rem;align-items:flex-start;cursor:default}
+    .notif-item.unread{background:rgba(74,144,217,.06)}
+    .notif-emoji{font-size:1.1rem;flex-shrink:0;margin-top:.1rem}
+    .notif-text{font-size:.78rem;color:var(--tx2);line-height:1.4;flex:1}
+    .notif-text strong{color:var(--navy)}
+    .notif-time{font-size:.68rem;color:var(--mu);flex-shrink:0;margin-top:.2rem}
+    .notif-empty{padding:1.5rem;text-align:center;color:var(--mu);font-size:.82rem}
+    .notif-wrap{position:relative}
+    /* ── Admin badge ── */
+    .admin-tab-header{background:linear-gradient(90deg,var(--navy) 0%,#1a3a8a 100%);padding:.7rem 1.5rem;display:flex;align-items:center;gap:.7rem;margin-bottom:1.5rem}
+    .admin-tab-badge{background:var(--red);color:#fff;font-size:.62rem;font-weight:800;letter-spacing:.12em;padding:.2rem .6rem;text-transform:uppercase}
+    .admin-tab-title{color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem}
+
   </style>
 </head>
 <body>
@@ -1312,7 +1333,13 @@
       const [showLangMenu, setShowLangMenu] = useState(false);
       const [pwaPrompt, setPwaPrompt] = useState(null);
       const [pwaInstalled, setPwaInstalled] = useState(false);
-      const [showIosInstall, setShowIosInstall] = useState(false);
+      const [showIosInstall,    setShowIosInstall]    = useState(false);
+      const [notifications,    setNotifications]    = useState([]);
+      const [showNotif,        setShowNotif]        = useState(false);
+      const [showChangePw,     setShowChangePw]     = useState(false);
+      const [changePwForm,     setChangePwForm]     = useState({pw:'',pw2:''});
+      const [changePwMsg,      setChangePwMsg]      = useState('');
+      const [changePwErr,      setChangePwErr]      = useState('');
       const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
       const isInStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
       const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -1343,6 +1370,25 @@
         setPwaPrompt(null);
       };
 
+      const doChangePw = async () => {
+        setChangePwErr(''); setChangePwMsg('');
+        if (changePwForm.pw.length < 6) { setChangePwErr(t('pw.short')); return; }
+        if (changePwForm.pw !== changePwForm.pw2) { setChangePwErr(t('pw.mismatch')); return; }
+        const { error } = await sb.auth.updateUser({ password: changePwForm.pw });
+        if (error) { setChangePwErr(error.message); return; }
+        setChangePwMsg(t('pw.success'));
+        setChangePwForm({pw:'',pw2:''});
+        setTimeout(()=>{ setShowChangePw(false); setChangePwMsg(''); }, 2000);
+      };
+      const doDeleteAccount = async () => {
+        if (!window.confirm(t('account.delete_confirm'))) return;
+        try {
+          await sb.rpc('delete_own_account');
+        } catch(e) { console.warn('Delete account:', e); }
+        setUser(null); setProfile(null); setAuthReady(true);
+        if (tab==='admin') setTab('home');
+        setShowAuth(false);
+      };
       const doLogout = async () => {
         if (!window.confirm(t("confirm.logout"))) return;
         try {
@@ -1399,6 +1445,20 @@
       const galRef  = useRef([]);
       const isAdmin = profile?.is_admin === true;
 
+      const loadNotifications = async () => {
+        if (!user) return;
+        const data = await pubFetch("notifications?user_id=eq."+user.id+"&order=created_at.desc&limit=30&select=*");
+        setNotifications(Array.isArray(data)?data:[]);
+      };
+      const markAllRead = async () => {
+        if (!user) return;
+        await sb.from("notifications").update({is_read:true}).eq("user_id",user.id).eq("is_read",false);
+        setNotifications(prev=>prev.map(n=>({...n,is_read:true})));
+      };
+      const addNotif = async (targetUserId, type, actorName, targetId, targetType, targetPreview, emoji='') => {
+        if (!user || targetUserId === user.id) return; // nem értesítjük önmagunkat
+        await sb.from("notifications").insert([{user_id:targetUserId,type,actor_name:actorName,target_id:targetId,target_type:targetType,target_preview:targetPreview,emoji}]);
+      };
       const loadProfile = async (uid) => {
         try {
           const data = await pubFetch("profiles?id=eq." + uid + "&select=*");
@@ -1814,6 +1874,47 @@
                 </>
               )}
             </div>
+            {user && (
+              <div className="notif-wrap">
+                <button className="notif-btn" onClick={()=>setShowNotif(m=>!m)}>
+                  🔔
+                  {notifications.filter(n=>!n.is_read).length > 0 && (
+                    <span className="notif-badge">{notifications.filter(n=>!n.is_read).length > 9 ? '9+' : notifications.filter(n=>!n.is_read).length}</span>
+                  )}
+                </button>
+                {showNotif && (
+                  <>
+                    <div style={{position:"fixed",inset:0,zIndex:499}} onClick={()=>setShowNotif(false)}/>
+                    <div className="notif-panel">
+                      <div className="notif-head">
+                        <span className="notif-head-title">🔔 {t("notif.title")}</span>
+                        {notifications.some(n=>!n.is_read) && (
+                          <button style={{background:"none",border:"none",color:"var(--blue)",fontSize:".72rem",cursor:"pointer",fontWeight:600}} onClick={markAllRead}>{t("notif.mark_read")}</button>
+                        )}
+                      </div>
+                      <div className="notif-list">
+                        {notifications.length === 0
+                          ? <div className="notif-empty">{t("notif.empty")}</div>
+                          : notifications.map(n => (
+                            <div key={n.id} className={"notif-item"+(n.is_read?"":" unread")}>
+                              <span className="notif-emoji">{n.emoji||"🔔"}</span>
+                              <div style={{flex:1}}>
+                                <div className="notif-text">
+                                  <strong>{n.actor_name}</strong>{" "}
+                                  {n.type==="reaction"?t("notif.reaction"):n.type==="run_reaction"?t("notif.run_reaction"):n.type==="pinned"?t("notif.pinned"):t("notif.new_event")}
+                                  {n.target_preview && <span style={{color:"var(--mu)",display:"block",fontSize:".72rem",marginTop:".2rem",fontStyle:"italic"}}>„{n.target_preview.slice(0,50)}{n.target_preview.length>50?'…':''}"</span>}
+                                </div>
+                                <div className="notif-time">{new Date(n.created_at).toLocaleDateString(_lang==="en"?"en-GB":"hu-HU",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})}</div>
+                              </div>
+                            </div>
+                          ))
+                        }
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
             {isOffline && <div className="offline-badge">📴 {_lang==="en"?"Offline":"Offline"}</div>}
             {/* PWA telepítés gomb */}
             {!isInStandalone && window.innerWidth > 760 && (
@@ -1863,6 +1964,14 @@
               <button key={tid} className={"nl" + (tab===tid?" a":"")} onClick={() => { setTab(tid); setMobileMenu(false); }}>{lbl}</button>
             ))}
             {isAdmin && <button className={"nl" + (tab==="admin"?" a":"")} onClick={() => { setTab("admin"); setMobileMenu(false); }}>⚙️ Admin</button>}
+            {user && (
+              <div style={{padding:".4rem 0",borderBottom:"1px solid rgba(255,255,255,.15)",marginBottom:".4rem"}}>
+                <button style={{width:"100%",background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",color:"#fff",padding:".5rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".82rem",marginBottom:".3rem",textAlign:"left"}}
+                  onClick={()=>{setShowChangePw(true);setMobileMenu(false);}}>🔑 {t("pw.change")}</button>
+                <button style={{width:"100%",background:"rgba(201,16,21,.15)",border:"1px solid rgba(201,16,21,.3)",color:"#ffaaaa",padding:".5rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".82rem",textAlign:"left"}}
+                  onClick={doDeleteAccount}>🗑 {t("account.delete")}</button>
+              </div>
+            )}
             {!isInStandalone && (
               <button className="pwa-btn" style={{width:"100%",justifyContent:"center",margin:".5rem 0"}}
                 onClick={pwaPrompt ? installPwa : ()=>setShowIosInstall(true)}>
@@ -1882,7 +1991,28 @@
             </div>
           </div>
 
-          {showIosInstall && (
+          {showChangePw && (
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}} onClick={()=>setShowChangePw(false)}>
+          <div style={{background:"var(--bg2)",border:"1px solid var(--br)",padding:"2rem",width:"100%",maxWidth:400}} onClick={e=>e.stopPropagation()}>
+            <div style={{fontFamily:"'Outfit',sans-serif",fontWeight:700,fontSize:"1.2rem",color:"var(--navy)",marginBottom:"1.5rem"}}>🔑 {t("pw.change")}</div>
+            {changePwMsg && <div style={{background:"rgba(0,160,80,.1)",border:"1px solid rgba(0,160,80,.3)",padding:".6rem .8rem",marginBottom:"1rem",color:"#006030",fontSize:".85rem"}}>{changePwMsg}</div>}
+            {changePwErr && <div style={{background:"rgba(201,16,21,.08)",border:"1px solid rgba(201,16,21,.25)",padding:".6rem .8rem",marginBottom:"1rem",color:"var(--red)",fontSize:".85rem"}}>{changePwErr}</div>}
+            <div className="fg" style={{marginBottom:"1rem"}}>
+              <label className="inp-lbl">{t("pw.current_label")}</label>
+              <input className="inp" type="password" value={changePwForm.pw} onChange={e=>setChangePwForm(f=>({...f,pw:e.target.value}))} placeholder="••••••••"/>
+            </div>
+            <div className="fg" style={{marginBottom:"1.5rem"}}>
+              <label className="inp-lbl">{t("pw.confirm_label")}</label>
+              <input className="inp" type="password" value={changePwForm.pw2} onChange={e=>setChangePwForm(f=>({...f,pw2:e.target.value}))} placeholder="••••••••"/>
+            </div>
+            <div style={{display:"flex",gap:".7rem"}}>
+              <button className="btn-p" onClick={doChangePw}>{t("pw.save")}</button>
+              <button className="btn-o" style={{color:"var(--mu)",border:"1px solid var(--br)"}} onClick={()=>setShowChangePw(false)}>{t("cancel")}</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showIosInstall && (
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:1000,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={()=>setShowIosInstall(false)}>
           <div style={{background:"var(--bg2)",borderRadius:"1rem 1rem 0 0",padding:"2rem 1.5rem",width:"100%",maxWidth:480,marginBottom:0}} onClick={e=>e.stopPropagation()}>
             <div style={{textAlign:"center",marginBottom:"1.5rem"}}>
