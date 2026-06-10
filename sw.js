@@ -1,4 +1,4 @@
-const CACHE = 'futamero-v2';
+const CACHE = 'futamero-v3';
 const STATIC = ['/', '/index.html', '/supabase.js', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', e => {
