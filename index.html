@@ -456,6 +456,18 @@
     }
   
     /* ════ DESIGN OVERRIDES — sporty + elegant ════ */
+    /* Kezdőlap galéria szekció elválasztás */
+    .dark-gal-wrap { border-top: 2px solid #fff !important; margin-top: 0 !important; }
+
+    /* Galéria esemény címek kisebbek */
+    .gal-group-title { font-size: 1.1rem !important; font-weight:700 !important; }
+    .gal-group-count { font-size: .72rem !important; }
+
+    /* Nyelvválasztó fekete szöveg */
+    .lang-opt { color: #1a1a1a !important; }
+    .lang-opt:hover { color: #000 !important; }
+    .lang-opt.active { color: var(--red) !important; }
+
     /* Footer fehér szövegek */
     .ft-main *, .ft-bottom * { color: rgba(255,255,255,.85) !important; }
     .ft-main a:hover, .ft-bottom a:hover { color: #fff !important; }
@@ -685,7 +697,25 @@
         "confirm.delete_event":"Biztosan törölni szeretnéd ezt az eseményt?",
         "confirm.delete_image":"Biztosan törölni szeretnéd ezt a képet?",
         "confirm.logout":"Biztosan ki akarsz jelentkezni?",
-        "runs.login_btn":"Jelentkezz be"
+        "runs.login_btn":"Jelentkezz be",
+        "notif.title":"Értesítések",
+        "notif.empty":"Nincs új értesítés",
+        "notif.reaction":"reagált a bejegyzésedre",
+        "notif.run_reaction":"reagált a futásodra",
+        "notif.pinned":"kiemelte a bejegyzésedet",
+        "notif.new_event":"Új esemény",
+        "notif.mark_read":"Mind olvasott",
+        "pw.change":"Jelszó változtatás",
+        "pw.current_label":"Új jelszó",
+        "pw.confirm_label":"Jelszó megerősítése",
+        "pw.save":"Mentés",
+        "pw.success":"Jelszó sikeresen megváltoztatva!",
+        "pw.mismatch":"A két jelszó nem egyezik",
+        "pw.short":"Legalább 6 karakter szükséges",
+        "account.delete":"Fiók törlése",
+        "account.delete_confirm":"BIZTOSAN törlöd a fiókodat? Ez visszavonhatatlan, minden adatod elvész!",
+        "admin.badge":"ADMIN PANEL",
+        "cancel":"Mégse"
       },
       en: {
         "nav.home":"Home","nav.events":"Events","nav.gallery":"Gallery","nav.blog":"Blog",
@@ -758,7 +788,25 @@
         "confirm.delete_event":"Are you sure you want to delete this event?",
         "confirm.delete_image":"Are you sure you want to delete this image?",
         "confirm.logout":"Are you sure you want to log out?",
-        "runs.login_btn":"Log in"
+        "runs.login_btn":"Log in",
+        "notif.title":"Notifications",
+        "notif.empty":"No new notifications",
+        "notif.reaction":"reacted to your post",
+        "notif.run_reaction":"reacted to your run",
+        "notif.pinned":"pinned your post",
+        "notif.new_event":"New event",
+        "notif.mark_read":"Mark all read",
+        "pw.change":"Change password",
+        "pw.current_label":"New password",
+        "pw.confirm_label":"Confirm password",
+        "pw.save":"Save",
+        "pw.success":"Password changed successfully!",
+        "pw.mismatch":"Passwords do not match",
+        "pw.short":"At least 6 characters required",
+        "account.delete":"Delete account",
+        "account.delete_confirm":"Are you SURE you want to delete your account? This is irreversible!",
+        "admin.badge":"ADMIN PANEL",
+        "cancel":"Cancel"
       }
     };
 
@@ -1862,9 +1910,10 @@
               ))}
               {isAdmin && <button className={"nl" + (tab==="admin"?" a":"")} onClick={() => setTab("admin")}>{t("nav.admin")}</button>}
               {user ? (
-                <div className="nav-user">
+                <div className="nav-user" style={{position:"relative"}}>
                   <div className="user-ava">{initials(displayName)}</div>
                   <span className="user-name">{displayName}</span>
+                  <button className="nav-btn" style={{padding:".3rem .5rem"}} onClick={()=>setShowChangePw(true)} title={t("pw.change")}>🔑</button>
                   <button className="nav-btn out" onClick={doLogout}>{t("nav.logout")}</button>
                 </div>
               ) : (
