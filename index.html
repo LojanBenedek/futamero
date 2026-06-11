@@ -1514,6 +1514,14 @@
         if (!user || targetUserId === user.id) return; // nem értesítjük önmagunkat
         await sb.from("notifications").insert([{user_id:targetUserId,type,actor_name:actorName,target_id:targetId,target_type:targetType,target_preview:targetPreview,emoji}]);
       };
+      // Értesítések betöltése bejelentkezéskor + 30mp-enként
+      useEffect(() => {
+        if (user && authReady) {
+          loadNotifications();
+          const iv = setInterval(loadNotifications, 30000);
+          return () => clearInterval(iv);
+        }
+      }, [user, authReady]);
       const loadProfile = async (uid) => {
         try {
           const data = await pubFetch("profiles?id=eq." + uid + "&select=*");
