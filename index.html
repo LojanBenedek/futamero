@@ -456,6 +456,25 @@
     }
   
     /* ════ DESIGN OVERRIDES — sporty + elegant ════ */
+    /* ── TABLET FIX (761px–1024px) ── */
+    @media(min-width:761px) and (max-width:1024px){
+      .nav{padding:0 3%}
+      .nav-links{gap:.7rem;flex-wrap:nowrap}
+      .nl{font-size:.82rem;padding:.4rem .15rem;white-space:nowrap}
+      .nav-user{gap:.4rem}
+      .user-name{max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .nav-btn{padding:.35rem .6rem;font-size:.78rem;white-space:nowrap}
+      .lang-toggle{padding:.28rem .5rem;font-size:.72rem}
+      .notif-btn{font-size:1rem}
+      .pwa-btn{font-size:.72rem;padding:.28rem .5rem}
+      .hc{padding-left:4% !important;padding-right:4% !important}
+      .sec{padding-left:4%;padding-right:4%}
+    }
+    /* Ha tableten is túl szűk a nav, hamburgerre vált 900px alatt */
+    @media(min-width:761px) and (max-width:900px){
+      .nav-links .nl{font-size:.78rem;gap:.5rem}
+    }
+
     /* Értesítés panel mobilon */
     @media(max-width:760px){
       .notif-panel{position:fixed !important;top:64px !important;right:1rem !important;left:1rem !important;width:auto !important;max-width:none !important;}
@@ -1625,7 +1644,11 @@
             }
           }
           const { error } = await sb.from("run_reactions").insert({ run_id:runId, user_id:user.id, emoji });
-          if (!error) setRunReactions(prev => ({ ...prev, [runId]:{ ...(prev[runId]||{}), [emoji]:[...(prev[runId]?.[emoji]||[]),user.id] } }));
+          if (!error) {
+            setRunReactions(prev => ({ ...prev, [runId]:{ ...(prev[runId]||{}), [emoji]:[...(prev[runId]?.[emoji]||[]),user.id] } }));
+            const run = runs.find(r=>r.id===runId);
+            if (run) addNotif(run.user_id,'run_reaction',profile?.full_name||user.email?.split('@')[0]||'?',runId,'run',(run.distance_km+'km')+(run.description?' — '+run.description.slice(0,40):''),emoji);
+          }
         }
       };
       const loadRuns = async () => {
@@ -1689,7 +1712,11 @@
           }
           // Hozzáadjuk az újat
           const { error } = await sb.from("reactions").insert({ post_id:postId, user_id:user.id, emoji });
-          if (!error) setReactions(prev => ({ ...prev, [postId]:{ ...(prev[postId]||{}), [emoji]:[...(prev[postId]?.[emoji]||[]),user.id] } }));
+          if (!error) {
+            setReactions(prev => ({ ...prev, [postId]:{ ...(prev[postId]||{}), [emoji]:[...(prev[postId]?.[emoji]||[]),user.id] } }));
+            const post = posts.find(p=>p.id===postId);
+            if (post) addNotif(post.user_id,'reaction',profile?.full_name||user.email?.split('@')[0]||'?',postId,'post',post.content?.slice(0,60)||'',emoji);
+          }
         }
       };
 
@@ -1712,6 +1739,7 @@
         const nowPinned = !post.is_pinned;
         await sb.from("posts").update({ is_pinned: nowPinned, pinned_at: nowPinned ? new Date().toISOString() : null }).eq("id", post.id);
         setPosts(prev => prev.map(p => p.id === post.id ? {...p, is_pinned: nowPinned, pinned_at: nowPinned ? new Date().toISOString() : null} : p));
+        if (nowPinned) addNotif(post.user_id,'pinned',t('admin.badge'),post.id,'post',post.content?.slice(0,60)||'','📌');
       };
 
       const deletePost = async (id) => {
