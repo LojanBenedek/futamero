@@ -728,7 +728,7 @@
         "notif.reaction":"reagált a bejegyzésedre",
         "notif.run_reaction":"reagált a futásodra",
         "notif.pinned":"kiemelte a bejegyzésedet",
-        "notif.new_event":"Új esemény",
+        "notif.new_event":"új eseményt hozott létre","notif.pinned_post":"kiemelt egy bejegyzést",
         "notif.mark_read":"Mind olvasott",
         "pw.change":"Jelszó változtatás",
         "pw.current_label":"Új jelszó",
@@ -819,7 +819,7 @@
         "notif.reaction":"reacted to your post",
         "notif.run_reaction":"reacted to your run",
         "notif.pinned":"pinned your post",
-        "notif.new_event":"New event",
+        "notif.new_event":"created a new event","notif.pinned_post":"pinned a post",
         "notif.mark_read":"Mark all read",
         "pw.change":"Change password",
         "pw.current_label":"New password",
@@ -1533,6 +1533,14 @@
         if (!user || targetUserId === user.id) return; // nem értesítjük önmagunkat
         await sb.from("notifications").insert([{user_id:targetUserId,type,actor_name:actorName,target_id:targetId,target_type:targetType,target_preview:targetPreview,emoji}]);
       };
+      const notifyAllUsers = async (type, actorName, targetId, targetType, targetPreview, emoji='') => {
+        if (!user) return;
+        // Minden profil lekérése (saját magunkat kihagyjuk)
+        const profs = await pubFetch("profiles?select=id");
+        if (!Array.isArray(profs)) return;
+        const rows = profs.filter(p=>p.id!==user.id).map(p=>({user_id:p.id,type,actor_name:actorName,target_id:targetId,target_type:targetType,target_preview:targetPreview,emoji}));
+        if (rows.length) await sb.from("notifications").insert(rows);
+      };
       // Értesítések betöltése bejelentkezéskor + 30mp-enként
       useEffect(() => {
         if (user && authReady) {
@@ -1727,19 +1735,26 @@
       const submitPost = async () => {
         if (!newPost.trim() || !user) return;
         setPosting(true);
+        const willPin = isAdmin && pinNewPost;
         const { data, error } = await sb.from("posts").insert([{
           user_id: user.id,
           user_name: profile?.full_name || user.email?.split("@")[0] || "Ismeretlen",
-          content: newPost.trim()
+          content: newPost.trim(),
+          is_pinned: willPin,
+          pinned_at: willPin ? new Date().toISOString() : null
         }]).select().single();
-        if (!error && data) setPosts(prev => [data, ...prev]);
-        setNewPost(""); setPosting(false);
+        if (!error && data) {
+          setPosts(prev => [data, ...prev]);
+          // Kiemelt bejegyzés -> mindenki értesítése
+          if (willPin) notifyAllUsers('pinned_post', profile?.full_name||'Admin', data.id, 'post', newPost.trim().slice(0,60), '📌');
+        }
+        setNewPost(""); setPinNewPost(false); setPosting(false);
       };
       const togglePin = async (post) => {
         const nowPinned = !post.is_pinned;
         await sb.from("posts").update({ is_pinned: nowPinned, pinned_at: nowPinned ? new Date().toISOString() : null }).eq("id", post.id);
         setPosts(prev => prev.map(p => p.id === post.id ? {...p, is_pinned: nowPinned, pinned_at: nowPinned ? new Date().toISOString() : null} : p));
-        if (nowPinned) addNotif(post.user_id,'pinned',t('admin.badge'),post.id,'post',post.content?.slice(0,60)||'','📌');
+        if (nowPinned) notifyAllUsers('pinned_post',profile?.full_name||'Admin',post.id,'post',post.content?.slice(0,60)||'','📌');
       };
 
       const deletePost = async (id) => {
@@ -1834,7 +1849,11 @@
       const addEvent = async () => {
         if (!newEv.title || !newEv.date) return;
         const { data, error } = await sb.from("events").insert([{ title:newEv.title, date:newEv.date, time:newEv.time, location:newEv.location, description:newEv.description }]).select();
-        if (!error && data) { setEvents(prev => [...prev, data[0]].sort((a,b)=>a.date.localeCompare(b.date))); setNewEv({ title:"",date:"",time:"",location:"",description:"" }); }
+        if (!error && data) {
+          setEvents(prev => [...prev, data[0]].sort((a,b)=>a.date.localeCompare(b.date)));
+          notifyAllUsers('new_event', profile?.full_name||'Admin', data[0].id, 'event', newEv.title, '📅');
+          setNewEv({ title:"",date:"",time:"",location:"",description:"" });
+        }
       };
       const deleteEvent = async id => { if (!window.confirm(t("confirm.delete_event"))) return; await sb.from("event_registrations").delete().eq("event_id", id); await sb.from("events").delete().eq("id", id); setEvents(e => e.filter(ev => ev.id !== id)); setRegs(prev => { const r = {...prev}; delete r[id]; return r; }); };
       const updateEvent = async (updated) => {
@@ -2002,12 +2021,19 @@
                         {notifications.length === 0
                           ? <div className="notif-empty">{t("notif.empty")}</div>
                           : notifications.map(n => (
-                            <div key={n.id} className={"notif-item"+(n.is_read?"":" unread")}>
+                            <div key={n.id} className={"notif-item"+(n.is_read?"":" unread")} style={{cursor:"pointer"}}
+                              onClick={()=>{
+                                setShowNotif(false);
+                                if (n.target_type==="event") { setTab("events"); }
+                                else if (n.target_type==="post") { setTab("blog"); setBlogSubTab("posts"); }
+                                else if (n.target_type==="run") { setTab("blog"); setBlogSubTab("runs"); }
+                                if (!n.is_read) { sb.from("notifications").update({is_read:true}).eq("id",n.id); setNotifications(prev=>prev.map(x=>x.id===n.id?{...x,is_read:true}:x)); }
+                              }}>
                               <span className="notif-emoji">{n.emoji||"🔔"}</span>
                               <div style={{flex:1}}>
                                 <div className="notif-text">
                                   <strong>{n.actor_name}</strong>{" "}
-                                  {n.type==="reaction"?t("notif.reaction"):n.type==="run_reaction"?t("notif.run_reaction"):n.type==="pinned"?t("notif.pinned"):t("notif.new_event")}
+                                  {n.type==="reaction"?t("notif.reaction"):n.type==="run_reaction"?t("notif.run_reaction"):n.type==="pinned"?t("notif.pinned"):n.type==="pinned_post"?t("notif.pinned_post"):n.type==="new_event"?t("notif.new_event"):t("notif.new_event")}
                                   {n.target_preview && <span style={{color:"var(--mu)",display:"block",fontSize:".72rem",marginTop:".2rem",fontStyle:"italic"}}>„{n.target_preview.slice(0,50)}{n.target_preview.length>50?'…':''}"</span>}
                                 </div>
                                 <div className="notif-time">{new Date(n.created_at).toLocaleDateString(_lang==="en"?"en-GB":"hu-HU",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})}</div>
