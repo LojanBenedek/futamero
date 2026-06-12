@@ -505,7 +505,7 @@
     .about-wrap { border-top: 2px solid #fff !important; }
 
     /* Footer: ugyanolyan mint a hero, fordítva */
-    .ft-wrap { background: linear-gradient(160deg,#0b1f3a 0%,#0d2347 60%,#1a1f6e 100%) !important; }
+    .ft-wrap { background: linear-gradient(160deg,#13294a 0%,#152c57 60%,#252a82 100%) !important; }
 
     /* Hero - balra igazítva */
     .hc { text-align:left !important; align-items:flex-start !important; padding-left:5% !important; padding-right:5% !important; }
@@ -728,7 +728,7 @@
         "notif.reaction":"reagált a bejegyzésedre",
         "notif.run_reaction":"reagált a futásodra",
         "notif.pinned":"kiemelte a bejegyzésedet",
-        "notif.new_event":"új eseményt hozott létre","notif.pinned_post":"kiemelt egy bejegyzést",
+        "notif.new_event":"új eseményt hozott létre","notif.pinned_post":"kiemelt egy bejegyzést","notif.comment":"hozzászólt a bejegyzésedhez",
         "notif.mark_read":"Mind olvasott",
         "pw.change":"Jelszó változtatás",
         "pw.current_label":"Új jelszó",
@@ -819,7 +819,7 @@
         "notif.reaction":"reacted to your post",
         "notif.run_reaction":"reacted to your run",
         "notif.pinned":"pinned your post",
-        "notif.new_event":"created a new event","notif.pinned_post":"pinned a post",
+        "notif.new_event":"created a new event","notif.pinned_post":"pinned a post","notif.comment":"commented on your post",
         "notif.mark_read":"Mark all read",
         "pw.change":"Change password",
         "pw.current_label":"New password",
@@ -1630,7 +1630,18 @@
           parent_id:parentId, parent_type:parentType,
           user_id:user.id, user_name:profile?.full_name||displayName, content:txt
         }]).select().single();
-        if (!error && data) setComments(prev => ({ ...prev, [parentId]:[...(prev[parentId]||[]),data] }));
+        if (!error && data) {
+          setComments(prev => ({ ...prev, [parentId]:[...(prev[parentId]||[]),data] }));
+          // Értesítés a bejegyzés/futás szerzőjének
+          const actorName = profile?.full_name||displayName;
+          if (parentType==="post") {
+            const post = posts.find(p=>p.id===parentId);
+            if (post) addNotif(post.user_id,'comment',actorName,parentId,'post',txt.slice(0,60),'💬');
+          } else if (parentType==="run") {
+            const run = runs.find(r=>r.id===parentId);
+            if (run) addNotif(run.user_id,'comment',actorName,parentId,'run',txt.slice(0,60),'💬');
+          }
+        }
         setNewComment(prev => ({...prev, [parentId]:''}));
       };
       const deleteComment = async (id, parentId) => {
@@ -2022,18 +2033,21 @@
                           ? <div className="notif-empty">{t("notif.empty")}</div>
                           : notifications.map(n => (
                             <div key={n.id} className={"notif-item"+(n.is_read?"":" unread")} style={{cursor:"pointer"}}
-                              onClick={()=>{
+                              onClick={async ()=>{
                                 setShowNotif(false);
                                 if (n.target_type==="event") { setTab("events"); }
                                 else if (n.target_type==="post") { setTab("blog"); setBlogSubTab("posts"); }
                                 else if (n.target_type==="run") { setTab("blog"); setBlogSubTab("runs"); }
-                                if (!n.is_read) { sb.from("notifications").update({is_read:true}).eq("id",n.id); setNotifications(prev=>prev.map(x=>x.id===n.id?{...x,is_read:true}:x)); }
+                                if (!n.is_read) {
+                                  setNotifications(prev=>prev.map(x=>x.id===n.id?{...x,is_read:true}:x));
+                                  await sb.from("notifications").update({is_read:true}).eq("id",n.id);
+                                }
                               }}>
                               <span className="notif-emoji">{n.emoji||"🔔"}</span>
                               <div style={{flex:1}}>
                                 <div className="notif-text">
                                   <strong>{n.actor_name}</strong>{" "}
-                                  {n.type==="reaction"?t("notif.reaction"):n.type==="run_reaction"?t("notif.run_reaction"):n.type==="pinned"?t("notif.pinned"):n.type==="pinned_post"?t("notif.pinned_post"):n.type==="new_event"?t("notif.new_event"):t("notif.new_event")}
+                                  {n.type==="reaction"?t("notif.reaction"):n.type==="run_reaction"?t("notif.run_reaction"):n.type==="pinned"?t("notif.pinned"):n.type==="pinned_post"?t("notif.pinned_post"):n.type==="new_event"?t("notif.new_event"):n.type==="comment"?t("notif.comment"):t("notif.new_event")}
                                   {n.target_preview && <span style={{color:"var(--mu)",display:"block",fontSize:".72rem",marginTop:".2rem",fontStyle:"italic"}}>„{n.target_preview.slice(0,50)}{n.target_preview.length>50?'…':''}"</span>}
                                 </div>
                                 <div className="notif-time">{new Date(n.created_at).toLocaleDateString(_lang==="en"?"en-GB":"hu-HU",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})}</div>
@@ -2300,13 +2314,13 @@
                 <>
                   {groupKeys.map(label => (
                     <div key={label} className="gal-event-sec" data-gal-label={label}>
-                      <div className="gal-event-hd"><span className="sec-tag">{t("gallery.event_tag")}</span><div className="sec-title" style={{fontSize:"clamp(1.5rem,4vw,2.2rem)"}}>{label}</div></div>
+                      <div className="gal-event-hd"><span className="sec-tag">{t("gallery.event_tag")}</span><div className="sec-title" style={{fontSize:"clamp(1rem,2.4vw,1.4rem)"}}>{label}</div></div>
                       <GalGrid images={grouped[label]} isAdmin={isAdmin} onOpen={img => openLb(img, grouped[label])} onDelete={deleteImage} />
                     </div>
                   ))}
                   {ungrouped.length > 0 && (
                     <div className="gal-event-sec">
-                      {groupKeys.length > 0 && <div className="gal-event-hd"><span className="sec-tag">{t("gallery.tag")}</span><div className="sec-title" style={{fontSize:"clamp(1.5rem,4vw,2.2rem)"}}>{t("gallery.other")}</div></div>}
+                      {groupKeys.length > 0 && <div className="gal-event-hd"><span className="sec-tag">{t("gallery.tag")}</span><div className="sec-title" style={{fontSize:"clamp(1rem,2.4vw,1.4rem)"}}>{t("gallery.other")}</div></div>}
                       <GalGrid images={ungrouped} isAdmin={isAdmin} onOpen={img => openLb(img, ungrouped)} onDelete={deleteImage} />
                     </div>
                   )}
