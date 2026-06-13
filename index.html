@@ -2126,7 +2126,7 @@
           }
           try {
             // pubFetch: nem vár Supabase tokenfrissítésre, azonnal fut
-            const [evData, galData, regsData, postsData, runsData, reactData, commData, rrData] = await Promise.all([
+            const [evData, galData, regsData, postsData, runsData, reactData, commData, rrData, progData] = await Promise.all([
               pubFetch("events?select=*&order=date"),
               pubFetch("gallery?select=*&order=created_at.desc"),
               pubFetch("event_registrations?select=event_id,user_id,user_name"),
@@ -2135,6 +2135,7 @@
               pubFetch("reactions?select=post_id,user_id,emoji"),
               pubFetch("comments?select=*&order=created_at.asc"),
               pubFetch("run_reactions?select=run_id,user_id,emoji"),
+              pubFetch("programs?select=*"),
             ]);
             const evArr=Array.isArray(evData)?evData:[];
             const g=(Array.isArray(galData)?galData:[]).map(r=>({id:r.id,src:r.url,thumb:r.url+(r.url.includes("?")?"&":"?")+"width=400&height=300&resize=cover",filename:r.filename,event_label:r.event_label||"",event_id:r.event_id||null}));
@@ -2146,6 +2147,9 @@
             const rrm={}; (Array.isArray(rrData)?rrData:[]).forEach(r=>{if(!rrm[r.run_id])rrm[r.run_id]={};if(!rrm[r.run_id][r.emoji])rrm[r.run_id][r.emoji]=[];rrm[r.run_id][r.emoji].push(r.user_id);});
             setEvents(evArr); setGallery(g); galRef.current=g; setRegs(rm);
             setPosts(postsArr); setRuns(runsArr); setReactions(rxm); setComments(cm); setRunReactions(rrm);
+            const progMap = {};
+            (Array.isArray(progData) ? progData : []).forEach(p => progMap[p.id] = p);
+            setPrograms(progMap);
             // Offline cache mentése
             saveOfflineCache({events:evArr,gallery:g,regs:rm,posts:postsArr,runs:runsArr,reactions:rxm,comments:cm,runReactions:rrm});
           } catch(e) { console.warn('Betöltési hiba:', e.message); }
