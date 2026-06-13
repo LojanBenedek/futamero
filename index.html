@@ -465,6 +465,16 @@
     }
   
     /* ════ DESIGN OVERRIDES — sporty + elegant ════ */
+    /* Nav elrendezés finomítás - több fül elférjen */
+    .nav-links { gap: .7rem !important; flex-wrap: nowrap !important; }
+    .nav-links .nl { font-size: .82rem !important; white-space: nowrap; padding: .3rem .1rem; }
+    .prog-dropdown .nl { padding: .3rem .2rem; }
+    @media(min-width:761px) and (max-width:1100px){
+      .nav-links { gap: .5rem !important; }
+      .nav-links .nl { font-size: .76rem !important; letter-spacing: .03em !important; }
+      .nav { padding: 0 2.5% !important; }
+    }
+
     /* ── TABLET FIX (761px–1024px) ── */
     @media(min-width:761px) and (max-width:1024px){
       .nav{padding:0 3%}
@@ -741,6 +751,7 @@
     .privacy-content h3{font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;color:var(--navy);margin:1.3rem 0 .4rem}
     .privacy-content p{margin-bottom:.6rem}
 
+      .blog-image{max-width:100%;max-height:400px;border-radius:6px;margin:.5rem 0 .2rem;cursor:pointer;display:block;object-fit:cover}
   </style>
 </head>
 <body>
@@ -773,6 +784,10 @@
         "events.upcoming_tag":"Következő programok","events.upcoming_title":"Közelgő események",
         "events.empty":"Jelenleg nincsenek meghirdetett események.",
         "events.past":"Korábbi programok",
+        "nav.past_events":"Visszatekintő","nav.programs":"Heti programok",
+        "privacy.link":"Adatvédelem",
+        "past.title":"Visszatekintő","past.tag":"Megtörtént események","past.empty":"Még nincs lezárult esemény","past.recap":"Beszámoló","past.no_recap":"Erről az eseményről még nincs beszámoló","past.photos":"Képek az eseményről","past.edit_recap":"Beszámoló szerkesztése","past.recap_placeholder":"Írd le milyen volt az esemény…","past.save":"Mentés",
+        "prog.title":"Heti rendszeres programok","prog.tag":"Edzések","prog.yoga":"Jóga","prog.athletics":"Atlétika","prog.walking":"Gyaloglás","prog.swimming":"Úszás","prog.select":"Válassz egy programot a részletekért",
         "events.no_regs":"Még nincs jelentkező","events.regs":"jelentkező",
         "events.join":"Ott leszek →","events.leave":"✓ Leiratkozás",
         "events.login_req":"A jelentkezéshez","events.login_link":"be kell jelentkezni",
@@ -863,7 +878,7 @@
         "events.tag":"Schedule","events.title":"Events",
         "events.upcoming_tag":"Next programmes","events.upcoming_title":"Upcoming events",
         "events.empty":"There are no events announced at the moment.",
-        "events.past":"Past events","nav.programs":"Weekly programs","nav.past_events":"Past events","privacy.link":"Privacy Policy","past.title":"Past events","past.tag":"Completed events","past.empty":"No completed events yet","past.recap":"Recap","past.no_recap":"No recap for this event yet","past.photos":"Event photos","past.edit_recap":"Edit recap","past.recap_placeholder":"Describe how the event went…","past.save":"Save","prog.title":"Weekly regular programs","prog.tag":"Trainings","prog.yoga":"Yoga","prog.athletics":"Athletics","prog.walking":"Walking","prog.swimming":"Swimming","prog.select":"Select a program for details","events.view_list":"List","events.view_cal":"Calendar","cal.months":"January,February,March,April,May,June,July,August,September,October,November,December","cal.days":"Mo,Tu,We,Th,Fr,Sa,Su","cal.today":"Today","cal.no_events":"No events on this day",
+        "events.past":"Past events","nav.programs":"Weekly programs","nav.past_events":"Past events","privacy.link":"Privacy","past.title":"Past events","past.tag":"Completed events","past.empty":"No completed events yet","past.recap":"Recap","past.no_recap":"No recap for this event yet","past.photos":"Event photos","past.edit_recap":"Edit recap","past.recap_placeholder":"Describe how the event went…","past.save":"Save","prog.title":"Weekly regular programs","prog.tag":"Trainings","prog.yoga":"Yoga","prog.athletics":"Athletics","prog.walking":"Walking","prog.swimming":"Swimming","prog.select":"Select a program for details","events.view_list":"List","events.view_cal":"Calendar","cal.months":"January,February,March,April,May,June,July,August,September,October,November,December","cal.days":"Mo,Tu,We,Th,Fr,Sa,Su","cal.today":"Today","cal.no_events":"No events on this day",
         "events.no_regs":"No registrations yet","events.regs":"registered",
         "events.join":"I'll be there →","events.leave":"✓ Unregister",
         "events.login_req":"Please","events.login_link":"log in to register",
@@ -880,7 +895,7 @@
         "runs.title":"Log a run","posts.pinned":"📌 Pinned","posts.pin":"📌 Pin","posts.unpin":"📌 Unpin","posts.run_entry":"🏃 Run","feed.empty":"No posts yet.","runs.km":"Distance (km) *","runs.duration":"Duration (required, e.g. 28:45 or 1:10:00)","runs.duration_ph":"e.g. 28:45 or 1:10:00",
         "runs.desc":"Note (optional)","runs.photo":"Photo (optional)",
         "runs.btn":"Log run","runs.empty":"No runs logged yet.",
-        "runs.login_to":"to log your runs","runs.no_file":"No file selected","lbsort.km":"By km","lbsort.runs":"By runs","lbsort.pace":"By pace","lbsort.duration":"By time","runs.pace":"Pace","runs.hours":"h","runs.minutes":"m","runs.seconds":"s","comments.title":"Comments","comments.placeholder":"Write a comment...","comments.send":"Send","comments.empty":"No comments yet.","comments.reply":"Reply","comments.reply_placeholder":"Write a reply…","comments.delete":"Delete","runs.login_to_react":"to react","runs.delete":"✕ Delete",
+        "runs.login_to":"to log your runs","runs.no_file":"No file selected","lbsort.km":"By km","lbsort.runs":"By runs","lbsort.pace":"By pace","lbsort.duration":"By time","runs.pace":"Pace","runs.hours":"h","runs.minutes":"m","runs.seconds":"s","comments.title":"Comments","comments.placeholder":"Write a comment...","comments.send":"Send","comments.empty":"No comments yet.","comments.reply":"Reply","comments.reply_placeholder":"Write a reply…","blog.add_image":"📷 Add image","blog.remove_image":"Remove image","blog.uploading":"Uploading…","comments.delete":"Delete","runs.login_to_react":"to react","runs.delete":"✕ Delete",
         "stats.total_km":"Total km","stats.total_runs":"Number of runs",
         "stats.week":"Most km this week","stats.month":"Most km this month",
         "stats.year_rank":"annual ranking","stats.runner":"Runner",
@@ -952,8 +967,8 @@
       const displayName = profile?.full_name || user?.email?.split("@")[0] || "";
       const doReply = (commentId) => {
         if (!replyText.trim()) return;
-        setNewComment(prev=>({...prev,[commentId]:replyText.trim()}));
-        setTimeout(()=>{ submitComment(commentId,"comment"); setReplyText(""); setReplyTo(null); }, 30);
+        submitComment(commentId, "comment", replyText.trim());
+        setReplyText(""); setReplyTo(null);
       };
       return (
         <div className="comments-wrap">
@@ -1365,7 +1380,7 @@
             <div>
               <div className="ft-head">{t("footer.contact")}</div>
               <div className="ft-item"><span className="ft-ico">📍</span><span>7521 Kaposmérő,<br/>Fodor András utca 13.</span></div>
-              <div className="ft-item"><span className="ft-ico">📧</span><span>zsaklineskudt@gmail.com</span></div>
+              <div className="ft-item"><span className="ft-ico">📧</span><span>futamerose@gmail.com</span></div>
               <div className="ft-item"><span className="ft-ico">📞</span><span>+36 30 553 4503</span></div>
             </div>
             <div>
@@ -1716,6 +1731,8 @@
       const [showResetPw, setShowResetPw] = useState(false);
       const [posts, setPosts] = useState([]);
       const [newPost, setNewPost] = useState("");
+      const [postImage, setPostImage] = useState("");
+      const [postImgUploading, setPostImgUploading] = useState(false);
       const [posting, setPosting] = useState(false);
       const [targetGalLabel, setTargetGalLabel] = useState(null);
       const [runs, setRuns] = useState([]);
@@ -1890,8 +1907,8 @@
         (data||[]).forEach(r => { if(!map[r.run_id]) map[r.run_id]={}; if(!map[r.run_id][r.emoji]) map[r.run_id][r.emoji]=[]; map[r.run_id][r.emoji].push(r.user_id); });
         setRunReactions(map);
       };
-      const submitComment = async (parentId, parentType) => {
-        const txt = (newComment[parentId]||'').trim();
+      const submitComment = async (parentId, parentType, directText) => {
+        const txt = (directText !== undefined ? directText : (newComment[parentId]||'')).trim();
         if (!txt || !user) return;
         const { data, error } = await sb.from("comments").insert([{
           parent_id:parentId, parent_type:parentType,
@@ -2010,6 +2027,19 @@
         const { data } = await sb.from("posts").select("*").order("created_at", { ascending: false });
         setPosts(data || []);
       };
+      const uploadPostImage = async (file) => {
+        if (!file || !user) return;
+        setPostImgUploading(true);
+        try {
+          const b64 = await compressImage(file), blob = b64ToBlob(b64);
+          const fname = "post_" + user.id.slice(0,8) + "_" + Date.now() + ".jpg";
+          const { error: upErr } = await sb.storage.from(BUCKET).upload(fname, blob, { contentType:"image/jpeg", cacheControl:"3600" });
+          if (upErr) throw upErr;
+          const { data: { publicUrl } } = sb.storage.from(BUCKET).getPublicUrl(fname);
+          setPostImage(publicUrl);
+        } catch(e) { console.error(e); }
+        setPostImgUploading(false);
+      };
       const submitPost = async () => {
         if (!newPost.trim() || !user) return;
         setPosting(true);
@@ -2018,6 +2048,7 @@
           user_id: user.id,
           user_name: profile?.full_name || user.email?.split("@")[0] || "Ismeretlen",
           content: newPost.trim(),
+          image_url: postImage || "",
           is_pinned: willPin,
           pinned_at: willPin ? new Date().toISOString() : null
         }]).select().single();
@@ -2026,7 +2057,7 @@
           // Kiemelt bejegyzés -> mindenki értesítése
           if (willPin) notifyAllUsers('pinned_post', profile?.full_name||'Admin', data.id, 'post', newPost.trim().slice(0,60), '📌');
         }
-        setNewPost(""); setPinNewPost(false); setPosting(false);
+        setNewPost(""); setPostImage(""); setPinNewPost(false); setPosting(false);
       };
       const togglePin = async (post) => {
         const nowPinned = !post.is_pinned;
@@ -2528,9 +2559,6 @@
                     <p>Helyi tárolást (local storage) kizárólag a bejelentkezett állapot fenntartására és a nyelvi beállításod megjegyzésére használunk. A látogatottság méréséhez a Cloudflare Web Analytics szolgáltatást használjuk, amely adatvédelem-barát, nem használ sütiket és nem azonosít személyeket.</p>
                   </div>
                 )}
-                <div style={{marginTop:"1.5rem",paddingTop:"1.2rem",borderTop:"1px solid var(--br)",fontSize:".78rem",color:"var(--mu)",fontStyle:"italic"}}>
-                  {_lang==="en"?"This document is a template and does not replace professional legal advice.":"Ez a dokumentum egy sablon, és nem helyettesíti a szakszerű jogi tanácsadást."}
-                </div>
                 <button className="btn-p" style={{marginTop:"1.3rem"}} onClick={()=>setShowPrivacy(false)}>{_lang==="en"?"Close":"Bezárás"}</button>
               </div>
             </div>
@@ -2864,8 +2892,23 @@
                       <textarea className="textarea" rows="4" placeholder={t("blog.placeholder")}
                         value={newPost} maxLength={2000} onChange={e=>setNewPost(e.target.value)} />
                       <div className="char-count">{newPost.length}/2000</div>
-                      {isAdmin && <label className="pin-checkbox"><input type="checkbox" checked={pinNewPost} onChange={e=>setPinNewPost(e.target.checked)} />{t("posts.pin")}</label>}
-                      <button className="btn-p" style={{marginTop:".65rem"}} disabled={posting||!newPost.trim()} onClick={submitPost}>
+                      {postImage && (
+                        <div style={{position:"relative",display:"inline-block",marginTop:".5rem"}}>
+                          <img src={postImage} alt="" style={{maxWidth:"100%",maxHeight:"220px",borderRadius:"4px",display:"block"}} />
+                          <button onClick={()=>setPostImage("")} style={{position:"absolute",top:"6px",right:"6px",background:"rgba(0,0,0,.6)",color:"#fff",border:"none",width:"26px",height:"26px",borderRadius:"50%",cursor:"pointer",fontSize:".8rem"}}>✕</button>
+                        </div>
+                      )}
+                      <div style={{display:"flex",alignItems:"center",gap:".7rem",marginTop:".6rem",flexWrap:"wrap"}}>
+                        {!postImage && (
+                          <label style={{cursor:"pointer",fontSize:".82rem",color:"var(--blue)",fontWeight:500}}>
+                            {postImgUploading ? t("blog.uploading") : t("blog.add_image")}
+                            <input type="file" accept="image/*" style={{display:"none"}} disabled={postImgUploading}
+                              onChange={e=>{ if(e.target.files[0]) uploadPostImage(e.target.files[0]); }} />
+                          </label>
+                        )}
+                        {isAdmin && <label className="pin-checkbox" style={{margin:0}}><input type="checkbox" checked={pinNewPost} onChange={e=>setPinNewPost(e.target.checked)} />{t("posts.pin")}</label>}
+                      </div>
+                      <button className="btn-p" style={{marginTop:".65rem"}} disabled={posting||postImgUploading||!newPost.trim()} onClick={submitPost}>
                         {posting && <span className="spin"/>}{t("blog.post_btn")}
                       </button>
                     </div>
@@ -2926,6 +2969,10 @@
                           </div>
                         </div>
                         <div className="blog-content">{item.content}</div>
+                        {item.image_url && (
+                          <img src={item.image_url} alt="" loading="lazy" className="blog-image"
+                            onClick={()=>{setLb({src:item.image_url,event_label:item.user_name});setLbAll([{src:item.image_url,event_label:item.user_name}]);}} />
+                        )}
                         <div className="reactions">
                           {["👍","❤️","🏃"].map(emoji=>{
                             const cnt=(reactions[item.id]?.[emoji]||[]).length;
