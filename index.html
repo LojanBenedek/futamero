@@ -1208,6 +1208,12 @@
         else if (data?.user?.identities && data.user.identities.length === 0) {
           setErr("Ezzel az email-cím már regisztrálva van. Kérjük, jelentkezz be!");
         }
+        else if (data?.user && !data.session) {
+          // Email megerősítés szükséges (nincs azonnali session)
+          setOk(_lang==="en"
+            ? "Registration successful! Please check your email and click the confirmation link before logging in."
+            : "Sikeres regisztráció! Kérjük, ellenőrizd az email fiókodat és kattints a megerősítő linkre, mielőtt bejelentkezel.");
+        }
         else setOk(_lang==="en" ? "Registration successful! You can now log in." : "Regisztráció sikeres! Most már bejelentkezhetsz.");
         setLoading(false);
       };
