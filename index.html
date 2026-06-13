@@ -2453,6 +2453,8 @@
             {isAdmin && <button className={"nl" + (tab==="admin"?" a":"")} onClick={() => { setTab("admin"); setMobileMenu(false); }}>⚙️ Admin</button>}
             {user && (
               <div style={{padding:".4rem 0",borderBottom:"1px solid rgba(255,255,255,.15)",marginBottom:".4rem"}}>
+                <button style={{width:"100%",background:"var(--red)",border:"none",color:"#fff",padding:".6rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".85rem",fontWeight:600,marginBottom:".4rem",textAlign:"center"}}
+                  onClick={()=>{doLogout();setMobileMenu(false);}}>🚪 {t("nav.logout")}</button>
                 <button style={{width:"100%",background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",color:"#fff",padding:".5rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".82rem",marginBottom:".3rem",textAlign:"left"}}
                   onClick={()=>{setShowChangePw(true);setMobileMenu(false);}}>🔑 {t("pw.change")}</button>
                 <button style={{width:"100%",background:"rgba(201,16,21,.15)",border:"1px solid rgba(201,16,21,.3)",color:"#ffaaaa",padding:".5rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".82rem",textAlign:"left"}}
@@ -2467,9 +2469,7 @@
               </button>
             )}
             <div className="nav-drawer-btns">
-              {user ? (
-                <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={doLogout}>{t("nav.logout")}</button>
-              ) : (
+              {!user && (
                 <>
                   <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={() => { setAuthMode("login"); setShowAuth(true); setMobileMenu(false); }}>{t("nav.login")}</button>
                   <button className="nav-btn" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={() => { setAuthMode("register"); setShowAuth(true); setMobileMenu(false); }}>{t("nav.register")}</button>
