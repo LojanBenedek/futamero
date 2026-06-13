@@ -111,7 +111,7 @@
 
     /* ABOUT */
     .about-wrap{background:linear-gradient(135deg,#0d2f6e 0%,#0e3a82 60%,#123d8a 100%);padding:5rem 5%}
-    .about-inner{max-width:980px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+    .about-inner{max-width:820px;margin:0 auto}
     @media(max-width:680px){.about-inner{grid-template-columns:1fr;gap:2rem}}
     .about-text{color:rgba(255,255,255,.7);font-size:.93rem;line-height:1.75;font-weight:300}
     .about-text p+p{margin-top:.9rem}
@@ -2732,12 +2732,6 @@
                         {storyOpen ? "▲ "+t("about.less") : "▼ "+t("about.more")}
                       </button>
                     </div>
-                  </div>
-                  <div className="about-facts">
-                    <div className="fact"><span className="fact-ico">📅</span><div><div className="fact-lbl">{t("about.founded")}</div><div className="fact-val">{t("about.founded_val")}</div></div></div>
-                    <div className="fact"><span className="fact-ico">📍</span><div><div className="fact-lbl">{t("about.location")}</div><div className="fact-val">{t("about.location_val")}</div></div></div>
-                    <div className="fact"><span className="fact-ico">🏃</span><div><div className="fact-lbl">{t("about.activity")}</div><div className="fact-val">{t("about.activity_val")}</div></div></div>
-                    <div className="fact"><span className="fact-ico">💛</span><div><div className="fact-lbl">{t("about.tax")}</div><div className="fact-val">19212474-1-14</div></div></div>
                   </div>
                   <button className="join-cta-btn" onClick={()=>setShowJoin(true)}>{t("join.title")} →</button>
                 </div>
