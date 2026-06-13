@@ -831,7 +831,7 @@
         "auth.send_login":"Bejelentkezés","auth.send_reg":"Regisztráció",
         "footer.contact":"Elérhetőség","footer.useful":"Hasznos","footer.tax_title":"SZJA 1%",
         "footer.tax_text":"Támogassa egyesületünket adója 1%-ával!",
-        "footer.fb":"🔗 Facebook csoportunk","footer.membership":"📄 Belépési feltételek (hamarosan)",
+        "footer.fb":"🔗 Facebook csoportunk","footer.membership":"📄 Belépési feltételek",
         "footer.desc":"2015 nyarán alakultunk Kaposmérőn, egy futóverseny hatására. A futás közös nyelve köt össze minket.",
         "footer.copy1":"© FUTaMÉRŐ Sport és Kulturális Egyesület",
         "footer.copy2":"7521 Kaposmérő · Somogy megye",
@@ -922,7 +922,7 @@
         "auth.send_login":"Login","auth.send_reg":"Sign Up",
         "footer.contact":"Contact","footer.useful":"Useful","footer.tax_title":"Tax 1%",
         "footer.tax_text":"Support our association with 1% of your tax!",
-        "footer.fb":"🔗 Our Facebook group","footer.membership":"📄 Membership requirements (coming soon)",
+        "footer.fb":"🔗 Our Facebook group","footer.membership":"📄 Membership requirements",
         "footer.desc":"We were founded in the summer of 2015 in Kaposmérő, inspired by a running event. Running is our common language.",
         "footer.copy1":"© FUTaMÉRŐ Sports and Cultural Association",
         "footer.copy2":"Kaposmérő · Somogy County, Hungary",
@@ -1398,7 +1398,7 @@
             <div>
               <div className="ft-head">{t("footer.useful")}</div>
               <a className="ft-link" href="https://www.facebook.com/groups/1626004027668156" target="_blank" rel="noreferrer">{t("footer.fb")}</a>
-              <a className="ft-link" href="#" id="belepesi-feltetelek" style={{opacity:.6,pointerEvents:"none"}}>{t("footer.membership")}</a>
+              <span className="ft-link" style={{cursor:"pointer"}} onClick={()=>document.dispatchEvent(new CustomEvent("openJoin"))}>{t("footer.membership")}</span>
               <div style={{marginTop:"1rem"}}>
                 <div className="ft-head">{t("footer.tax_title")}</div>
                 <div style={{fontSize:".76rem",color:"rgba(255,255,255,.55)",lineHeight:1.55}}>
@@ -1411,7 +1411,6 @@
           <div className="ft-bottom">
             <span className="ft-copy">{t("footer.copy1")} {new Date().getFullYear()}</span>
             <span style={{display:"flex",gap:"1rem",alignItems:"center"}}>
-              <span className="ft-link" style={{cursor:"pointer",fontSize:".7rem"}} onClick={()=>document.dispatchEvent(new CustomEvent("openJoin"))}>{t("join.link")}</span>
               <span className="ft-link" style={{cursor:"pointer",fontSize:".7rem"}} onClick={()=>document.dispatchEvent(new CustomEvent("openPrivacy"))}>{t("privacy.link")}</span>
               <span className="ft-copy">{t("footer.copy2")}</span>
             </span>
