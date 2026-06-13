@@ -386,7 +386,7 @@
     .ham-line{width:22px;height:2px;background:#fff;border-radius:1px;transition:all .3s}
 
     /* Mobile nav drawer */
-    .nav-drawer{position:fixed;top:0;right:0;bottom:0;width:280px;max-width:85vw;background:var(--navy2);z-index:300;padding:80px 1.5rem 2rem;display:flex;flex-direction:column;gap:.5rem;transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);box-shadow:-6px 0 24px rgba(0,0,0,.35)}
+    .nav-drawer{position:fixed;top:0;right:0;bottom:0;width:280px;max-width:85vw;background:var(--navy2);z-index:300;padding:80px 1.5rem 2rem;display:flex;flex-direction:column;gap:.5rem;transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);box-shadow:-6px 0 24px rgba(0,0,0,.35);overflow-y:auto;-webkit-overflow-scrolling:touch}
     .nav-drawer.open{transform:translateX(0)}
     .nav-drawer-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:299;animation:fi .2s ease}
     .nav-drawer .nl{color:rgba(255,255,255,.75);font-size:.92rem;padding:.75rem 0;border-bottom:1px solid rgba(255,255,255,.07);text-align:left;width:100%}
@@ -1886,11 +1886,13 @@
       const saveProgram = async () => {
         if (!editProg) return;
         const payload = {
+          id: editProg,
           title: progForm.title||'', schedule: progForm.schedule||'', location: progForm.location||'',
           description: progForm.description||'', coach_name: progForm.coach_name||'', coach_bio: progForm.coach_bio||'',
           images: progForm.images||'', updated_at: new Date().toISOString()
         };
-        await sb.from("programs").update(payload).eq("id", editProg);
+        const { error } = await sb.from("programs").upsert([payload], { onConflict: "id" });
+        if (error) { alert((_lang==="en"?"Save failed: ":"Mentés sikertelen: ")+error.message); return; }
         setPrograms(prev => ({ ...prev, [editProg]: { ...prev[editProg], ...payload } }));
         setEditProg(null); setProgForm({});
       };
@@ -2803,10 +2805,10 @@
                         <div className="past-recap-title">{ev.title}</div>
                         <div className="past-recap-date">📅 {dateStr}{ev.location?" · 📍 "+ev.location:""}</div>
                       </div>
-                      {isAdmin && <button className="past-recap-edit" onClick={()=>{setEditRecap(ev.id);setRecapForm(ev.recap||"");}}>✎</button>}
+                      {isAdmin && <button className="past-recap-edit" onClick={()=>{setEditRecap(ev.id);setRecapForm(ev.recap||ev.description||"");}}>✎</button>}
                     </div>
-                    {ev.recap ? (
-                      <div className="past-recap-text">{ev.recap}</div>
+                    {(ev.recap || ev.description) ? (
+                      <div className="past-recap-text">{ev.recap || ev.description}</div>
                     ) : (
                       <div className="past-recap-empty">{t("past.no_recap")}</div>
                     )}
