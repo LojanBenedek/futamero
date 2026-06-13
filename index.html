@@ -752,6 +752,16 @@
     .privacy-content p{margin-bottom:.6rem}
 
       .blog-image{max-width:100%;max-height:400px;border-radius:6px;margin:.5rem 0 .2rem;cursor:pointer;display:block;object-fit:cover}
+      .join-cta-btn{margin-top:1.5rem;background:var(--red);color:#fff;border:none;padding:.8rem 1.8rem;font-family:'Outfit',sans-serif;font-weight:700;font-size:.92rem;letter-spacing:.03em;text-transform:uppercase;cursor:pointer;transition:background .2s;border-radius:0}
+    .join-cta-btn:hover{background:#a50d12}
+    .join-step{display:flex;gap:.8rem;align-items:flex-start;margin-bottom:1rem}
+    .join-step-num{background:var(--blue);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;flex-shrink:0;font-family:'Outfit',sans-serif}
+    .join-step-text{font-size:.9rem;color:var(--tx2);line-height:1.5}
+    .join-info-box{background:var(--bg3);border:1px solid var(--br);padding:1rem 1.2rem;margin:1.2rem 0;font-size:.88rem}
+    .join-info-row{display:flex;justify-content:space-between;padding:.3rem 0;color:var(--tx2)}
+    .join-info-row strong{color:var(--navy)}
+    .join-dl-btn{display:inline-block;background:var(--navy);color:#fff;text-decoration:none;padding:.7rem 1.4rem;font-weight:600;font-size:.9rem;margin-top:.5rem;transition:background .2s}
+    .join-dl-btn:hover{background:#16356a}
   </style>
 </head>
 <body>
@@ -788,6 +798,8 @@
         "privacy.link":"Adatvédelem",
         "past.title":"Visszatekintő","past.tag":"Megtörtént események","past.empty":"Még nincs lezárult esemény","past.recap":"Beszámoló","past.no_recap":"Erről az eseményről még nincs beszámoló","past.photos":"Képek az eseményről","past.edit_recap":"Beszámoló szerkesztése","past.recap_placeholder":"Írd le milyen volt az esemény…","past.save":"Mentés",
         "prog.title":"Heti rendszeres programok","prog.tag":"Edzések","prog.yoga":"Jóga","prog.athletics":"Atlétika","prog.walking":"Gyaloglás","prog.swimming":"Úszás","prog.select":"Válassz egy programot a részletekért",
+        "events.view_list":"Lista","events.view_cal":"Naptár",
+        "cal.months":"Január,Február,Március,Április,Május,Június,Július,Augusztus,Szeptember,Október,November,December","cal.days":"H,K,Sze,Cs,P,Szo,V","cal.today":"Ma","cal.no_events":"Nincs esemény ezen a napon","blog.add_image":"📷 Kép hozzáadása","blog.remove_image":"Kép eltávolítása","blog.uploading":"Feltöltés…","join.link":"Csatlakozz","join.title":"Csatlakozz hozzánk","join.intro":"Szeretnél a FUTaMÉRŐ csapatának tagja lenni? Egyszerű a folyamat:","join.step1":"Töltsd le és töltsd ki a belépési nyilatkozatot","join.step2":"Fizesd be az éves tagdíjat (3000 Ft) az egyesület számlájára minden év január 31-ig","join.step3":"Juttasd el az aláírt nyilatkozatot az egyesülethez (személyesen vagy emailben)","join.download":"📄 Belépési nyilatkozat letöltése","join.account":"Számlaszám","join.fee":"Éves tagdíj: 3000 Ft","join.contact":"Kérdésed van? Írj nekünk:",
         "events.no_regs":"Még nincs jelentkező","events.regs":"jelentkező",
         "events.join":"Ott leszek →","events.leave":"✓ Leiratkozás",
         "events.login_req":"A jelentkezéshez","events.login_link":"be kell jelentkezni",
@@ -895,7 +907,7 @@
         "runs.title":"Log a run","posts.pinned":"📌 Pinned","posts.pin":"📌 Pin","posts.unpin":"📌 Unpin","posts.run_entry":"🏃 Run","feed.empty":"No posts yet.","runs.km":"Distance (km) *","runs.duration":"Duration (required, e.g. 28:45 or 1:10:00)","runs.duration_ph":"e.g. 28:45 or 1:10:00",
         "runs.desc":"Note (optional)","runs.photo":"Photo (optional)",
         "runs.btn":"Log run","runs.empty":"No runs logged yet.",
-        "runs.login_to":"to log your runs","runs.no_file":"No file selected","lbsort.km":"By km","lbsort.runs":"By runs","lbsort.pace":"By pace","lbsort.duration":"By time","runs.pace":"Pace","runs.hours":"h","runs.minutes":"m","runs.seconds":"s","comments.title":"Comments","comments.placeholder":"Write a comment...","comments.send":"Send","comments.empty":"No comments yet.","comments.reply":"Reply","comments.reply_placeholder":"Write a reply…","blog.add_image":"📷 Add image","blog.remove_image":"Remove image","blog.uploading":"Uploading…","comments.delete":"Delete","runs.login_to_react":"to react","runs.delete":"✕ Delete",
+        "runs.login_to":"to log your runs","runs.no_file":"No file selected","lbsort.km":"By km","lbsort.runs":"By runs","lbsort.pace":"By pace","lbsort.duration":"By time","runs.pace":"Pace","runs.hours":"h","runs.minutes":"m","runs.seconds":"s","comments.title":"Comments","comments.placeholder":"Write a comment...","comments.send":"Send","comments.empty":"No comments yet.","comments.reply":"Reply","comments.reply_placeholder":"Write a reply…","blog.add_image":"📷 Add image","blog.remove_image":"Remove image","blog.uploading":"Uploading…","join.link":"Join","join.title":"Join us","join.intro":"Would you like to become a member of the FUTaMÉRŐ team? The process is simple:","join.step1":"Download and fill out the membership form","join.step2":"Pay the annual membership fee (3000 HUF) to the association account by January 31 each year","join.step3":"Submit the signed form to the association (in person or by email)","join.download":"📄 Download membership form","join.account":"Account number","join.fee":"Annual fee: 3000 HUF","join.contact":"Questions? Write to us:","comments.delete":"Delete","runs.login_to_react":"to react","runs.delete":"✕ Delete",
         "stats.total_km":"Total km","stats.total_runs":"Number of runs",
         "stats.week":"Most km this week","stats.month":"Most km this month",
         "stats.year_rank":"annual ranking","stats.runner":"Runner",
@@ -1399,6 +1411,7 @@
           <div className="ft-bottom">
             <span className="ft-copy">{t("footer.copy1")} {new Date().getFullYear()}</span>
             <span style={{display:"flex",gap:"1rem",alignItems:"center"}}>
+              <span className="ft-link" style={{cursor:"pointer",fontSize:".7rem"}} onClick={()=>document.dispatchEvent(new CustomEvent("openJoin"))}>{t("join.link")}</span>
               <span className="ft-link" style={{cursor:"pointer",fontSize:".7rem"}} onClick={()=>document.dispatchEvent(new CustomEvent("openPrivacy"))}>{t("privacy.link")}</span>
               <span className="ft-copy">{t("footer.copy2")}</span>
             </span>
@@ -1630,6 +1643,7 @@
       const [editRecap,  setEditRecap]  = useState(null);
       const [recapForm,  setRecapForm]  = useState('');
       const [showPrivacy, setShowPrivacy] = useState(false);
+      const [showJoin, setShowJoin] = useState(false);
       const [gallery,    setGallery]    = useState([]);
       const [regs,       setRegs]       = useState({});
       const [loaded,     setLoaded]     = useState(false);
@@ -1828,7 +1842,9 @@
         document.addEventListener("openAuth", fn);
         const pf = () => setShowPrivacy(true);
         document.addEventListener("openPrivacy", pf);
-        return () => { document.removeEventListener("openAuth", fn); document.removeEventListener("openPrivacy", pf); };
+        const jf = () => setShowJoin(true);
+        document.addEventListener("openJoin", jf);
+        return () => { document.removeEventListener("openAuth", fn); document.removeEventListener("openPrivacy", pf); document.removeEventListener("openJoin", jf); };
       }, []);
       useEffect(() => {
         const fn = (e) => { setTab("gallery"); setActiveEvent(null); setTargetGalLabel(e.detail || null); };
@@ -2515,6 +2531,27 @@
             <EditEventModal ev={editEv} onSave={updateEvent} onClose={() => setEditEv(null)} />
           )}
 
+          {showJoin && (
+            <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.65)",zIndex:1100,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"2rem 1rem",overflowY:"auto"}} onClick={()=>setShowJoin(false)}>
+              <div style={{background:"#fff",border:"1px solid var(--br)",padding:"2.2rem",width:"100%",maxWidth:560,margin:"auto"}} onClick={e=>e.stopPropagation()}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"1.3rem"}}>
+                  <div style={{fontFamily:"'Outfit',sans-serif",fontWeight:800,fontSize:"1.5rem",color:"var(--navy)"}}>🏃 {t("join.title")}</div>
+                  <button onClick={()=>setShowJoin(false)} style={{background:"none",border:"none",fontSize:"1.5rem",cursor:"pointer",color:"var(--mu)",lineHeight:1}}>✕</button>
+                </div>
+                <p style={{color:"var(--tx2)",marginBottom:"1.3rem",lineHeight:1.6,fontSize:".92rem"}}>{t("join.intro")}</p>
+                <div className="join-step"><span className="join-step-num">1</span><span className="join-step-text">{t("join.step1")}</span></div>
+                <div className="join-step"><span className="join-step-num">2</span><span className="join-step-text">{t("join.step2")}</span></div>
+                <div className="join-step"><span className="join-step-num">3</span><span className="join-step-text">{t("join.step3")}</span></div>
+                <div className="join-info-box">
+                  <div className="join-info-row"><span>{t("join.fee")}</span></div>
+                  <div className="join-info-row"><span>{t("join.account")}:</span><strong>10403909-50526857-52751002</strong></div>
+                  <div className="join-info-row"><span>{t("join.contact")}</span><strong>futamerose@gmail.com</strong></div>
+                </div>
+                <a href="/belepesi_nyilatkozat.pdf" download className="join-dl-btn">{t("join.download")}</a>
+              </div>
+            </div>
+          )}
+
           {showPrivacy && (
             <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.65)",zIndex:1100,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"2rem 1rem",overflowY:"auto"}} onClick={()=>setShowPrivacy(false)}>
               <div style={{background:"#fff",border:"1px solid var(--br)",padding:"2.2rem",width:"100%",maxWidth:720,margin:"auto",lineHeight:1.65,fontSize:".88rem",color:"var(--tx2)"}} onClick={e=>e.stopPropagation()}>
@@ -2680,6 +2717,7 @@
                     <div className="fact"><span className="fact-ico">🏃</span><div><div className="fact-lbl">{t("about.activity")}</div><div className="fact-val">{t("about.activity_val")}</div></div></div>
                     <div className="fact"><span className="fact-ico">💛</span><div><div className="fact-lbl">{t("about.tax")}</div><div className="fact-val">19212474-1-14</div></div></div>
                   </div>
+                  <button className="join-cta-btn" onClick={()=>setShowJoin(true)}>{t("join.title")} →</button>
                 </div>
               </div>
 
