@@ -113,7 +113,7 @@
     .about-wrap{background:linear-gradient(135deg,#0d2f6e 0%,#0e3a82 60%,#123d8a 100%);padding:5rem 5%}
     .about-inner{max-width:820px;margin:0 auto}
     @media(max-width:680px){.about-inner{grid-template-columns:1fr;gap:2rem}}
-    .about-text{color:rgba(255,255,255,.7);font-size:.93rem;line-height:1.75;font-weight:300}
+    .about-text{color:rgba(255,255,255,.7);font-size:1.04rem;line-height:1.8;font-weight:300}
     .about-text p+p{margin-top:.9rem}
     .about-sec-tag{font-size:.64rem;letter-spacing:.05em;text-transform:none;color:var(--red);font-weight:600;margin-bottom:.45rem;display:block}
     .about-title{font-family:'Outfit',sans-serif;font-size:clamp(2.2rem,5.5vw,3.2rem);font-weight:900;line-height:.9;color:#fff;margin-bottom:1.2rem;letter-spacing:-.02em}
@@ -736,7 +736,7 @@
     .past-recap-date{font-size:.8rem;color:var(--mu);margin-top:.3rem}
     .past-recap-edit{background:var(--navy);color:#fff;border:none;width:32px;height:32px;cursor:pointer;font-size:.85rem;flex-shrink:0}
     .past-recap-edit:hover{background:#16356a}
-    .past-recap-text{color:var(--tx2);line-height:1.7;font-size:.92rem;white-space:pre-wrap;margin-bottom:1rem}
+    .past-recap-text{color:var(--tx2);line-height:1.75;font-size:1.02rem;white-space:pre-wrap;margin-bottom:1rem}
     .past-recap-empty{color:var(--mu);font-style:italic;font-size:.85rem;margin-bottom:1rem}
     .past-recap-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem}
     .past-recap-img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:3px;cursor:pointer;transition:transform .2s}
@@ -982,85 +982,6 @@
     // Globális fordítás – minden komponens eléri
     let _lang = (() => { try { const v=localStorage.getItem('fm_lang'); return (v==='hu'||v==='en')?v:'hu'; } catch(e) { return 'hu'; } })();
     const t = (key) => TRANSLATIONS[_lang]?.[key] ?? TRANSLATIONS.hu[key] ?? key;
-
-
-
-    function CommentSection({ parentId, parentType, comments, newComment, setNewComment, submitComment, deleteComment, user, profile, isAdmin }) {
-      const [open, setOpen] = React.useState(false);
-      const [replyTo, setReplyTo] = React.useState(null);
-      const [replyText, setReplyText] = React.useState("");
-      const coms = comments[parentId] || [];
-      const displayName = profile?.full_name || user?.email?.split("@")[0] || "";
-      const doReply = (commentId) => {
-        if (!replyText.trim()) return;
-        submitComment(commentId, "comment", replyText.trim());
-        setReplyText(""); setReplyTo(null);
-      };
-      return (
-        <div className="comments-wrap">
-          <button className="comment-toggle" onClick={() => setOpen(o=>!o)}>
-            💬 {coms.length > 0 ? coms.length+" "+t("comments.title") : t("comments.title")}
-            <span>{open?"▲":"▼"}</span>
-          </button>
-          {open && (
-            <>
-              {coms.length === 0 && <div style={{fontSize:".8rem",color:"var(--mu)",marginTop:".5rem"}}>{t("comments.empty")}</div>}
-              {coms.map(c => {
-                const replies = comments[c.id] || [];
-                return (
-                <div key={c.id}>
-                <div className="comment-item">
-                  <div className="user-ava" style={{width:26,height:26,fontSize:".62rem",flexShrink:0}}>{initials(c.user_name)}</div>
-                  <div className="comment-body">
-                    {(user && (isAdmin || c.user_id===user.id)) && <button className="comment-del" onClick={()=>deleteComment(c.id,parentId)}>✕</button>}
-                    <div className="comment-author">{c.user_name}</div>
-                    <div className="comment-text">{c.content}</div>
-                    {user && <button className="comment-reply-btn" onClick={()=>{setReplyTo(replyTo===c.id?null:c.id);setReplyText("");}}>↳ {t("comments.reply")}</button>}
-                  </div>
-                </div>
-                {replies.length > 0 && (
-                  <div className="comment-replies">
-                    {replies.map(r => (
-                      <div key={r.id} className="comment-item">
-                        <div className="user-ava" style={{width:22,height:22,fontSize:".56rem",flexShrink:0}}>{initials(r.user_name)}</div>
-                        <div className="comment-body">
-                          {(user && (isAdmin || r.user_id===user.id)) && <button className="comment-del" onClick={()=>deleteComment(r.id,c.id)}>✕</button>}
-                          <div className="comment-author">{r.user_name}</div>
-                          <div className="comment-text">{r.content}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {replyTo===c.id && user && (
-                  <div className="comment-reply-input">
-                    <input autoFocus placeholder={t("comments.reply_placeholder")} value={replyText}
-                      onChange={e=>setReplyText(e.target.value)}
-                      onKeyDown={e=>e.key==="Enter"&&doReply(c.id)} />
-                    <button className="comment-send" onClick={()=>doReply(c.id)}>{t("comments.send")}</button>
-                  </div>
-                )}
-                </div>
-              );})}
-              {user ? (
-                <div className="comment-input">
-                  <input placeholder={t("comments.placeholder")}
-                    value={newComment[parentId]||''}
-                    onChange={e=>setNewComment(prev=>({...prev,[parentId]:e.target.value}))}
-                    onKeyDown={e=>e.key==="Enter"&&submitComment(parentId,parentType)} />
-                  <button className="comment-send" onClick={()=>submitComment(parentId,parentType)}>{t("comments.send")}</button>
-                </div>
-              ) : (
-                <div style={{fontSize:".78rem",color:"var(--mu)",marginTop:".5rem"}}>
-                  <span style={{color:"var(--blue)",cursor:"pointer",textDecoration:"underline"}}
-                    onClick={()=>document.dispatchEvent(new CustomEvent("openAuth"))}>{t("blog.login")}</span> {t("blog.login_to")}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      );
-    }
 
     class ErrorBoundary extends React.Component {
       constructor(props) { super(props); this.state = { hasError: false, error: null }; }
@@ -1320,14 +1241,7 @@
                   {mode === "login" ? t("auth.send_login") : t("auth.send_reg")}
                 </button>
                 )}
-                {mode === "login" && (
-                  <div style={{textAlign:"center",marginTop:".65rem"}}>
-                    <span style={{fontSize:".76rem",color:"var(--mu)",cursor:"pointer",textDecoration:"underline",textUnderlineOffset:"2px"}}
-                      onClick={() => { setMode("forgot"); reset(); }}>
-                      {t("auth.forgot")}
-                    </span>
-                  </div>
-                )}
+                
               </>
             )}
           </div>
@@ -1527,7 +1441,7 @@
     }
 
     /* ── ESEMÉNY RÉSZLET MODÁL ── */
-    function EventDetailModal({ ev, user, profile, regs, onRegister, onUnregister, onClose, hasPhotos, isAdmin, onEdit, comments, newComment, setNewComment, submitComment, deleteComment }) {
+    function EventDetailModal({ ev, user, profile, regs, onRegister, onUnregister, onClose, hasPhotos, isAdmin, onEdit }) {
       const d = new Date(ev.date + "T00:00:00");
       const today = new Date(); today.setHours(0,0,0,0);
       const diff = Math.round((d - today) / 86400000);
@@ -1571,9 +1485,7 @@
                 {t("event.document")}{ev.document_name ? " — "+ev.document_name : ""}
               </a>
             )}
-            <div style={{marginTop:"1.5rem",paddingTop:"1.2rem",borderTop:"1px solid var(--br)"}}>
-              <CommentSection parentId={ev.id} parentType="event" comments={comments} newComment={newComment} setNewComment={setNewComment} submitComment={submitComment} deleteComment={deleteComment} user={user} profile={profile} isAdmin={isAdmin} />
-            </div>
+
           </div>
         </div>
       );
@@ -1659,52 +1571,6 @@
 
     
     /* ── JELSZÓ VISSZAÁLLÍTÁS MODÁL ── */
-    function ResetPasswordModal({ onClose }) {
-      const [pw,   setPw]   = useState("");
-      const [pw2,  setPw2]  = useState("");
-      const [saving, setSaving] = useState(false);
-      const [err,  setErr]  = useState("");
-      const [ok,   setOk]   = useState("");
-
-      const save = async () => {
-        if (!pw || !pw2) { setErr("Töltsd ki mindkét mezőt"); return; }
-        if (pw !== pw2) { setErr("A két jelszó nem egyezik"); return; }
-        if (pw.length < 6) { setErr("Legalább 6 karakter szükséges"); return; }
-        setSaving(true);
-        const { error } = await sb.auth.updateUser({ password: pw });
-        if (error) setErr(error.message);
-        else {
-          setOk(_lang==="en" ? "Password changed successfully!" : "Jelszó sikeresen megváltoztatva!");
-          setTimeout(() => { window.location.hash = ""; onClose(); }, 2000);
-        }
-        setSaving(false);
-      };
-
-      return (
-        <div className="modal-ov">
-          <div className="modal-box" style={{maxWidth:"380px"}} onClick={e => e.stopPropagation()}>
-            <div style={{textAlign:"center",marginBottom:"1.2rem"}}><FutameroLogo size={56} /></div>
-            <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.7rem",color:"var(--navy)",marginBottom:"1.2rem",letterSpacing:".03em"}}>Új jelszó beállítása</div>
-            {err && <div className="auth-err">{err}</div>}
-            {ok  && <div className="auth-ok">{ok}</div>}
-            {!ok && (
-              <>
-                <div className="fg"><label className="inp-lbl">Új jelszó</label>
-                  <input className="inp" type="password" placeholder="••••••••" value={pw} onChange={e => setPw(e.target.value)} /></div>
-                <div className="fg" style={{marginBottom:"1rem"}}><label className="inp-lbl">{t("auth.pw2")}</label>
-                  <input className={"inp" + (pw2 && pw!==pw2?" err":"")} type="password" placeholder="••••••••" value={pw2} onChange={e => setPw2(e.target.value)} />
-                  {pw2 && pw!==pw2 && <div style={{fontSize:".72rem",color:"var(--red)",marginTop:"2px"}}>A két jelszó nem egyezik</div>}
-                  {pw2 && pw===pw2 && pw.length>=6 && <div style={{fontSize:".72rem",color:"#16a34a",marginTop:"2px"}}>✓ A jelszavak egyeznek</div>}
-                </div>
-                <button className="btn-p" style={{width:"100%"}} disabled={saving||pw!==pw2||pw.length<6} onClick={save}>
-                  {saving && <span className="spin" />}{t("auth.save_pw")}
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      );
-    }
 
         /* ── FŐKOMPONENS ── */
     function FutameroSite() {
@@ -1755,10 +1621,6 @@
       const [notifications,    setNotifications]    = useState([]);
       const [showNotif,        setShowNotif]        = useState(false);
       const [showUserMenu,     setShowUserMenu]     = useState(false);
-      const [showChangePw,     setShowChangePw]     = useState(false);
-      const [changePwForm,     setChangePwForm]     = useState({pw:'',pw2:''});
-      const [changePwMsg,      setChangePwMsg]      = useState('');
-      const [changePwErr,      setChangePwErr]      = useState('');
       const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
       const isInStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
       const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -1788,26 +1650,7 @@
         if (outcome === 'accepted') setPwaInstalled(true);
         setPwaPrompt(null);
       };
-
-      const doChangePw = async () => {
-        setChangePwErr(''); setChangePwMsg('');
-        if (changePwForm.pw.length < 6) { setChangePwErr(t('pw.short')); return; }
-        if (changePwForm.pw !== changePwForm.pw2) { setChangePwErr(t('pw.mismatch')); return; }
-        const { error } = await sb.auth.updateUser({ password: changePwForm.pw });
-        if (error) { setChangePwErr(error.message); return; }
-        setChangePwMsg(t('pw.success'));
-        setChangePwForm({pw:'',pw2:''});
-        setTimeout(()=>{ setShowChangePw(false); setChangePwMsg(''); }, 2000);
-      };
-      const doDeleteAccount = async () => {
-        if (!window.confirm(t('account.delete_confirm'))) return;
-        try {
-          await sb.rpc('delete_own_account');
-        } catch(e) { console.warn('Delete account:', e); }
-        setUser(null); setProfile(null); setAuthReady(true);
-        if (tab==='admin') setTab('home');
-        setShowAuth(false);
-      };
+;
       const doLogout = async () => {
         if (!window.confirm(t("confirm.logout"))) return;
         try {
@@ -1830,11 +1673,7 @@
         setShowAuth(false);
         setMobileMenu(false);
         setNewPost("");
-        setPinNewPost(false);
-        setNewRun({ km:"", hours:"", minutes:"", seconds:"", desc:"" });
-        setRunFileName("");
       };
-      const [showResetPw, setShowResetPw] = useState(false);
       const [posts, setPosts] = useState([]);
       const [newPost, setNewPost] = useState("");
       const [postImage, setPostImage] = useState("");
@@ -1914,7 +1753,6 @@
         }, 3000);
 
         const { data: { subscription } } = sb.auth.onAuthStateChange(async (event, session) => {
-          if (event === "PASSWORD_RECOVERY") { setShowResetPw(true); return; }
           clearTimeout(fallback);
           if (session?.user) {
             setUser(session.user);
@@ -2008,134 +1846,7 @@
           setProgUpMsg("✓");
           setTimeout(()=>setProgUpMsg(""), 1500);
         } catch(e) { console.error(e); setProgUpMsg("⚠ Hiba"); }
-      };
-      const loadComments = async () => {
-        const { data } = await sb.from("comments").select("*").order("created_at",{ascending:true});
-        const map = {};
-        (data||[]).forEach(c => { if(!map[c.parent_id]) map[c.parent_id]=[]; map[c.parent_id].push(c); });
-        setComments(map);
-      };
-      const loadRunReactions = async () => {
-        const { data } = await sb.from("run_reactions").select("run_id, user_id, emoji");
-        const map = {};
-        (data||[]).forEach(r => { if(!map[r.run_id]) map[r.run_id]={}; if(!map[r.run_id][r.emoji]) map[r.run_id][r.emoji]=[]; map[r.run_id][r.emoji].push(r.user_id); });
-        setRunReactions(map);
-      };
-      const submitComment = async (parentId, parentType, directText) => {
-        const txt = (directText !== undefined ? directText : (newComment[parentId]||'')).trim();
-        if (!txt || !user) return;
-        const { data, error } = await sb.from("comments").insert([{
-          parent_id:parentId, parent_type:parentType,
-          user_id:user.id, user_name:profile?.full_name||displayName, content:txt
-        }]).select().single();
-        if (!error && data) {
-          setComments(prev => ({ ...prev, [parentId]:[...(prev[parentId]||[]),data] }));
-          // Értesítés a bejegyzés/futás szerzőjének
-          const actorName = profile?.full_name||displayName;
-          if (parentType==="post") {
-            const post = posts.find(p=>p.id===parentId);
-            if (post) addNotif(post.user_id,'comment',actorName,parentId,'post',txt.slice(0,60),'💬');
-          } else if (parentType==="run") {
-            const run = runs.find(r=>r.id===parentId);
-            if (run) addNotif(run.user_id,'comment',actorName,parentId,'run',txt.slice(0,60),'💬');
-          }
-        }
-        setNewComment(prev => ({...prev, [parentId]:''}));
-      };
-      const deleteComment = async (id, parentId) => {
-        await sb.from("comments").delete().eq("id",id);
-        setComments(prev => ({ ...prev, [parentId]:(prev[parentId]||[]).filter(c=>c.id!==id) }));
-      };
-      const toggleRunReaction = async (runId, emoji) => {
-        if (!user) { document.dispatchEvent(new CustomEvent("openAuth")); return; }
-        const rr = runReactions[runId] || {};
-        const hasThis = (rr[emoji]||[]).includes(user.id);
-        if (hasThis) {
-          await sb.from("run_reactions").delete().eq("run_id",runId).eq("user_id",user.id).eq("emoji",emoji);
-          setRunReactions(prev => ({ ...prev, [runId]:{ ...(prev[runId]||{}), [emoji]:(prev[runId]?.[emoji]||[]).filter(u=>u!==user.id) } }));
-        } else {
-          for (const other of ["👍","❤️","🏃"].filter(e=>e!==emoji)) {
-            if ((rr[other]||[]).includes(user.id)) {
-              await sb.from("run_reactions").delete().eq("run_id",runId).eq("user_id",user.id).eq("emoji",other);
-              setRunReactions(prev => ({ ...prev, [runId]:{ ...(prev[runId]||{}), [other]:(prev[runId]?.[other]||[]).filter(u=>u!==user.id) } }));
-            }
-          }
-          const { error } = await sb.from("run_reactions").insert({ run_id:runId, user_id:user.id, emoji });
-          if (!error) {
-            setRunReactions(prev => ({ ...prev, [runId]:{ ...(prev[runId]||{}), [emoji]:[...(prev[runId]?.[emoji]||[]),user.id] } }));
-            const run = runs.find(r=>r.id===runId);
-            if (run) addNotif(run.user_id,'run_reaction',profile?.full_name||user.email?.split('@')[0]||'?',runId,'run',(run.distance_km+'km')+(run.description?' — '+run.description.slice(0,40):''),emoji);
-          }
-        }
-      };
-      const loadRuns = async () => {
-        const { data } = await sb.from("runs").select("*").order("created_at",{ascending:false});
-        setRuns(data || []);
-      };
-      const loadReactions = async () => {
-        const { data } = await sb.from("reactions").select("post_id, user_id, emoji");
-        const map = {};
-        (data||[]).forEach(r => { if(!map[r.post_id]) map[r.post_id]={}; if(!map[r.post_id][r.emoji]) map[r.post_id][r.emoji]=[]; map[r.post_id][r.emoji].push(r.user_id); });
-        setReactions(map);
-      };
-      const submitRun = async () => {
-        if (!newRun.km || (!newRun.minutes && !newRun.hours) || !user) return;
-        setRunUploading(true);
-        let imageUrl='', imageFilename='';
-        if (runFileRef.current?.files?.[0]) {
-          try {
-            const b64 = await compressImage(runFileRef.current.files[0]);
-            const blob = b64ToBlob(b64);
-            const fname = "run_" + Date.now() + "_" + Math.random().toString(36).slice(2,7) + ".jpg";
-            const { error: upErr } = await sb.storage.from(BUCKET).upload(fname, blob, { contentType:"image/jpeg" });
-            if (!upErr) { const { data:{publicUrl} } = sb.storage.from(BUCKET).getPublicUrl(fname); imageUrl=publicUrl; imageFilename=fname; }
-          } catch(e) { console.error(e); }
-        }
-        let runError = null;
-        const { data, error } = await sb.from("runs").insert([{
-          user_id:user.id, user_name:profile?.full_name||user.email?.split("@")[0]||"Ismeretlen",
-          distance_km:parseFloat(newRun.km), run_date:new Date().toISOString().slice(0,10), duration:fmtDur(newRun.hours,newRun.minutes,newRun.seconds),
-          description:newRun.desc, image_url:imageUrl, image_filename:imageFilename
-        }]).select().single();
-        if (error) { console.error('Run insert hiba:', error); runError = error.message; }
-        if (!error && data) setRuns(prev => [data, ...prev]);
-        if (runError) { alert('Hiba a futás rögzítésekor: ' + runError + '\n\nEllenőrizd hogy fut-e le a szükséges SQL (duration oszlop hozzáadása).'); }
-        setNewRun({ km:'', hours:'', minutes:'', seconds:'', desc:'' });
-        setRunFileName('');
-        if (runFileRef.current) runFileRef.current.value='';
-        setRunUploading(false);
-      };
-      const deleteRun = async (id, imageFilename) => {
-        if (!window.confirm(t("confirm.delete_run"))) return;
-        if (imageFilename) await sb.storage.from(BUCKET).remove([imageFilename]);
-        await sb.from("runs").delete().eq("id", id);
-        setRuns(prev => prev.filter(r => r.id !== id));
-      };
-      const toggleReaction = async (postId, emoji) => {
-        if (!user) { document.dispatchEvent(new CustomEvent("openAuth")); return; }
-        const postRxns = reactions[postId] || {};
-        const hasThis = (postRxns[emoji]||[]).includes(user.id);
-        if (hasThis) {
-          // Eltávolítjuk
-          await sb.from("reactions").delete().eq("post_id",postId).eq("user_id",user.id).eq("emoji",emoji);
-          setReactions(prev => ({ ...prev, [postId]:{ ...(prev[postId]||{}), [emoji]:(prev[postId]?.[emoji]||[]).filter(u=>u!==user.id) } }));
-        } else {
-          // Eltávolítjuk az összes meglévő reakciót ettől a felhasználótól
-          for (const other of ["👍","❤️","🏃"].filter(e=>e!==emoji)) {
-            if ((postRxns[other]||[]).includes(user.id)) {
-              await sb.from("reactions").delete().eq("post_id",postId).eq("user_id",user.id).eq("emoji",other);
-              setReactions(prev => ({ ...prev, [postId]:{ ...(prev[postId]||{}), [other]:(prev[postId]?.[other]||[]).filter(u=>u!==user.id) } }));
-            }
-          }
-          // Hozzáadjuk az újat
-          const { error } = await sb.from("reactions").insert({ post_id:postId, user_id:user.id, emoji });
-          if (!error) {
-            setReactions(prev => ({ ...prev, [postId]:{ ...(prev[postId]||{}), [emoji]:[...(prev[postId]?.[emoji]||[]),user.id] } }));
-            const post = posts.find(p=>p.id===postId);
-            if (post) addNotif(post.user_id,'reaction',profile?.full_name||user.email?.split('@')[0]||'?',postId,'post',post.content?.slice(0,60)||'',emoji);
-          }
-        }
-      };
+      };;;
 
       const loadPosts = async () => {
         const { data } = await sb.from("posts").select("*").order("created_at", { ascending: false });
@@ -2157,27 +1868,14 @@
       const submitPost = async () => {
         if (!newPost.trim() || !user) return;
         setPosting(true);
-        const willPin = isAdmin && pinNewPost;
         const { data, error } = await sb.from("posts").insert([{
           user_id: user.id,
           user_name: profile?.full_name || user.email?.split("@")[0] || "Ismeretlen",
           content: newPost.trim(),
-          image_url: postImage || "",
-          is_pinned: willPin,
-          pinned_at: willPin ? new Date().toISOString() : null
+          image_url: postImage || ""
         }]).select().single();
-        if (!error && data) {
-          setPosts(prev => [data, ...prev]);
-          // Kiemelt bejegyzés -> mindenki értesítése
-          if (willPin) notifyAllUsers('pinned_post', profile?.full_name||'Admin', data.id, 'post', newPost.trim().slice(0,60), '📌');
-        }
-        setNewPost(""); setPostImage(""); setPinNewPost(false); setPosting(false);
-      };
-      const togglePin = async (post) => {
-        const nowPinned = !post.is_pinned;
-        await sb.from("posts").update({ is_pinned: nowPinned, pinned_at: nowPinned ? new Date().toISOString() : null }).eq("id", post.id);
-        setPosts(prev => prev.map(p => p.id === post.id ? {...p, is_pinned: nowPinned, pinned_at: nowPinned ? new Date().toISOString() : null} : p));
-        if (nowPinned) notifyAllUsers('pinned_post',profile?.full_name||'Admin',post.id,'post',post.content?.slice(0,60)||'','📌');
+        if (!error && data) setPosts(prev => [data, ...prev]);
+        setNewPost(""); setPostImage(""); setPosting(false);
       };
 
       const deletePost = async (id) => {
@@ -2441,12 +2139,8 @@
                     <>
                       <div style={{position:"fixed",inset:0,zIndex:499}} onClick={()=>setShowUserMenu(false)}/>
                       <div style={{position:"absolute",top:"calc(100% + 8px)",right:0,background:"#fff",border:"1px solid var(--br)",boxShadow:"0 8px 28px rgba(11,31,58,.18)",zIndex:600,minWidth:200,overflow:"hidden"}}>
-                        <button style={{display:"flex",alignItems:"center",gap:".6rem",width:"100%",background:"none",border:"none",padding:".7rem 1rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".85rem",color:"#1a1a1a",textAlign:"left",borderBottom:"1px solid var(--br)"}}
-                          onClick={()=>{setShowChangePw(true);setShowUserMenu(false);}}>🔑 {t("pw.change")}</button>
-                        <button style={{display:"flex",alignItems:"center",gap:".6rem",width:"100%",background:"none",border:"none",padding:".7rem 1rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".85rem",color:"#1a1a1a",textAlign:"left",borderBottom:"1px solid var(--br)"}}
+                        <button style={{display:"flex",alignItems:"center",gap:".6rem",width:"100%",background:"none",border:"none",padding:".7rem 1rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".85rem",color:"#1a1a1a",textAlign:"left"}}
                           onClick={()=>{doLogout();setShowUserMenu(false);}}>🚪 {t("nav.logout")}</button>
-                        <button style={{display:"flex",alignItems:"center",gap:".6rem",width:"100%",background:"none",border:"none",padding:".7rem 1rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".85rem",color:"var(--red)",textAlign:"left"}}
-                          onClick={()=>{doDeleteAccount();setShowUserMenu(false);}}>🗑 {t("account.delete")}</button>
                       </div>
                     </>
                   )}
@@ -2562,12 +2256,8 @@
             {isAdmin && <button className={"nl" + (tab==="admin"?" a":"")} onClick={() => { setTab("admin"); setMobileMenu(false); }}>⚙️ Admin</button>}
             {user && (
               <div style={{padding:".4rem 0",borderBottom:"1px solid rgba(255,255,255,.15)",marginBottom:".4rem"}}>
-                <button style={{width:"100%",background:"var(--red)",border:"none",color:"#fff",padding:".6rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".85rem",fontWeight:600,marginBottom:".4rem",textAlign:"center"}}
+                <button style={{width:"100%",background:"var(--red)",border:"none",color:"#fff",padding:".6rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".85rem",fontWeight:600,textAlign:"center"}}
                   onClick={()=>{doLogout();setMobileMenu(false);}}>🚪 {t("nav.logout")}</button>
-                <button style={{width:"100%",background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",color:"#fff",padding:".5rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".82rem",marginBottom:".3rem",textAlign:"left"}}
-                  onClick={()=>{setShowChangePw(true);setMobileMenu(false);}}>🔑 {t("pw.change")}</button>
-                <button style={{width:"100%",background:"rgba(201,16,21,.15)",border:"1px solid rgba(201,16,21,.3)",color:"#ffaaaa",padding:".5rem",cursor:"pointer",fontFamily:"Rubik,sans-serif",fontSize:".82rem",textAlign:"left"}}
-                  onClick={doDeleteAccount}>🗑 {t("account.delete")}</button>
               </div>
             )}
             {!isInStandalone && (
@@ -2579,27 +2269,6 @@
             )}
                       </div>
 
-          {showChangePw && (
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}} onClick={()=>setShowChangePw(false)}>
-          <div style={{background:"var(--bg2)",border:"1px solid var(--br)",padding:"2rem",width:"100%",maxWidth:400}} onClick={e=>e.stopPropagation()}>
-            <div style={{fontFamily:"'Outfit',sans-serif",fontWeight:700,fontSize:"1.2rem",color:"var(--navy)",marginBottom:"1.5rem"}}>🔑 {t("pw.change")}</div>
-            {changePwMsg && <div style={{background:"rgba(0,160,80,.1)",border:"1px solid rgba(0,160,80,.3)",padding:".6rem .8rem",marginBottom:"1rem",color:"#006030",fontSize:".85rem"}}>{changePwMsg}</div>}
-            {changePwErr && <div style={{background:"rgba(201,16,21,.08)",border:"1px solid rgba(201,16,21,.25)",padding:".6rem .8rem",marginBottom:"1rem",color:"var(--red)",fontSize:".85rem"}}>{changePwErr}</div>}
-            <div className="fg" style={{marginBottom:"1rem"}}>
-              <label className="inp-lbl">{t("pw.current_label")}</label>
-              <input className="inp" type="password" value={changePwForm.pw} onChange={e=>setChangePwForm(f=>({...f,pw:e.target.value}))} placeholder="••••••••"/>
-            </div>
-            <div className="fg" style={{marginBottom:"1.5rem"}}>
-              <label className="inp-lbl">{t("pw.confirm_label")}</label>
-              <input className="inp" type="password" value={changePwForm.pw2} onChange={e=>setChangePwForm(f=>({...f,pw2:e.target.value}))} placeholder="••••••••"/>
-            </div>
-            <div style={{display:"flex",gap:".7rem"}}>
-              <button className="btn-p" onClick={doChangePw}>{t("pw.save")}</button>
-              <button className="btn-o" style={{color:"var(--mu)",border:"1px solid var(--br)"}} onClick={()=>setShowChangePw(false)}>{t("cancel")}</button>
-            </div>
-          </div>
-        </div>
-      )}
       {showIosInstall && (
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:1000,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={()=>setShowIosInstall(false)}>
           <div style={{background:"var(--bg2)",borderRadius:"1rem 1rem 0 0",padding:"2rem 1.5rem",width:"100%",maxWidth:480,marginBottom:0}} onClick={e=>e.stopPropagation()}>
@@ -2624,14 +2293,11 @@
         </div>
       )}
       {showAuth && <AuthModal initMode={authMode} onClose={() => { setShowAuth(false); if(window.location.hash==="#admin") history.replaceState(null,"",window.location.pathname); }} />}
-          {showResetPw && <ResetPasswordModal onClose={() => setShowResetPw(false)} />}
           {activeEvent && (
             <EventDetailModal ev={activeEvent} user={user} profile={profile}
               regs={regs[activeEvent.id]||[]} onRegister={register} onUnregister={unregister}
               onClose={() => setActiveEvent(null)} hasPhotos={activeEvent._hasPhotos}
-              isAdmin={isAdmin} onEdit={ev => { setEditEv(ev); setActiveEvent(null); }}
-              comments={comments} newComment={newComment} setNewComment={setNewComment}
-              submitComment={submitComment} deleteComment={deleteComment} />
+              isAdmin={isAdmin} onEdit={ev => { setEditEv(ev); setActiveEvent(null); }} />
           )}
           {editEv && (
             <EditEventModal ev={editEv} onSave={updateEvent} onClose={() => setEditEv(null)} />
@@ -2819,7 +2485,6 @@
                       </button>
                     </div>
                   </div>
-                  <button className="join-cta-btn" onClick={()=>setShowJoin(true)}>{t("join.title")} →</button>
                 </div>
               </div>
 
@@ -2848,11 +2513,7 @@
                       {gallery.length > 6 && (
                         <button className="btn-sm" onClick={() => setTab("gallery")}>Teljes galéria ({gallery.length} kép) →</button>
                       )}
-                      {true && (
-                        <button className="btn-p" onClick={() => document.dispatchEvent(new CustomEvent("openJoin"))}>
-                          {t("hero.btn_join")}
-                        </button>
-                      )}
+
                     </div>
                   </div>
                 </div>
