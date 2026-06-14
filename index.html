@@ -822,9 +822,9 @@
         "gallery.tag":"Pillanatok","gallery.title":"Galéria",
         "gallery.empty":"A galéria még üres.","gallery.other":"Egyéb fotók",
         "gallery.event_tag":"Esemény","gallery.full":"Teljes galéria","gallery.photos":"kép",
-        "blog.tag":"Közösség","blog.title":"Blog & Futásnapló",
+        "blog.tag":"Hírek","nav.news":"Hírek","blog.title":"Hírek",
         "blog.tab_posts":"💬 Hírek & Ötletek","blog.tab_runs":"🏃 Futásnapló","blog.tab_stats":"📊 Statisztikák",
-        "blog.placeholder":"Írj hírt, ötletet, kérdést... (max 2000 karakter)",
+        "blog.placeholder":"Írj egy hírt, beszámolót... (max 2000 karakter)",
         "blog.post_btn":"Közzétesz","blog.empty":"Még nincsenek bejegyzések. Legyél az első!",
         "blog.login":"Jelentkezz be","blog.login_to":"a hozzászóláshoz",
         "runs.title":"Futás rögzítése","posts.pinned":"📌 Kiemelt","posts.pin":"📌 Kiemel","posts.unpin":"📌 Kiemelés eltávolítása","posts.run_entry":"🏃 Futás","feed.empty":"Még nincs bejegyzés.","runs.km":"Távolság (km) *","runs.duration":"Időtartam (kötelező, pl. 28:45 vagy 1:10:00)","runs.duration_ph":"pl. 28:45 vagy 1:10:00",
@@ -913,9 +913,9 @@
         "gallery.tag":"Moments","gallery.title":"Gallery",
         "gallery.empty":"The gallery is empty.","gallery.other":"Other photos",
         "gallery.event_tag":"Event","gallery.full":"Full gallery","gallery.photos":"photos",
-        "blog.tag":"Community","blog.title":"Blog & Run Log",
+        "blog.tag":"News","nav.news":"News","blog.title":"News",
         "blog.tab_posts":"💬 News & Ideas","blog.tab_runs":"🏃 Run Log","blog.tab_stats":"📊 Statistics",
-        "blog.placeholder":"Share news, ideas, questions... (max 2000 chars)",
+        "blog.placeholder":"Write a news post, report... (max 2000 chars)",
         "blog.post_btn":"Post","blog.empty":"No posts yet. Be the first!",
         "blog.login":"Log in","blog.login_to":"to comment",
         "runs.title":"Log a run","posts.pinned":"📌 Pinned","posts.pin":"📌 Pin","posts.unpin":"📌 Unpin","posts.run_entry":"🏃 Run","feed.empty":"No posts yet.","runs.km":"Distance (km) *","runs.duration":"Duration (required, e.g. 28:45 or 1:10:00)","runs.duration_ph":"e.g. 28:45 or 1:10:00",
@@ -1266,8 +1266,7 @@
               <FutameroLogo size={64} />
             </div>
             <div className="auth-tabs">
-              <button className={"auth-tab" + (mode==="login"?" a":"")} onClick={() => { setMode("login"); reset(); setPw2(""); }}>{t("auth.login")}</button>
-              <button className={"auth-tab" + (mode==="register"?" a":"")} onClick={() => { setMode("register"); reset(); }}>{t("auth.register")}</button>
+              <button className={"auth-tab a"} style={{cursor:"default"}}>{t("auth.login")}</button>
             </div>
             {err && <div className="auth-err">{err}</div>}
             {ok  && <div className="auth-ok">{ok}</div>}
@@ -1730,6 +1729,14 @@
       const [showJoin, setShowJoin] = useState(false);
       const [storyOpen, setStoryOpen] = useState(false);
       const [gallery,    setGallery]    = useState([]);
+      const randomGallery = React.useMemo(() => {
+        const arr = [...gallery];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr.slice(0, 6);
+      }, [gallery]);
       const [regs,       setRegs]       = useState({});
       const [loaded,     setLoaded]     = useState(false);
       const [dbErr,      setDbErr]      = useState(false);
@@ -1929,7 +1936,11 @@
         document.addEventListener("openPrivacy", pf);
         const jf = () => setShowJoin(true);
         document.addEventListener("openJoin", jf);
-        return () => { document.removeEventListener("openAuth", fn); document.removeEventListener("openPrivacy", pf); document.removeEventListener("openJoin", jf); };
+        // Rejtett admin belépés: #admin a címben
+        const checkAdminHash = () => { if (window.location.hash === "#admin") setShowAuth(true); };
+        checkAdminHash();
+        window.addEventListener("hashchange", checkAdminHash);
+        return () => { window.removeEventListener("hashchange", checkAdminHash); document.removeEventListener("openAuth", fn); document.removeEventListener("openPrivacy", pf); document.removeEventListener("openJoin", jf); };
       }, []);
       useEffect(() => {
         const fn = (e) => { setTab("gallery"); setActiveEvent(null); setTargetGalLabel(e.detail || null); };
@@ -2400,7 +2411,7 @@
             </div>
             {/* Desktop nav */}
             <div className="nav-links">
-              {[["home",t("nav.home")],["events",t("nav.events")],["past_events",t("nav.past_events")],["gallery",t("gallery.title")],["blog","Blog"]].map(([tid,lbl]) => (
+              {[["home",t("nav.home")],["events",t("nav.events")],["past_events",t("nav.past_events")],["gallery",t("gallery.title")],["blog",t("nav.news")]].map(([tid,lbl]) => (
                 <button key={tid} className={"nl" + (tab===tid?" a":"")} onClick={() => setTab(tid)}>{lbl}</button>
               ))}
               <div className="prog-dropdown">
@@ -2440,12 +2451,7 @@
                     </>
                   )}
                 </div>
-              ) : (
-                <>
-                  <button className="nav-btn out" onClick={() => { setAuthMode("login"); setShowAuth(true); }}>{t("nav.login")}</button>
-                  <button className="nav-btn" onClick={() => { setAuthMode("register"); setShowAuth(true); }}>{t("nav.register")}</button>
-                </>
-              )}
+              ) : null}
             </div>
             {user && (
               <div className="notif-wrap">
@@ -2546,7 +2552,7 @@
                 <span style={{color:"rgba(255,255,255,.75)",fontSize:".85rem"}}>{displayName}</span>
               </div>
             )}
-            {[["home","🏠 "+t("nav.home")],["events","📅 "+t("nav.events")],["past_events","🏅 "+t("nav.past_events")],["gallery","🖼 "+t("gallery.title")],["blog","💬 Blog"]].map(([tid,lbl]) => (
+            {[["home","🏠 "+t("nav.home")],["events","📅 "+t("nav.events")],["past_events","🏅 "+t("nav.past_events")],["gallery","🖼 "+t("gallery.title")],["blog","📰 "+t("nav.news")]].map(([tid,lbl]) => (
               <button key={tid} className={"nl" + (tab===tid?" a":"")} onClick={() => { setTab(tid); setMobileMenu(false); }}>{lbl}</button>
             ))}
             <div style={{fontSize:".82rem",fontWeight:600,color:"rgba(255,255,255,.5)",padding:".5rem 0 .2rem",textTransform:"uppercase",letterSpacing:".05em"}}>{t("nav.programs")}</div>
@@ -2571,15 +2577,7 @@
                 <span style={{marginLeft:".4rem"}}>{_lang==="en"?"Install app":"Alkalmazás telepítése"}</span>
               </button>
             )}
-            <div className="nav-drawer-btns">
-              {!user && (
-                <>
-                  <button className="nav-btn out" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={() => { setAuthMode("login"); setShowAuth(true); setMobileMenu(false); }}>{t("nav.login")}</button>
-                  <button className="nav-btn" style={{width:"100%",padding:".6rem",textAlign:"center"}} onClick={() => { setAuthMode("register"); setShowAuth(true); setMobileMenu(false); }}>{t("nav.register")}</button>
-                </>
-              )}
-            </div>
-          </div>
+                      </div>
 
           {showChangePw && (
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}} onClick={()=>setShowChangePw(false)}>
@@ -2625,7 +2623,7 @@
           </div>
         </div>
       )}
-      {showAuth && <AuthModal initMode={authMode} onClose={() => setShowAuth(false)} />}
+      {showAuth && <AuthModal initMode={authMode} onClose={() => { setShowAuth(false); if(window.location.hash==="#admin") history.replaceState(null,"",window.location.pathname); }} />}
           {showResetPw && <ResetPasswordModal onClose={() => setShowResetPw(false)} />}
           {activeEvent && (
             <EventDetailModal ev={activeEvent} user={user} profile={profile}
@@ -2797,7 +2795,7 @@
                   <div className="h-btns" style={{justifyContent:"flex-start"}}>
                     <button className="btn-p" onClick={() => setTab("events")}>{t("hero.btn_events")}</button>
                     <button className="btn-o" onClick={() => setTab("gallery")}>{t("gallery.title")}</button>
-                    {!user && <button className="btn-o" onClick={() => { setAuthMode("register"); setShowAuth(true); }}>{t("hero.btn_join")}</button>}
+                    <button className="btn-o" onClick={() => document.dispatchEvent(new CustomEvent("openJoin"))}>{t("hero.btn_join")}</button>
                   </div>
                 </div>
                 <div className="hero-divider" />
@@ -2840,8 +2838,8 @@
                   <div className="dark-gal-inner">
                     <div className="sec-hd"><span className="sec-tag">{t("gallery.tag")}</span><div className="sec-title">{t("gallery.title")}</div><div className="sec-divider"/></div>
                     <div className="gal-grid">
-                      {gallery.slice(0,6).map(img => (
-                        <div key={img.id} className="gi" onClick={() => openLb(img, gallery.slice(0,6))}>
+                      {randomGallery.map(img => (
+                        <div key={img.id} className="gi" onClick={() => openLb(img, randomGallery)}>
                           <img src={img.src} alt="" loading="lazy" /><div className="go" />
                         </div>
                       ))}
@@ -2850,8 +2848,8 @@
                       {gallery.length > 6 && (
                         <button className="btn-sm" onClick={() => setTab("gallery")}>Teljes galéria ({gallery.length} kép) →</button>
                       )}
-                      {!user && (
-                        <button className="btn-p" onClick={() => { setAuthMode("register"); setShowAuth(true); }}>
+                      {true && (
+                        <button className="btn-p" onClick={() => document.dispatchEvent(new CustomEvent("openJoin"))}>
                           {t("hero.btn_join")}
                         </button>
                       )}
@@ -3020,372 +3018,66 @@
             <div className="sec" style={{paddingTop:"7rem"}}>
               <div className="sec-hd"><span className="sec-tag">{t("blog.tag")}</span><div className="sec-title">{t("blog.title")}</div><div className="sec-divider"/></div>
 
-              <div className="atabs" style={{marginBottom:"1.5rem"}}>
-                <button className={"atab"+(blogSubTab==="posts"?" a":"")} onClick={()=>setBlogSubTab("posts")}>{t("blog.tab_posts")}</button>
-                <button className={"atab"+(blogSubTab==="runs"?" a":"")} onClick={()=>setBlogSubTab("runs")}>{t("blog.tab_runs")}</button>
-                <button className={"atab"+(blogSubTab==="stats"?" a":"")} onClick={()=>setBlogSubTab("stats")}>{t("blog.tab_stats")}</button>
-              </div>
-
-              {/* ── HÍREK & ÖTLETEK ── */}
-              {blogSubTab === "posts" && (
-                <>
-                  {user ? (
-                    <div className="blog-compose">
-                      <div className="blog-compose-hd">
-                        <div className="user-ava" style={{width:28,height:28,fontSize:".68rem"}}>{initials(displayName)}</div>
-                        <span>{displayName}</span>
+              {isAdmin && (
+                <div className="blog-compose">
+                  <div className="blog-compose-hd">
+                    <div className="user-ava" style={{width:28,height:28,fontSize:".68rem"}}>{initials(displayName)}</div>
+                    <span>{displayName}</span>
+                  </div>
+                  <textarea className="textarea" rows="4" placeholder={t("blog.placeholder")}
+                    value={newPost} maxLength={2000} onChange={e=>setNewPost(e.target.value)} />
+                  <div className="char-count">{newPost.length}/2000</div>
+                  {postImage && (
+                    <div style={{position:"relative",display:"inline-block",marginTop:".5rem"}}>
+                      <img src={postImage} alt="" style={{maxWidth:"100%",maxHeight:"220px",borderRadius:"4px",display:"block"}} />
+                      <button onClick={()=>setPostImage("")} style={{position:"absolute",top:"6px",right:"6px",background:"rgba(0,0,0,.6)",color:"#fff",border:"none",width:"26px",height:"26px",borderRadius:"50%",cursor:"pointer",fontSize:".8rem"}}>✕</button>
+                    </div>
+                  )}
+                  <div style={{display:"flex",alignItems:"center",gap:".7rem",marginTop:".6rem",flexWrap:"wrap"}}>
+                    {!postImage && (
+                      <label style={{cursor:"pointer",fontSize:".82rem",color:"var(--blue)",fontWeight:500}}>
+                        {postImgUploading ? t("blog.uploading") : t("blog.add_image")}
+                        <input type="file" accept="image/*" style={{display:"none"}} disabled={postImgUploading}
+                          onChange={e=>{ if(e.target.files[0]) uploadPostImage(e.target.files[0]); }} />
+                      </label>
+                    )}
+                  </div>
+                  <button className="btn-p" style={{marginTop:".65rem"}} disabled={posting||postImgUploading||!newPost.trim()} onClick={submitPost}>
+                    {posting && <span className="spin"/>}{t("blog.post_btn")}
+                  </button>
+                </div>
+              )}
+              {(() => {
+                const items = (posts||[]).slice().sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+                if (items.length === 0) return <div className="empty">{t("feed.empty")}</div>;
+                return items.map(item => (
+                  <div key={item.id} className="blog-post">
+                    <div className="blog-post-hd">
+                      <div className="user-ava" style={{width:32,height:32,fontSize:".72rem",flexShrink:0}}>{initials(item.user_name)}</div>
+                      <div>
+                        <div className="blog-author">{item.user_name}</div>
+                        <div className="blog-date">{new Date(item.created_at).toLocaleDateString(_lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"})}</div>
                       </div>
-                      <textarea className="textarea" rows="4" placeholder={t("blog.placeholder")}
-                        value={newPost} maxLength={2000} onChange={e=>setNewPost(e.target.value)} />
-                      <div className="char-count">{newPost.length}/2000</div>
-                      {postImage && (
-                        <div style={{position:"relative",display:"inline-block",marginTop:".5rem"}}>
-                          <img src={postImage} alt="" style={{maxWidth:"100%",maxHeight:"220px",borderRadius:"4px",display:"block"}} />
-                          <button onClick={()=>setPostImage("")} style={{position:"absolute",top:"6px",right:"6px",background:"rgba(0,0,0,.6)",color:"#fff",border:"none",width:"26px",height:"26px",borderRadius:"50%",cursor:"pointer",fontSize:".8rem"}}>✕</button>
+                      {isAdmin && (
+                        <div style={{marginLeft:"auto"}}>
+                          <button className="blog-del" onClick={()=>deletePost(item.id)}>✕</button>
                         </div>
                       )}
-                      <div style={{display:"flex",alignItems:"center",gap:".7rem",marginTop:".6rem",flexWrap:"wrap"}}>
-                        {!postImage && (
-                          <label style={{cursor:"pointer",fontSize:".82rem",color:"var(--blue)",fontWeight:500}}>
-                            {postImgUploading ? t("blog.uploading") : t("blog.add_image")}
-                            <input type="file" accept="image/*" style={{display:"none"}} disabled={postImgUploading}
-                              onChange={e=>{ if(e.target.files[0]) uploadPostImage(e.target.files[0]); }} />
-                          </label>
-                        )}
-                        {isAdmin && <label className="pin-checkbox" style={{margin:0}}><input type="checkbox" checked={pinNewPost} onChange={e=>setPinNewPost(e.target.checked)} />{t("posts.pin")}</label>}
-                      </div>
-                      <button className="btn-p" style={{marginTop:".65rem"}} disabled={posting||postImgUploading||!newPost.trim()} onClick={submitPost}>
-                        {posting && <span className="spin"/>}{t("blog.post_btn")}
-                      </button>
                     </div>
-                  ) : (
-                    <div className="blog-login"><span className="reg-hint" onClick={()=>document.dispatchEvent(new CustomEvent("openAuth"))}>{t("blog.login")}</span> {t("blog.login_to")}</div>
-                  )}
-                  {(() => {
-                    // Kombinált feed: posts + runs, pinned felül, aztán legrégebbi felül
-                    const feedPosts = (posts||[]).map(p => ({...p, _type:'post'}));
-                    const feedRuns = (runs||[]).filter(r=>r.id).map(r => ({...r, _type:'run', created_at: r.created_at || (r.run_date ? r.run_date+'T12:00:00' : new Date().toISOString())}));
-                    const allItems = [...feedPosts, ...feedRuns].sort((a,b) => {
-                      if (a.is_pinned && !b.is_pinned) return -1;
-                      if (!a.is_pinned && b.is_pinned) return 1;
-                      return new Date(b.created_at||b.run_date+'T00:00:00') - new Date(a.created_at||a.run_date+'T00:00:00');
-                    });
-                    if (allItems.length === 0) return <div className="empty">{t("feed.empty")}</div>;
-                    return allItems.map(item => item._type === 'run' ? (
-                      <div key={"run-"+item.id} className="run-feed-card" style={{cursor:"pointer"}} onClick={e=>{if(e.target.closest('.reactions,.comment-toggle,.comment-input,.comment-send,.comment-del,.rxn-btn,.blog-del')) return; setBlogSubTab("runs"); setTimeout(()=>{const el=document.getElementById("run-"+item.id);if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.style.outline="2px solid var(--red)";setTimeout(()=>{el.style.outline=""},1500);}},150);}}>
-                        <div className="run-feed-hd">
-                          <div className="user-ava" style={{width:30,height:30,fontSize:".68rem",flexShrink:0}}>{initials(item.user_name)}</div>
-                          <div>
-                            <div className="blog-author">{item.user_name}</div>
-                            <div className="run-feed-meta">🏃 {t("posts.run_entry")} · {new Date(item.created_at||item.run_date+"T00:00:00").toLocaleDateString(_lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric"})} {item.created_at ? new Date(item.created_at).toLocaleTimeString(_lang==="en"?"en-GB":"hu-HU",{hour:"2-digit",minute:"2-digit"}) : ""}</div>
-                          </div>
-                          <div className="run-feed-km">{parseFloat(item.distance_km||0).toFixed(2)}<span>km</span></div>
-                        </div>
-                        {(item.duration||item.description) && (
-                          <div className="run-feed-meta" style={{marginTop:".5rem"}}>
-                            {item.duration && <span>⏱ {item.duration}</span>}
-                            {item.duration && calcPace(item.distance_km,item.duration) && <span style={{marginLeft:".5rem",color:"var(--red)"}}>· {calcPace(item.distance_km,item.duration)}</span>}
-                            {item.description && <span style={{marginLeft:".5rem"}}>· {item.description}</span>}
-                          </div>
-                        )}
-                        <div className="reactions" style={{marginTop:".6rem"}}>
-                          {["👍","❤️","🏃"].map(emoji=>{
-                            const cnt=(runReactions[item.id]?.[emoji]||[]).length;
-                            const active=user&&(runReactions[item.id]?.[emoji]||[]).includes(user.id);
-                            return <button key={emoji} className={"rxn-btn"+(active?" active":"")} onClick={e=>{e.stopPropagation();toggleRunReaction(item.id,emoji);}}>{emoji}{cnt>0&&<span>{cnt}</span>}</button>;
-                          })}
-                        </div>
-                        <CommentSection parentId={item.id} parentType="run" comments={comments} newComment={newComment} setNewComment={setNewComment} submitComment={submitComment} deleteComment={deleteComment} user={user} profile={profile} isAdmin={isAdmin} />
-                        {(isAdmin||(user&&item.user_id===user.id)) && (
-                          <button className="blog-del" style={{marginTop:".4rem",display:"inline-block",fontSize:".75rem"}} onClick={e=>{e.stopPropagation();deleteRun(item.id,item.image_filename);}}>{t("runs.delete")}</button>
-                        )}
-                      </div>
-                    ) : (
-                      <div key={item.id} className={"blog-post"+(item.is_pinned?" pinned":"")}>
-                        {item.is_pinned && <div className="pinned-badge">📌 {t("posts.pinned")}</div>}
-                        <div className="blog-post-hd">
-                          <div className="user-ava" style={{width:32,height:32,fontSize:".72rem",flexShrink:0}}>{initials(item.user_name)}</div>
-                          <div>
-                            <div className="blog-author">{item.user_name}</div>
-                            <div className="blog-date">{new Date(item.created_at).toLocaleDateString(_lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"})}</div>
-                          </div>
-                          <div style={{marginLeft:"auto",display:"flex",gap:".3rem",alignItems:"center"}}>
-                            {isAdmin && <button className={"blog-pin-btn"+(item.is_pinned?" pinned":"")} onClick={()=>togglePin(item)} title={item.is_pinned?t("posts.unpin"):t("posts.pin")}>📌</button>}
-                            {(user&&(isAdmin||item.user_id===user.id)) && <button className="blog-del" onClick={()=>deletePost(item.id)}>✕</button>}
-                          </div>
-                        </div>
-                        <div className="blog-content">{item.content}</div>
-                        {item.image_url && (
-                          <img src={item.image_url} alt="" loading="lazy" className="blog-image"
-                            onClick={()=>{setLb({src:item.image_url,event_label:item.user_name});setLbAll([{src:item.image_url,event_label:item.user_name}]);}} />
-                        )}
-                        <div className="reactions">
-                          {["👍","❤️","🏃"].map(emoji=>{
-                            const cnt=(reactions[item.id]?.[emoji]||[]).length;
-                            const active=user&&(reactions[item.id]?.[emoji]||[]).includes(user.id);
-                            return <button key={emoji} className={"rxn-btn"+(active?" active":"")} onClick={()=>toggleReaction(item.id,emoji)}>{emoji}{cnt>0&&<span>{cnt}</span>}</button>;
-                          })}
-                        </div>
-                        <CommentSection parentId={item.id} parentType="post" comments={comments} newComment={newComment} setNewComment={setNewComment} submitComment={submitComment} deleteComment={deleteComment} user={user} profile={profile} isAdmin={isAdmin} />
-                      </div>
-                    ));
-                  })()}
-                </>
-              )}
-
-              {/* ── FUTÁSNAPLÓ ── */}
-              {blogSubTab === "runs" && (
-                <>
-                  {user ? (
-                    <div className="run-compose">
-                      <div className="blog-compose-hd" style={{marginBottom:".9rem"}}>
-                        <div className="user-ava" style={{width:28,height:28,fontSize:".68rem"}}>{initials(displayName)}</div>
-                        <span style={{fontWeight:500}}>{t("runs.title")}</span>
-                      </div>
-                      <div className="run-row">
-                        <div className="fg">
-                          <label className="inp-lbl">{t("runs.km")} *</label>
-                          <input className="inp" type="number" step="0.01" min="0.1" max="300"
-                            placeholder={lang==="en"?"e.g. 5.42":"Pl. 5.42"} value={newRun.km} onChange={e=>setNewRun({...newRun,km:e.target.value})} />
-                        </div>
-                        <div className="fg">
-                          <label className="inp-lbl">{t("runs.duration")} *</label>
-                          <div style={{display:"flex",gap:".4rem",alignItems:"center",flexWrap:"wrap"}}>
-                            <input className="inp" type="number" min="0" max="99" placeholder="0"
-                              style={{width:72,textAlign:"center",padding:".4rem .3rem"}} value={newRun.hours}
-                              onChange={e=>setNewRun({...newRun,hours:e.target.value})} />
-                            <span style={{fontSize:".8rem",color:"var(--mu)"}}>{t("runs.hours")}</span>
-                            <input className="inp" type="number" min="0" max="59" placeholder="0"
-                              style={{width:72,textAlign:"center",padding:".4rem .3rem"}} value={newRun.minutes}
-                              onChange={e=>setNewRun({...newRun,minutes:Math.min(59,parseInt(e.target.value)||0).toString()})} />
-                            <span style={{fontSize:".8rem",color:"var(--mu)"}}>{t("runs.minutes")}</span>
-                            <input className="inp" type="number" min="0" max="59" placeholder="0"
-                              style={{width:72,textAlign:"center",padding:".4rem .3rem"}} value={newRun.seconds}
-                              onChange={e=>setNewRun({...newRun,seconds:Math.min(59,parseInt(e.target.value)||0).toString()})} />
-                            <span style={{fontSize:".8rem",color:"var(--mu)"}}>{t("runs.seconds")}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="fg">
-                        <label className="inp-lbl">{t("runs.desc")}</label>
-                        <textarea className="textarea" rows="2" placeholder={lang==="en"?"e.g. Morning run...":"Pl. Reggeli edzés..."}
-                          value={newRun.desc} onChange={e=>setNewRun({...newRun,desc:e.target.value})} />
-                      </div>
-                      <div className="fg">
-                        <label className="inp-lbl">{t("runs.photo")}</label>
-                        <input className="inp" type="file" accept="image/*" ref={runFileRef} style={{padding:".5rem"}} />
-                      </div>
-                      {newRun.km && (newRun.minutes || newRun.hours) && (() => {
-                        const liveDur = fmtDur(newRun.hours, newRun.minutes, newRun.seconds);
-                        const livePace = calcPace(newRun.km, liveDur);
-                        return livePace ? (
-                          <div style={{fontSize:".85rem",color:"var(--blue)",fontWeight:600,marginBottom:".5rem",display:"flex",alignItems:"center",gap:".4rem"}}>
-                            ⏱ {liveDur} &nbsp;·&nbsp; 🏃 {livePace}
-                          </div>
-                        ) : null;
-                      })()}
-                      <button className="btn-p" disabled={runUploading||!newRun.km||(!newRun.minutes&&!newRun.hours)} onClick={submitRun}>
-                        {runUploading && <span className="spin"/>}{t("runs.btn")}
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="blog-login"><span className="reg-hint" onClick={()=>document.dispatchEvent(new CustomEvent("openAuth"))}>{_lang==="en"?"Log in":t("blog.login")}</span> {_lang==="en"?"to log your runs":t("runs.login_to")}</div>
-                  )}
-                  {runs.length === 0 ? <div className="empty">{t("runs.empty")}</div> : (
-                    [...runs].map(run => (
-                      <div key={run.id} id={"run-"+run.id} className="run-card">
-                        {run.image_url && <img className="run-card-img" src={run.image_url} loading="lazy" alt="" loading="lazy" />}
-                        <div className="run-card-body">
-                          <div className="run-card-hd">
-                            <div className="user-ava" style={{width:32,height:32,fontSize:".72rem",flexShrink:0}}>{initials(run.user_name)}</div>
-                            <div><div className="blog-author">{run.user_name}</div>
-                              <div className="run-date-badge">{new Date(run.created_at||run.run_date+"T00:00:00").toLocaleDateString(lang==="en"?"en-GB":"hu-HU",{year:"numeric",month:"long",day:"numeric"})}{run.duration && <span style={{marginLeft:".4rem",color:"var(--red)"}}>⏱ {run.duration}</span>}</div>
-                            </div>
-                            <div className="run-km">{parseFloat(run.distance_km).toFixed(2)}<span>km</span></div>
-                          </div>
-                          {run.description && <div className="blog-content" style={{fontSize:".88rem"}}>{run.description}</div>}
-                          {(isAdmin||(user&&run.user_id===user.id)) && (
-                            <button className="blog-del" style={{marginTop:".5rem",display:"block"}} onClick={()=>deleteRun(run.id,run.image_filename)}>{t("runs.delete")}</button>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </>
-              )}
-
-              {/* ── STATISZTIKÁK ── */}
-              {blogSubTab === "stats" && (function StatsView() {
-                const now = new Date();
-                const wStart = new Date(now); wStart.setDate(now.getDate()-((now.getDay()+6)%7)); wStart.setHours(0,0,0,0);
-                const mStart = new Date(now.getFullYear(),now.getMonth(),1);
-                const yStart = new Date(now.getFullYear(),0,1);
-                const totalKm = runs.reduce((s,r)=>{ const v=parseFloat(r.distance_km); return s+(isNaN(v)?0:v); },0);
-                const userMap = {};
-                runs.forEach(r => {
-                  if(!userMap[r.user_name]) userMap[r.user_name]={week:0,month:0,year:0,total:0,count:0,totalSecs:0,totalKm:0};
-                  const d=new Date(r.run_date+"T00:00:00"), km=parseFloat(r.distance_km||0);
-                  userMap[r.user_name].total+=km; userMap[r.user_name].count++; userMap[r.user_name].totalSecs+=parseDurSecs(r.duration); userMap[r.user_name].totalKm+=km;
-                  if(d>=yStart) userMap[r.user_name].year+=km;
-                  if(d>=mStart) userMap[r.user_name].month+=km;
-                  if(d>=wStart) userMap[r.user_name].week+=km;
-                });
-                const lbRaw = Object.entries(userMap).map(([n,s])=>({name:n,...s}));
-                const lb = [...lbRaw].sort((a,b)=>b.year-a.year);
-                return (
-                  <>
-                    <div className="stats-grid">
-                      <div className="stat-card"><div className="stat-card-num">{totalKm.toFixed(1)}</div><div className="stat-card-lbl">{t("stats.total_km")}</div></div>
-                      <div className="stat-card"><div className="stat-card-num">{runs.length}</div><div className="stat-card-lbl">{t("stats.total_runs")}</div></div>
-                      <div className="stat-card" style={{borderTopColor:"var(--blue)"}}>
-                        <div className="stat-card-num" style={{color:"var(--blue)"}}>{([...lbRaw].sort((a,b)=>b.week-a.week)[0]?.week||0).toFixed(1)}</div>
-                        <div className="stat-card-lbl">{t("stats.week")}<br/><span style={{color:"var(--navy)",fontWeight:600}}>{[...lb].sort((a,b)=>b.week-a.week)[0]?.name||"—"}</span></div>
-                      </div>
-                      <div className="stat-card" style={{borderTopColor:"var(--blue)"}}>
-                        <div className="stat-card-num" style={{color:"var(--blue)"}}>{[...lbRaw].sort((a,b)=>b.month-a.month)[0]?.month.toFixed(1)||"0"}</div>
-                        <div className="stat-card-lbl">{t("stats.month")}<br/><span style={{color:"var(--navy)",fontWeight:600}}>{[...lbRaw].sort((a,b)=>b.month-a.month)[0]?.name||"—"}</span></div>
-                      </div>
-                    </div>
-                    <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>
-                      {now.getFullYear()}. {t("stats.year_rank")}
-                    </div>
-                    <div style={{marginBottom:"1rem"}}>
-                    <div style={{display:"flex",gap:".4rem",flexWrap:"wrap",marginBottom:".6rem"}}>
-                      {[["year",t("lbperiod.year")],["d7",t("lbperiod.d7")],["d30",t("lbperiod.d30")]].map(([k,lbl])=>(
-                        <button key={k} className={"lb-sort-btn"+(lbPeriod===k?" active":"")} onClick={()=>setLbPeriod(k)}>{lbl}</button>
-                      ))}
-                    </div>
-                    <div className="lb-sort-row">
-                      {[["km",t("lbsort.km")],["dur",t("lbsort.duration")],["runs",t("lbsort.runs")],["pace",t("lbsort.pace")]].map(([k,lbl])=>(
-                        <button key={k} className={"lb-sort-btn"+(lbSort===k?" active":"")} onClick={()=>setLbSort(k)}>{lbl}</button>
-                      ))}
-                    </div>
+                    <div className="blog-content">{item.content}</div>
+                    {item.image_url && (
+                      <img src={item.image_url} alt="" loading="lazy" className="blog-image"
+                        onClick={()=>{setLb({src:item.image_url,event_label:item.user_name});setLbAll([{src:item.image_url,event_label:item.user_name}]);}} />
+                    )}
                   </div>
-                  {(() => {
-                    const now2 = new Date();
-                    const pStart = lbPeriod==="d7" ? new Date(now2-7*864e5) : lbPeriod==="d30" ? new Date(now2-30*864e5) : new Date(now2.getFullYear(),0,1);
-                    const filtRuns = runs.filter(r => new Date(r.created_at||r.run_date+'T00:00:00') >= pStart);
-                    const uMap = {};
-                    filtRuns.forEach(r => {
-                      if (!uMap[r.user_name]) uMap[r.user_name]={km:0,secs:0,count:0};
-                      const km=parseFloat(r.distance_km)||0;
-                      uMap[r.user_name].km+=km;
-                      uMap[r.user_name].secs+=parseDurSecs(r.duration);
-                      uMap[r.user_name].count++;
-                    });
-                    const lb2 = Object.entries(uMap).map(([name,s])=>({name,...s,pace:s.secs&&s.km?s.secs/s.km:Infinity}))
-                      .sort((a,b)=>{
-                        if(lbSort==="dur") return b.secs-a.secs;
-                        if(lbSort==="runs") return b.count-a.count;
-                        if(lbSort==="pace") return a.pace-b.pace;
-                        return b.km-a.km;
-                      }).slice(0,10);
-                    if (lb2.length===0) return <div className="empty">{t("stats.empty")}</div>;
-                    return (
-                      <div style={{background:"var(--bg2)",border:"1px solid var(--br)",boxShadow:"var(--shadow)",overflowX:"auto"}}>
-                        <table className="lb-table">
-                          <thead><tr>
-                            <th>#</th>
-                            <th>{t("stats.runner")}</th>
-                            <th>km</th>
-                            <th>{t("lbsort.duration")}</th>
-                            <th>{t("stats.count")}</th>
-                            <th>{t("lbsort.pace")}</th>
-                          </tr></thead>
-                          <tbody>
-                            {lb2.map((u,i)=>(
-                              <tr key={u.name}>
-                                <td><span className={"lb-rank"+(i===0?" gold":i===1?" silver":i===2?" bronze":"")}>
-                                  {i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}
-                                </span></td>
-                                <td><span className="lb-name">{u.name}</span></td>
-                                <td><span className={"lb-km"+(lbSort==="km"?" active-col":"")}>{(u.km||0).toFixed(2)}</span></td>
-                                <td><span className={"lb-km"+(lbSort==="dur"?" active-col":"")} style={{fontSize:".95rem"}}>{fmtSecs(u.secs)||"—"}</span></td>
-                                <td><span className={"lb-km"+(lbSort==="runs"?" active-col":"")}>{u.count}</span></td>
-                                <td><span className={"lb-km"+(lbSort==="pace"?" active-col":"")} style={{fontSize:".9rem"}}>{u.pace<Infinity?fmtSecs(u.pace)+" /km":"—"}</span></td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    );
-                  })()}
-                  {/* Személyes statisztika */}
-                  {user && (function MyStats() {
-                    const myRuns = runs.filter(r => r.user_id === user.id);
-                    if (myRuns.length === 0) return (
-                      <div style={{marginTop:"2.5rem"}}>
-                        <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>{t("stats.my")}</div>
-                        <div className="empty">{t("stats.no_runs")}</div>
-                      </div>
-                    );
-                    const myTotal = myRuns.reduce((s,r)=>{ const v=parseFloat(r.distance_km); return s+(isNaN(v)?0:v); },0);
-                    const myWeeks={}, myMonths={};
-                    myRuns.forEach(r=>{
-                      const d=new Date(r.created_at||r.run_date+"T00:00:00");
-                      const wk=d.getFullYear()+"-W"+String(Math.ceil(((d-new Date(d.getFullYear(),0,1))/86400000+new Date(d.getFullYear(),0,1).getDay()+1)/7)).padStart(2,"0");
-                      const mo=d.getFullYear()+"-"+(d.getMonth()+1);
-                      const km=parseFloat(r.distance_km||0);
-                      myWeeks[wk]=(myWeeks[wk]||0)+km;
-                      myMonths[mo]=(myMonths[mo]||0)+km;
-                    });
-                    const bestWeek=Math.max(...Object.values(myWeeks),0);
-                    const bestMonth=Math.max(...Object.values(myMonths),0);
-                    const totalSecs=myRuns.reduce((s,r)=>s+parseDurSecs(r.duration),0);
-                    const avgPaceSecs=totalSecs&&myTotal?totalSecs/myTotal:0;
-                    const now3=new Date();
-                    const wStart2=new Date(now3-7*864e5);
-                    const mStart2=new Date(now3.getFullYear(),now3.getMonth(),1);
-                    const myWeekSecs=myRuns.filter(r=>new Date(r.created_at||r.run_date+'T00:00:00')>=wStart2).reduce((s,r)=>s+parseDurSecs(r.duration),0);
-                    const myMonthSecs=myRuns.filter(r=>new Date(r.created_at||r.run_date+'T00:00:00')>=mStart2).reduce((s,r)=>s+parseDurSecs(r.duration),0);
-                    return (
-                      <div style={{marginTop:"2.5rem"}}>
-                        <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:"1rem"}}>{t("stats.my")}</div>
-                        <div className="stats-grid" style={{marginBottom:"1rem"}}>
-                          <div className="stat-card"><div className="stat-card-num">{myTotal.toFixed(1)}</div><div className="stat-card-lbl">{t("stats.my_total")}</div></div>
-                          <div className="stat-card"><div className="stat-card-num">{myRuns.length}</div><div className="stat-card-lbl">{t("stats.my_runs")}</div></div>
-                          <div className="stat-card" style={{borderTopColor:"var(--red)"}}><div className="stat-card-num" style={{fontSize:"1.6rem",color:"var(--red)"}}>{fmtSecs(totalSecs)||"—"}</div><div className="stat-card-lbl">{t("stats.my_total_time")}</div></div>
-                          <div className="stat-card" style={{borderTopColor:"var(--red)"}}><div className="stat-card-num" style={{fontSize:"1.5rem",color:"var(--red)"}}>{avgPaceSecs?fmtSecs(avgPaceSecs)+" /km":"—"}</div><div className="stat-card-lbl">{t("stats.my_avg_pace")}</div></div>
-                          <div className="stat-card" style={{borderTopColor:"var(--blue)"}}><div className="stat-card-num" style={{color:"var(--blue)"}}>{bestWeek.toFixed(1)}</div><div className="stat-card-lbl">{t("stats.my_best_week")}</div></div>
-                          <div className="stat-card" style={{borderTopColor:"var(--blue)"}}><div className="stat-card-num" style={{color:"var(--blue)"}}>{bestMonth.toFixed(1)}</div><div className="stat-card-lbl">{t("stats.my_best_month")}</div></div>
-                          <div className="stat-card" style={{borderTopColor:"var(--navy)"}}><div className="stat-card-num" style={{fontSize:"1.6rem",color:"var(--navy)"}}>{fmtSecs(myWeekSecs)||"—"}</div><div className="stat-card-lbl">{t("stats.my_week_time")}</div></div>
-                          <div className="stat-card" style={{borderTopColor:"var(--navy)"}}><div className="stat-card-num" style={{fontSize:"1.6rem",color:"var(--navy)"}}>{fmtSecs(myMonthSecs)||"—"}</div><div className="stat-card-lbl">{t("stats.my_month_time")}</div></div>
-                        </div>
-                        <div style={{background:"var(--bg2)",border:"1px solid var(--br)",boxShadow:"var(--shadow)",overflowX:"auto"}}>
-                          <table className="lb-table">
-                            <thead><tr>
-                              <th>{lang==="en"?"Date":"Dátum"}</th>
-                              <th>km</th>
-                              <th>{lang==="en"?"Duration":"Időtartam"}</th>
-                              <th>{lang==="en"?"Pace":"Tempó"}</th>
-                              <th>{lang==="en"?"Note":"Megjegyzés"}</th>
-                            </tr></thead>
-                            <tbody>
-                              {[...myRuns].sort((a,b)=>new Date(b.created_at||b.run_date)-new Date(a.created_at||a.run_date)).map(r=>(
-                                <tr key={r.id}>
-                                  <td>{new Date(r.created_at||r.run_date+"T00:00:00").toLocaleDateString(lang==="en"?"en-GB":"hu-HU",{month:"short",day:"numeric"})}</td>
-                                  <td><span className="lb-km">{parseFloat(r.distance_km).toFixed(2)}</span></td>
-                                  <td style={{color:"var(--mu)"}}>{r.duration||"—"}</td>
-                                  <td style={{color:"var(--red)",fontWeight:600}}>{calcPace(r.distance_km,r.duration)||"—"}</td>
-                                  <td style={{color:"var(--mu)",fontSize:".82rem"}}>{r.description||""}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </>
-                );
-              })()} 
+                ));
+              })()}
             </div>
             <Footer />
             </>
           )}
 
-                    {/* ADMIN */}
+          {/* ADMIN */}
           {tab === "admin" && isAdmin && (
             <div className="adm">
               <div style={{paddingTop:"2rem"}}>
